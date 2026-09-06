@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import Modal from './Modal';
+import { Printer, X, Landmark } from 'lucide-react';
 
 export default function PropertyCard({ ulpin, onClose }) {
   const [data, setData] = useState(null);
@@ -36,15 +37,10 @@ export default function PropertyCard({ ulpin, onClose }) {
         `}</style>
         
         {/* Header strip */}
-        <div style={{ background: 'var(--gradient-brand)', padding: '20px', display: 'flex', justifyContent: 'space-between', color: '#fff', position: 'relative' }}>
-          <div className="no-print" style={{ position: 'absolute', top: '12px', right: '12px', display: 'flex', gap: '8px' }}>
-            <button onClick={() => window.print()} style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.3)', color: '#fff', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer', fontSize: '16px' }}>🖨</button>
-            <button onClick={onClose} style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.3)', color: '#fff', padding: '4px 8px', borderRadius: '4px', cursor: 'pointer', fontSize: '16px' }}>✕</button>
-          </div>
-          
+        <div style={{ background: 'var(--gradient-brand)', padding: '20px', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', color: '#fff' }}>
           <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-            <div style={{ width: '48px', height: '48px', backgroundColor: '#fff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '24px' }}>
-              🏛
+            <div style={{ width: '48px', height: '48px', backgroundColor: '#fff', borderRadius: '50%', display: 'flex', alignItems: 'center', justifyContent: 'center', color: '#0f172a' }}>
+              <Landmark size={24} />
             </div>
             <div>
               <div style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px' }}>GOVERNMENT OF INDIA</div>
@@ -53,9 +49,15 @@ export default function PropertyCard({ ulpin, onClose }) {
             </div>
           </div>
           
-          <div style={{ width: '56px', height: '56px', backgroundColor: '#fff', padding: '2px', display: 'flex', flexWrap: 'wrap' }}>
-            {/* Fake QR code using repeating linear gradients */}
-            <div style={{ width: '100%', height: '100%', background: 'repeating-linear-gradient(45deg, #000 0, #000 2px, #fff 2px, #fff 4px), repeating-linear-gradient(-45deg, #000 0, #000 2px, #fff 2px, #fff 4px)' }}></div>
+          <div style={{ display: 'flex', gap: '16px', alignItems: 'flex-start' }}>
+            <div className="no-print" style={{ display: 'flex', gap: '8px' }}>
+              <button onClick={() => window.print()} style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.3)', color: '#fff', padding: '6px', borderRadius: '4px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Print Property Card"><Printer size={18} /></button>
+              <button onClick={onClose} style={{ background: 'transparent', border: '1px solid rgba(255,255,255,0.3)', color: '#fff', padding: '6px', borderRadius: '4px', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center' }} title="Close"><X size={18} /></button>
+            </div>
+            <div style={{ width: '56px', height: '56px', backgroundColor: '#fff', padding: '2px', display: 'flex', flexWrap: 'wrap' }}>
+              {/* Fake QR code using repeating linear gradients */}
+              <div style={{ width: '100%', height: '100%', background: 'repeating-linear-gradient(45deg, #000 0, #000 2px, #fff 2px, #fff 4px), repeating-linear-gradient(-45deg, #000 0, #000 2px, #fff 2px, #fff 4px)' }}></div>
+            </div>
           </div>
         </div>
 

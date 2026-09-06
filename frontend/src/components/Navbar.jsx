@@ -1,5 +1,6 @@
 import React from 'react';
 import '../styles.css';
+import { Building2, Bell, HelpCircle } from 'lucide-react';
 
 export default function Navbar({ onShowInfo }) {
   return (
@@ -21,9 +22,9 @@ export default function Navbar({ onShowInfo }) {
         <div style={{
           width: '36px', height: '36px', background: 'var(--gradient-brand)',
           borderRadius: '8px', display: 'flex', alignItems: 'center', justifyContent: 'center',
-          fontSize: '18px', color: '#fff'
+          color: '#fff'
         }}>
-          🏙️
+          <Building2 size={20} />
         </div>
         <div>
           <div style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text-primary)', lineHeight: 1.2 }}>GeoCadastre 3D</div>
@@ -62,25 +63,25 @@ export default function Navbar({ onShowInfo }) {
         
         <button style={{
           width: '32px', height: '32px', borderRadius: '8px', background: 'transparent', border: 'none',
-          color: 'var(--text-primary)', cursor: 'pointer', position: 'relative'
+          color: 'var(--text-primary)', cursor: 'pointer', position: 'relative', display: 'flex', alignItems: 'center', justifyContent: 'center'
         }}
         onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'var(--bg-elevated)'}
         onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
         >
-          🔔
-          <div style={{ position: 'absolute', top: '4px', right: '4px', width: '6px', height: '6px', borderRadius: '50%', background: 'var(--danger)' }}></div>
+          <Bell size={18} />
+          <div style={{ position: 'absolute', top: '6px', right: '6px', width: '6px', height: '6px', borderRadius: '50%', background: 'var(--danger)' }}></div>
         </button>
 
         <button style={{
           width: '32px', height: '32px', borderRadius: '8px', background: 'transparent', border: 'none',
-          color: 'var(--text-primary)', cursor: 'pointer', fontWeight: 600
+          color: 'var(--text-primary)', cursor: 'pointer', display: 'flex', alignItems: 'center', justifyContent: 'center'
         }}
         onClick={onShowInfo}
         onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'var(--bg-elevated)'}
         onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
         title="Help & Info"
         >
-          ?
+          <HelpCircle size={18} />
         </button>
 
         <div style={{ width: '1px', height: '20px', background: 'var(--border-default)' }}></div>

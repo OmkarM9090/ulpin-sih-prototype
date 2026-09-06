@@ -74,10 +74,14 @@ export default function LeftSidebar({ pipelineState, setPipelineState, onPipelin
   return (
     <div style={{
       width: '320px',
+      minWidth: '280px',
+      maxWidth: '500px',
       flexShrink: 0,
       backgroundColor: 'var(--bg-panel)',
       borderRight: '1px solid var(--border-subtle)',
       overflowY: 'auto',
+      overflowX: 'hidden',
+      resize: 'horizontal',
       padding: '16px',
       display: 'flex',
       flexDirection: 'column',
