@@ -9,10 +9,10 @@ function App() {
   const [explodeValue, setExplodeValue] = useState(0);
   const [showLabels, setShowLabels] = useState(true);
   const [selectedUnit, setSelectedUnit] = useState(null);
+  const [systemData, setSystemData] = useState(null);
 
   const runPipeline = () => {
     setPipelineState('running');
-    // Actual API calls will be added in Step 9
   };
 
   const resetCamera = () => {
@@ -29,7 +29,7 @@ function App() {
 
       <main className="app-main">
         <aside className="panel-left">
-          <PipelinePanel state={pipelineState} />
+          <PipelinePanel state={pipelineState} onComplete={setSystemData} />
         </aside>
 
         <section className="panel-center">
