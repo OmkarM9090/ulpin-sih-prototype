@@ -1,0 +1,15 @@
+{
+  "footprint": {
+    "size_x": 20.0,
+    "size_y": 25.0,
+    "center_x": 15.0,
+    "center_y": 20.0
+  },
+  "levels": [
+    { "id": "B1", "name": "Basement", "z_min": -3.0, "z_max": 0.0, "units": 1, "usage": "Parking" },
+    { "id": "GF", "name": "Ground Floor", "z_min": 0.0, "z_max": 3.5, "units": 1, "usage": "Shop" },
+    { "id": "F1", "name": "First Floor", "z_min": 3.5, "z_max": 7.0, "units": 4, "usage": "Apartments" },
+    { "id": "F2", "name": "Second Floor", "z_min": 7.0, "z_max": 10.5, "units": 4, "usage": "Apartments" },
+    { "id": "F3", "name": "Third Floor", "z_min": 10.5, "z_max": 14.0, "units": 4, "usage": "Apartments" }
+  ]
+}

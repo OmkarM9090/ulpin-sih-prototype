@@ -1,0 +1,27 @@
+{
+  "type": "FeatureCollection",
+  "features": [
+    {
+      "type": "Feature",
+      "properties": {
+        "parcel_id": "P001",
+        "parent_ulpin": "23140701001001",
+        "area_sqm": 1200,
+        "land_use": "Residential",
+        "location_label": "Demo Plot, Pune, Maharashtra"
+      },
+      "geometry": {
+        "type": "Polygon",
+        "coordinates": [
+          [
+            [0.0, 0.0],
+            [30.0, 0.0],
+            [30.0, 40.0],
+            [0.0, 40.0],
+            [0.0, 0.0]
+          ]
+        ]
+      }
+    }
+  ]
+}
