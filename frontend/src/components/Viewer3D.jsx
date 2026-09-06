@@ -50,7 +50,7 @@ const UnitMesh = ({ unit, explodeValue, showLabels, onSelect }) => {
       </mesh>
       
       {showLabels && (
-        <Html position={[0, height / 2 + 0.5, 0]} center style={{ pointerEvents: 'none' }}>
+        <Html position={[0, height / 2 + 0.5, 0]} center zIndexRange={[100, 0]} style={{ pointerEvents: 'none' }}>
           <div style={{
             background: 'rgba(15, 23, 42, 0.85)',
             color: 'white',
