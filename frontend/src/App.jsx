@@ -7,17 +7,14 @@ import Viewer3D from './components/Viewer3D';
 import ViewerToolbar from './components/ViewerToolbar';
 import ViewerLegend from './components/ViewerLegend';
 import UnitDetails from './components/UnitDetails';
+import Modal from './components/Modal';
+import { useToast } from './components/Toast';
 
 function InfoModal({ onClose }) {
-  // ... (keep InfoModal as is)
   return (
-    <div style={{
-      position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
-      backgroundColor: 'rgba(0,0,0,0.6)', zIndex: 999999, display: 'flex',
-      alignItems: 'center', justifyContent: 'center', padding: '20px'
-    }}>
+    <Modal onClose={onClose}>
       <div style={{
-        backgroundColor: '#1e293b', color: '#e2e8f0', width: '100%', maxWidth: '500px',
+        backgroundColor: '#1e293b', color: '#e2e8f0', width: '100vw', maxWidth: '500px',
         borderRadius: '8px', padding: '24px', position: 'relative',
         border: '1px solid #334155', boxShadow: '0 20px 25px -5px rgba(0,0,0,0.5)'
       }}>
@@ -44,7 +41,7 @@ function InfoModal({ onClose }) {
           <strong>Data Note:</strong> This prototype uses representative preprocessed inputs for instant demonstration.
         </div>
       </div>
-    </div>
+    </Modal>
   );
 }
 
@@ -53,6 +50,8 @@ function App() {
   const [systemData, setSystemData] = useState(null);
   const [showInfo, setShowInfo] = useState(false);
   
+  const addToast = useToast();
+
   // Viewer state
   const [explodeValue, setExplodeValue] = useState(0);
   const [showLabels, setShowLabels] = useState(true);
@@ -78,6 +77,7 @@ function App() {
   const handleResetCamera = () => {
     setCameraPreset('isometric');
     setResetTrigger(prev => prev + 1);
+    addToast('View reset to Isometric', 'info');
   };
 
   return (

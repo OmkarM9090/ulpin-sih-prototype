@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import '../styles.css';
+import { useToast } from './Toast';
 
 const STEPS = [
   { title: "Load 2D Parcel", desc: "Ingesting parent ULPIN geometry" },
@@ -18,6 +19,7 @@ export default function LeftSidebar({ pipelineState, setPipelineState, onPipelin
   
   const [currentStep, setCurrentStep] = useState(-1);
   const [pipelineData, setPipelineData] = useState(null);
+  const addToast = useToast();
 
   useEffect(() => {
     fetch('http://localhost:8000/api/data-sources')
@@ -35,12 +37,16 @@ export default function LeftSidebar({ pipelineState, setPipelineState, onPipelin
   useEffect(() => {
     if (pipelineState === 'running' && currentStep === -1) {
       setCurrentStep(0);
+      addToast('Pipeline started...', 'info');
       fetch('http://localhost:8000/api/pipeline/run')
         .then(res => res.json())
         .then(data => setPipelineData(data))
-        .catch(err => console.error(err));
+        .catch(err => {
+          console.error(err);
+          addToast('Pipeline failed to run', 'error');
+        });
     }
-  }, [pipelineState, currentStep]);
+  }, [pipelineState, currentStep, addToast]);
 
   useEffect(() => {
     if (currentStep >= 0 && currentStep < STEPS.length) {
@@ -51,12 +57,13 @@ export default function LeftSidebar({ pipelineState, setPipelineState, onPipelin
     } else if (currentStep === STEPS.length && pipelineData) {
       if (onPipelineComplete) onPipelineComplete(pipelineData);
       setPipelineState('complete');
+      addToast(`${pipelineData.units?.length || 20} units generated successfully`, 'success');
     }
-  }, [currentStep, pipelineData, onPipelineComplete, setPipelineState]);
+  }, [currentStep, pipelineData, onPipelineComplete, setPipelineState, addToast]);
 
   const handleCopyUlpin = () => {
     navigator.clipboard.writeText('23140701001001');
-    // will add toast in step 20
+    addToast('Copied to clipboard', 'success');
   };
 
   const getEmojiForSource = (id) => {

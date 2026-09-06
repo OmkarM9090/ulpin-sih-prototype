@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import { useToast } from './Toast';
 
 export default function ViewerToolbar({ 
   explodeValue, setExplodeValue, 
@@ -10,6 +11,12 @@ export default function ViewerToolbar({
 }) {
   const [layersOpen, setLayersOpen] = useState(false);
   const [presetOpen, setPresetOpen] = useState(false);
+  const addToast = useToast();
+  
+  const handleToggleLayer = (id, label) => {
+    toggleLayer(id);
+    addToast(`${label} toggled`, 'info');
+  };
   
   const PRESETS = [
     { id: 'isometric', label: '🏙 Isometric' },
@@ -101,7 +108,7 @@ export default function ViewerToolbar({
             <div style={{ position: 'absolute', top: '100%', right: 0, marginTop: '4px', background: 'var(--bg-panel)', border: '1px solid var(--border-subtle)', borderRadius: '8px', padding: '8px', width: '220px', boxShadow: 'var(--shadow-md)', zIndex: 30, display: 'flex', flexDirection: 'column', gap: '8px' }}>
               {LAYERS.map(l => (
                 <label key={l.id} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', cursor: 'pointer' }}>
-                  <input type="checkbox" checked={visibleLayers[l.id]} onChange={() => toggleLayer(l.id)} style={{ accentColor: 'var(--accent-primary)' }} />
+                  <input type="checkbox" checked={visibleLayers[l.id]} onChange={() => handleToggleLayer(l.id, l.label)} style={{ accentColor: 'var(--accent-primary)' }} />
                   {l.label}
                 </label>
               ))}
