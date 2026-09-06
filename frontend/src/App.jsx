@@ -2,11 +2,14 @@ import { useState } from 'react';
 import './styles.css';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
-import PipelinePanel from './components/PipelinePanel';
+import LeftSidebar from './components/LeftSidebar';
 import Viewer3D from './components/Viewer3D';
+import ViewerToolbar from './components/ViewerToolbar';
+import ViewerLegend from './components/ViewerLegend';
 import UnitDetails from './components/UnitDetails';
 
 function InfoModal({ onClose }) {
+  // ... (keep InfoModal as is)
   return (
     <div style={{
       position: 'fixed', top: 0, left: 0, width: '100vw', height: '100vh',
@@ -45,44 +48,36 @@ function InfoModal({ onClose }) {
   );
 }
 
-function Legend() {
-  const items = [
-    { label: 'Basement', color: '#f59e0b' },
-    { label: 'Ground', color: '#eab308' },
-    { label: 'Floor 1', color: '#3b82f6' },
-    { label: 'Floor 2', color: '#6366f1' },
-    { label: 'Floor 3', color: '#8b5cf6' }
-  ];
-  return (
-    <div style={{
-      position: 'absolute', bottom: '16px', left: '16px', zIndex: 10,
-      backgroundColor: 'rgba(30, 41, 59, 0.85)', padding: '8px 12px', borderRadius: '6px',
-      border: '1px solid #334155', display: 'flex', gap: '16px', backdropFilter: 'blur(4px)'
-    }}>
-      {items.map(item => (
-        <div key={item.label} style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '0.8rem', color: '#cbd5e1' }}>
-          <div style={{ width: '12px', height: '12px', backgroundColor: item.color, borderRadius: '2px' }} />
-          {item.label}
-        </div>
-      ))}
-    </div>
-  );
-}
-
 function App() {
   const [pipelineState, setPipelineState] = useState('idle');
-  const [explodeValue, setExplodeValue] = useState(0);
-  const [showLabels, setShowLabels] = useState(true);
-  const [selectedUnit, setSelectedUnit] = useState(null);
   const [systemData, setSystemData] = useState(null);
   const [showInfo, setShowInfo] = useState(false);
+  
+  // Viewer state
+  const [explodeValue, setExplodeValue] = useState(0);
+  const [showLabels, setShowLabels] = useState(true);
+  const [showGrid, setShowGrid] = useState(true);
+  const [cameraPreset, setCameraPreset] = useState('isometric');
+  const [resetTrigger, setResetTrigger] = useState(0);
+  const [selectedUnit, setSelectedUnit] = useState(null);
+  
+  const [visibleLayers, setVisibleLayers] = useState({
+    apartments: true,
+    basements: true,
+    terrace: true,
+    metro: true,
+    utility: true,
+    common: true,
+    boundary: true
+  });
 
-  const runPipeline = () => {
-    setPipelineState('running');
+  const toggleLayer = (layerId) => {
+    setVisibleLayers(prev => ({ ...prev, [layerId]: !prev[layerId] }));
   };
 
-  const resetCamera = () => {
-    window.location.reload();
+  const handleResetCamera = () => {
+    setCameraPreset('isometric');
+    setResetTrigger(prev => prev + 1);
   };
 
   return (
@@ -92,43 +87,37 @@ function App() {
       {showInfo && <InfoModal onClose={() => setShowInfo(false)} />}
 
       <main className="app-main">
-        <aside className="panel-left">
-          <PipelinePanel state={pipelineState} onComplete={setSystemData} />
-        </aside>
+        <LeftSidebar 
+          pipelineState={pipelineState} 
+          setPipelineState={setPipelineState} 
+          onPipelineComplete={setSystemData} 
+        />
 
         <section className="panel-center">
-          <div className="toolbar">
-            <button onClick={runPipeline} title="Start ULPIN Generation Pipeline">
-              Run Pipeline
-            </button>
-            <div className="slider-container" title="Separate floors vertically">
-              <label>Explode View</label>
-              <input 
-                type="range" 
-                min="0" max="100" 
-                value={explodeValue}
-                onChange={(e) => setExplodeValue(Number(e.target.value))}
-              />
-            </div>
-            <button onClick={resetCamera} title="Reset camera to default view" style={{background: 'var(--border-default)', color: '#fff'}}>
-              Reset Camera
-            </button>
-            <div className="toggle-container" title="Show/Hide Unit Labels">
-              <input 
-                type="checkbox" 
-                checked={showLabels}
-                onChange={(e) => setShowLabels(e.target.checked)}
-                id="labels-toggle"
-              />
-              <label htmlFor="labels-toggle">Labels</label>
-            </div>
-          </div>
+          <ViewerToolbar 
+            explodeValue={explodeValue} setExplodeValue={setExplodeValue}
+            showLabels={showLabels} setShowLabels={setShowLabels}
+            showGrid={showGrid} setShowGrid={setShowGrid}
+            cameraPreset={cameraPreset} setCameraPreset={setCameraPreset}
+            onResetCamera={handleResetCamera}
+            visibleLayers={visibleLayers} toggleLayer={toggleLayer}
+          />
           
           <div className="canvas-container">
-            <Viewer3D systemData={systemData} explodeValue={explodeValue} showLabels={showLabels} onSelect={setSelectedUnit} />
+            <Viewer3D 
+              systemData={systemData} 
+              explodeValue={explodeValue} 
+              showLabels={showLabels} 
+              showGrid={showGrid}
+              visibleLayers={visibleLayers}
+              cameraPreset={cameraPreset}
+              resetTrigger={resetTrigger}
+              selectedUlpin={selectedUnit}
+              onSelect={setSelectedUnit} 
+            />
           </div>
           
-          <Legend />
+          <ViewerLegend />
         </section>
 
         <aside className="panel-right">
