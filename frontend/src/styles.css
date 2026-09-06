@@ -1,0 +1,142 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+body {
+  background-color: #0f172a;
+  color: #e2e8f0;
+  font-family: system-ui, -apple-system, sans-serif;
+  height: 100vh;
+  overflow: hidden;
+}
+
+#root {
+  height: 100%;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Header */
+.app-header {
+  height: 60px;
+  background-color: #1e293b;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 0 24px;
+  border-bottom: 1px solid #334155;
+  box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  z-index: 10;
+}
+
+.header-title {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #38bdf8;
+}
+
+.header-subtitle {
+  font-size: 0.9rem;
+  color: #94a3b8;
+  font-weight: 500;
+}
+
+/* Main Layout */
+.app-main {
+  display: flex;
+  flex: 1;
+  height: calc(100vh - 60px);
+}
+
+/* Panels */
+.panel-left {
+  width: 300px;
+  background-color: #1e293b;
+  border-right: 1px solid #334155;
+  display: flex;
+  flex-direction: column;
+}
+
+.panel-center {
+  flex: 1;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  background-color: #0f172a; /* Fallback before 3D */
+}
+
+.panel-right {
+  width: 360px;
+  background-color: #1e293b;
+  border-left: 1px solid #334155;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Toolbar */
+.toolbar {
+  position: absolute;
+  top: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  background-color: rgba(30, 41, 59, 0.85);
+  padding: 12px 24px;
+  border-radius: 8px;
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.4);
+  border: 1px solid #334155;
+  z-index: 10;
+  backdrop-filter: blur(8px);
+}
+
+button {
+  background-color: #38bdf8;
+  color: #0f172a;
+  border: none;
+  padding: 8px 16px;
+  border-radius: 6px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+button:hover {
+  background-color: #7dd3fc;
+}
+
+button:active {
+  transform: scale(0.96);
+}
+
+.slider-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #e2e8f0;
+  font-size: 0.9rem;
+  font-weight: 500;
+}
+
+input[type=range] {
+  accent-color: #38bdf8;
+  cursor: pointer;
+}
+
+/* Labels toggle */
+.toggle-container {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  font-size: 0.9rem;
+  cursor: pointer;
+}
+
+.canvas-container {
+  flex: 1;
+  width: 100%;
+  height: 100%;
+}

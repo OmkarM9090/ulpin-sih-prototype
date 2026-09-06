@@ -1,122 +1,75 @@
-import { useState } from 'react'
-import heroImg from './assets/hero.png'
-import reactLogo from './assets/react.svg'
-import viteLogo from './assets/vite.svg'
-import './App.css'
+import { useState } from 'react';
+import './styles.css';
+import PipelinePanel from './components/PipelinePanel';
+import Viewer3D from './components/Viewer3D';
+import UnitDetails from './components/UnitDetails';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [pipelineState, setPipelineState] = useState('idle');
+  const [explodeValue, setExplodeValue] = useState(0);
+  const [showLabels, setShowLabels] = useState(true);
+  const [selectedUnit, setSelectedUnit] = useState(null);
+
+  const runPipeline = () => {
+    setPipelineState('running');
+    // Actual API calls will be added in Step 9
+  };
+
+  const resetCamera = () => {
+    // Will be wired to Viewer3D
+    console.log("Reset camera requested");
+  };
 
   return (
     <>
-      <section id="center">
-        <div className="hero">
-          <img src={heroImg} className="base" width="170" height="179" alt="" />
-          <img src={reactLogo} className="framework" alt="React logo" />
-          <img src={viteLogo} className="vite" alt="Vite logo" />
-        </div>
-        <div>
-          <h1>Get started</h1>
-          <p>
-            Edit <code>src/App.jsx</code> and save to test <code>HMR</code>
-          </p>
-        </div>
-        <button
-          type="button"
-          className="counter"
-          onClick={() => setCount((count) => count + 1)}
-        >
-          Count is {count}
-        </button>
-      </section>
+      <header className="app-header">
+        <div className="header-title">🏙️ 3D ULPIN & Vertical Property Mapping System</div>
+        <div className="header-subtitle">SIH 2026 · PS 26011 · Prototype Demo</div>
+      </header>
 
-      <div className="ticks"></div>
+      <main className="app-main">
+        <aside className="panel-left">
+          <PipelinePanel state={pipelineState} />
+        </aside>
 
-      <section id="next-steps">
-        <div id="docs">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#documentation-icon"></use>
-          </svg>
-          <h2>Documentation</h2>
-          <p>Your questions, answered</p>
-          <ul>
-            <li>
-              <a href="https://vite.dev/" target="_blank">
-                <img className="logo" src={viteLogo} alt="" />
-                Explore Vite
-              </a>
-            </li>
-            <li>
-              <a href="https://react.dev/" target="_blank">
-                <img className="button-icon" src={reactLogo} alt="" />
-                Learn more
-              </a>
-            </li>
-          </ul>
-        </div>
-        <div id="social">
-          <svg className="icon" role="presentation" aria-hidden="true">
-            <use href="/icons.svg#social-icon"></use>
-          </svg>
-          <h2>Connect with us</h2>
-          <p>Join the Vite community</p>
-          <ul>
-            <li>
-              <a href="https://github.com/vitejs/vite" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#github-icon"></use>
-                </svg>
-                GitHub
-              </a>
-            </li>
-            <li>
-              <a href="https://chat.vite.dev/" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#discord-icon"></use>
-                </svg>
-                Discord
-              </a>
-            </li>
-            <li>
-              <a href="https://x.com/vite_js" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#x-icon"></use>
-                </svg>
-                X.com
-              </a>
-            </li>
-            <li>
-              <a href="https://bsky.app/profile/vite.dev" target="_blank">
-                <svg
-                  className="button-icon"
-                  role="presentation"
-                  aria-hidden="true"
-                >
-                  <use href="/icons.svg#bluesky-icon"></use>
-                </svg>
-                Bluesky
-              </a>
-            </li>
-          </ul>
-        </div>
-      </section>
+        <section className="panel-center">
+          <div className="toolbar">
+            <button onClick={runPipeline} title="Start ULPIN Generation Pipeline">
+              Run Pipeline
+            </button>
+            <div className="slider-container" title="Separate floors vertically">
+              <label>Explode View</label>
+              <input 
+                type="range" 
+                min="0" max="100" 
+                value={explodeValue}
+                onChange={(e) => setExplodeValue(Number(e.target.value))}
+              />
+            </div>
+            <button onClick={resetCamera} title="Reset camera to default view" style={{background: '#334155', color: '#fff'}}>
+              Reset Camera
+            </button>
+            <div className="toggle-container" title="Show/Hide Unit Labels">
+              <input 
+                type="checkbox" 
+                checked={showLabels}
+                onChange={(e) => setShowLabels(e.target.checked)}
+                id="labels-toggle"
+              />
+              <label htmlFor="labels-toggle">Labels</label>
+            </div>
+          </div>
+          <div className="canvas-container">
+            <Viewer3D explodeValue={explodeValue} showLabels={showLabels} onSelect={setSelectedUnit} />
+          </div>
+        </section>
 
-      <div className="ticks"></div>
-      <section id="spacer"></section>
+        <aside className="panel-right">
+          <UnitDetails selectedUnit={selectedUnit} />
+        </aside>
+      </main>
     </>
-  )
+  );
 }
 
-export default App
+export default App;
