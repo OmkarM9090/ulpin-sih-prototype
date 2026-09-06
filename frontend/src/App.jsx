@@ -1,5 +1,7 @@
 import { useState } from 'react';
 import './styles.css';
+import Navbar from './components/Navbar';
+import Footer from './components/Footer';
 import PipelinePanel from './components/PipelinePanel';
 import Viewer3D from './components/Viewer3D';
 import UnitDetails from './components/UnitDetails';
@@ -84,18 +86,12 @@ function App() {
   };
 
   return (
-    <>
-      <header className="app-header">
-        <div className="header-title">🏙️ 3D ULPIN & Vertical Property Mapping System</div>
-        <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-          <div className="header-subtitle">SIH 2026 · PS 26011 · Prototype Demo</div>
-          <button onClick={() => setShowInfo(true)} title="About this demo" style={{ padding: '2px 8px', borderRadius: '50%', background: '#38bdf8', color: '#0f172a', fontWeight: 'bold' }}>?</button>
-        </div>
-      </header>
+    <div className="app-shell">
+      <Navbar />
 
       {showInfo && <InfoModal onClose={() => setShowInfo(false)} />}
 
-      <main className="app-main" style={{ height: 'calc(100vh - 60px - 32px)' }}>
+      <main className="app-main">
         <aside className="panel-left">
           <PipelinePanel state={pipelineState} onComplete={setSystemData} />
         </aside>
@@ -114,7 +110,7 @@ function App() {
                 onChange={(e) => setExplodeValue(Number(e.target.value))}
               />
             </div>
-            <button onClick={resetCamera} title="Reset camera to default view" style={{background: '#334155', color: '#fff'}}>
+            <button onClick={resetCamera} title="Reset camera to default view" style={{background: 'var(--border-default)', color: '#fff'}}>
               Reset Camera
             </button>
             <div className="toggle-container" title="Show/Hide Unit Labels">
@@ -140,14 +136,8 @@ function App() {
         </aside>
       </main>
 
-      <footer style={{ height: '32px', backgroundColor: '#0f172a', borderTop: '1px solid #334155', display: 'flex', alignItems: 'center', padding: '0 24px', fontSize: '0.8rem', color: '#94a3b8' }}>
-        <div style={{ display: 'flex', gap: '24px' }}>
-          <span>Backend: connected ✅</span>
-          <span>Units: {systemData ? systemData.units.length : 0}</span>
-          <span>Topology: {systemData ? 'VALID' : 'Pending...'}</span>
-        </div>
-      </footer>
-    </>
+      <Footer />
+    </div>
   );
 }
 

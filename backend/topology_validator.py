@@ -9,6 +9,12 @@ def validate_units(units_list: list) -> dict:
     overlaps_found = []
     gaps_found = []
     
+    # Validation info per unit type
+    type_counts = {}
+    for u in units_list:
+        t = u.get('type', 'building')
+        type_counts[t] = type_counts.get(t, 0) + 1
+    
     # 1. Watertight check
     for unit in units_list:
         uid = unit['unit_id']
@@ -16,12 +22,10 @@ def validate_units(units_list: list) -> dict:
         z_max = unit['z_max']
         footprint = unit['footprint']
         
-        # Check Z bounds
         if z_min >= z_max:
             watertight_ok = False
             gaps_found.append(f"{uid} has invalid Z bounds (z_min >= z_max)")
             
-        # Check footprint closed and >= 3 unique points (so len >= 4 with closing point)
         if len(footprint) < 4:
             watertight_ok = False
             gaps_found.append(f"{uid} footprint has less than 4 points")
@@ -38,11 +42,14 @@ def validate_units(units_list: list) -> dict:
         levels_map[lvl].append(unit)
         
     for lvl, lvl_units in levels_map.items():
-        # Compare every pair of units on the same level
         for i in range(len(lvl_units)):
             for j in range(i + 1, len(lvl_units)):
                 u1 = lvl_units[i]
                 u2 = lvl_units[j]
+                
+                # Treat metro and utility as public easement (not overlap error)
+                if u1.get('type') in ['metro', 'utility'] or u2.get('type') in ['metro', 'utility']:
+                    continue
                 
                 poly1 = Polygon(u1['footprint'])
                 poly2 = Polygon(u2['footprint'])
@@ -60,6 +67,7 @@ def validate_units(units_list: list) -> dict:
     
     return {
         "total_units": total_units,
+        "type_counts": type_counts,
         "watertight_ok": watertight_ok,
         "overlap_ok": overlap_ok,
         "overlaps_found": overlaps_found,

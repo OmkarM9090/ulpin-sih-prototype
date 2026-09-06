@@ -1,5 +1,6 @@
 import json
 import os
+import math
 from ulpin_generator import generate_3d_ulpin
 
 def get_rect_coords(x_min, x_max, y_min, y_max):
@@ -11,8 +12,37 @@ def get_rect_coords(x_min, x_max, y_min, y_max):
         [x_min, y_min]
     ]
 
-def calculate_area(x_min, x_max, y_min, y_max):
-    return (x_max - x_min) * (y_max - y_min)
+def get_rotated_rect(cx, cy, width, length, angle_deg):
+    # Create rectangle centered at origin
+    w2 = width / 2
+    l2 = length / 2
+    pts = [
+        [-w2, -l2],
+        [w2, -l2],
+        [w2, l2],
+        [-w2, l2]
+    ]
+    
+    rad = math.radians(angle_deg)
+    cos_a = math.cos(rad)
+    sin_a = math.sin(rad)
+    
+    rotated = []
+    for px, py in pts:
+        rx = px * cos_a - py * sin_a
+        ry = px * sin_a + py * cos_a
+        rotated.append([cx + rx, cy + ry])
+    
+    # Close the loop
+    rotated.append(rotated[0])
+    return rotated
+
+def calculate_area(coords):
+    # Shoelace formula
+    area = 0.0
+    for i in range(len(coords) - 1):
+        area += coords[i][0] * coords[i+1][1] - coords[i+1][0] * coords[i][1]
+    return abs(area) / 2.0
 
 def generate_building_units():
     base_dir = os.path.dirname(os.path.abspath(__file__))
@@ -42,66 +72,18 @@ def generate_building_units():
         z_max = level['z_max']
         usage = level['usage']
         num_units = level['units']
+        layer = level.get('layer', 'S')
+        level_str = level.get('level_code', 'LXX')
+        unit_type = level.get('type', 'building')
         
-        # Determine layer and level_str for ULPIN
-        if lvl_id == 'B1':
-            layer = 'U'
-            level_str = 'L-01'
-        elif lvl_id == 'GF':
-            layer = 'S'
-            level_str = 'L00'
-        elif lvl_id == 'F1':
-            layer = 'S'
-            level_str = 'L01'
-        elif lvl_id == 'F2':
-            layer = 'S'
-            level_str = 'L02'
-        elif lvl_id == 'F3':
-            layer = 'S'
-            level_str = 'L03'
-        else:
-            layer = 'S'
-            level_str = 'LXX'
-            
         height = z_max - z_min
             
-        if num_units == 1:
-            # Full footprint
-            coords = get_rect_coords(x_min, x_max, y_min, y_max)
-            area = calculate_area(x_min, x_max, y_min, y_max)
-            volume = area * height
-            unit_str = "U001"
-            ulpin = generate_3d_ulpin(parent_ulpin, layer, level_str, unit_str)
-            
-            units.append({
-                "unit_id": f"U{unit_id_counter:03d}",
-                "ulpin": ulpin,
-                "layer": layer,
-                "level": level_str,
-                "level_label": name,
-                "unit_label": f"{name} - {usage}",
-                "footprint": coords,
-                "z_min": z_min,
-                "z_max": z_max,
-                "usage": usage,
-                "area_sqm": area,
-                "volume_cbm": volume
-            })
-            unit_id_counter += 1
-            
-        elif num_units == 4:
-            # 4 quadrants
-            quadrants = [
-                (x_min, x_mid, y_min, y_mid),
-                (x_mid, x_max, y_min, y_mid),
-                (x_min, x_mid, y_mid, y_max),
-                (x_mid, x_max, y_mid, y_max)
-            ]
-            for i, (qx1, qx2, qy1, qy2) in enumerate(quadrants):
-                coords = get_rect_coords(qx1, qx2, qy1, qy2)
-                area = calculate_area(qx1, qx2, qy1, qy2)
+        if unit_type == "building":
+            if num_units == 1:
+                coords = get_rect_coords(x_min, x_max, y_min, y_max)
+                area = calculate_area(coords)
                 volume = area * height
-                unit_str = f"U00{i+1}"
+                unit_str = "U001"
                 ulpin = generate_3d_ulpin(parent_ulpin, layer, level_str, unit_str)
                 
                 units.append({
@@ -110,15 +92,146 @@ def generate_building_units():
                     "layer": layer,
                     "level": level_str,
                     "level_label": name,
-                    "unit_label": f"{name} - Unit {i+1}",
+                    "unit_label": f"{name} - {usage}",
                     "footprint": coords,
                     "z_min": z_min,
                     "z_max": z_max,
                     "usage": usage,
                     "area_sqm": area,
-                    "volume_cbm": volume
+                    "volume_cbm": volume,
+                    "type": unit_type
                 })
                 unit_id_counter += 1
+                
+            elif num_units == 4:
+                quadrants = [
+                    (x_min, x_mid, y_min, y_mid),
+                    (x_mid, x_max, y_min, y_mid),
+                    (x_min, x_mid, y_mid, y_max),
+                    (x_mid, x_max, y_mid, y_max)
+                ]
+                for i, (qx1, qx2, qy1, qy2) in enumerate(quadrants):
+                    coords = get_rect_coords(qx1, qx2, qy1, qy2)
+                    area = calculate_area(coords)
+                    volume = area * height
+                    unit_str = f"U00{i+1}"
+                    ulpin = generate_3d_ulpin(parent_ulpin, layer, level_str, unit_str)
+                    
+                    units.append({
+                        "unit_id": f"U{unit_id_counter:03d}",
+                        "ulpin": ulpin,
+                        "layer": layer,
+                        "level": level_str,
+                        "level_label": name,
+                        "unit_label": f"{name} - Unit {i+1}",
+                        "footprint": coords,
+                        "z_min": z_min,
+                        "z_max": z_max,
+                        "usage": usage,
+                        "area_sqm": area,
+                        "volume_cbm": volume,
+                        "type": unit_type
+                    })
+                    unit_id_counter += 1
+                    
+        elif unit_type == "metro":
+            # 6m x 60m rectangle rotated 30 degrees crossing parcel diagonally
+            coords = get_rotated_rect(15, 20, 6, 60, 30)
+            area = calculate_area(coords)
+            volume = area * height
+            unit_str = "U001"
+            ulpin = generate_3d_ulpin(parent_ulpin, layer, level_str, unit_str)
+            units.append({
+                "unit_id": f"U{unit_id_counter:03d}",
+                "ulpin": ulpin,
+                "layer": layer,
+                "level": level_str,
+                "level_label": name,
+                "unit_label": name,
+                "footprint": coords,
+                "z_min": z_min,
+                "z_max": z_max,
+                "usage": usage,
+                "area_sqm": area,
+                "volume_cbm": volume,
+                "type": unit_type
+            })
+            unit_id_counter += 1
+
+        elif unit_type == "utility":
+            # 1m x 40m thin strip along one edge of parcel
+            # Parcel is 0..30 x 0..40, so let's put it at x=1..2
+            coords = get_rect_coords(1, 2, 0, 40)
+            area = calculate_area(coords)
+            volume = area * height
+            unit_str = "U001"
+            ulpin = generate_3d_ulpin(parent_ulpin, layer, level_str, unit_str)
+            units.append({
+                "unit_id": f"U{unit_id_counter:03d}",
+                "ulpin": ulpin,
+                "layer": layer,
+                "level": level_str,
+                "level_label": name,
+                "unit_label": name,
+                "footprint": coords,
+                "z_min": z_min,
+                "z_max": z_max,
+                "usage": usage,
+                "area_sqm": area,
+                "volume_cbm": volume,
+                "type": unit_type
+            })
+            unit_id_counter += 1
+
+        elif unit_type == "garden":
+            # 8m x 8m square on NE corner of parcel (outside building footprint)
+            # Parcel is up to 30, 40. Building is up to 25, 32.5.
+            # So 22..30 on X and 32..40 on Y works.
+            coords = get_rect_coords(22, 30, 32, 40)
+            area = calculate_area(coords)
+            volume = area * height
+            unit_str = "U001"
+            ulpin = generate_3d_ulpin(parent_ulpin, layer, level_str, unit_str)
+            units.append({
+                "unit_id": f"U{unit_id_counter:03d}",
+                "ulpin": ulpin,
+                "layer": layer,
+                "level": level_str,
+                "level_label": name,
+                "unit_label": name,
+                "footprint": coords,
+                "z_min": z_min,
+                "z_max": z_max,
+                "usage": usage,
+                "area_sqm": area,
+                "volume_cbm": volume,
+                "type": unit_type
+            })
+            unit_id_counter += 1
+
+        elif unit_type == "water_tank":
+            # 3m x 3m square centered on terrace
+            coords = get_rect_coords(cx - 1.5, cx + 1.5, cy - 1.5, cy + 1.5)
+            area = calculate_area(coords)
+            volume = area * height
+            unit_str = "U001"
+            ulpin = generate_3d_ulpin(parent_ulpin, layer, level_str, unit_str)
+            units.append({
+                "unit_id": f"U{unit_id_counter:03d}",
+                "ulpin": ulpin,
+                "layer": layer,
+                "level": level_str,
+                "level_label": name,
+                "unit_label": name,
+                "footprint": coords,
+                "z_min": z_min,
+                "z_max": z_max,
+                "usage": usage,
+                "area_sqm": area,
+                "volume_cbm": volume,
+                "type": unit_type
+            })
+            unit_id_counter += 1
 
     output_file = os.path.join(base_dir, 'data', 'generated_units.json')
     with open(output_file, 'w') as f:

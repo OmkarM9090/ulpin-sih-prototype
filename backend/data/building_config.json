@@ -6,10 +6,16 @@
     "center_y": 20.0
   },
   "levels": [
-    { "id": "B1", "name": "Basement", "z_min": -3.0, "z_max": 0.0, "units": 1, "usage": "Parking" },
-    { "id": "GF", "name": "Ground Floor", "z_min": 0.0, "z_max": 3.5, "units": 1, "usage": "Shop" },
-    { "id": "F1", "name": "First Floor", "z_min": 3.5, "z_max": 7.0, "units": 4, "usage": "Apartments" },
-    { "id": "F2", "name": "Second Floor", "z_min": 7.0, "z_max": 10.5, "units": 4, "usage": "Apartments" },
-    { "id": "F3", "name": "Third Floor", "z_min": 10.5, "z_max": 14.0, "units": 4, "usage": "Apartments" }
+    { "id": "B2", "name": "Basement 2", "z_min": -6.0, "z_max": -3.0, "units": 1, "usage": "Parking Level 2", "layer": "U", "level_code": "L-02", "type": "building" },
+    { "id": "B1", "name": "Basement 1", "z_min": -3.0, "z_max": 0.0, "units": 1, "usage": "Parking", "layer": "U", "level_code": "L-01", "type": "building" },
+    { "id": "GF", "name": "Ground Floor", "z_min": 0.0, "z_max": 3.5, "units": 1, "usage": "Shop", "layer": "S", "level_code": "L00", "type": "building" },
+    { "id": "F1", "name": "First Floor", "z_min": 3.5, "z_max": 7.0, "units": 4, "usage": "Apartments", "layer": "S", "level_code": "L01", "type": "building" },
+    { "id": "F2", "name": "Second Floor", "z_min": 7.0, "z_max": 10.5, "units": 4, "usage": "Apartments", "layer": "S", "level_code": "L02", "type": "building" },
+    { "id": "F3", "name": "Third Floor", "z_min": 10.5, "z_max": 14.0, "units": 4, "usage": "Apartments", "layer": "S", "level_code": "L03", "type": "building" },
+    { "id": "T1", "name": "Common Terrace", "z_min": 14.0, "z_max": 15.5, "units": 1, "usage": "Common Terrace", "layer": "S", "level_code": "LC01", "type": "building" },
+    { "id": "WT1", "name": "Water Tank", "z_min": 15.5, "z_max": 17.0, "units": 1, "usage": "Common Utility", "layer": "S", "level_code": "LC03", "type": "water_tank" },
+    { "id": "G1", "name": "Garden", "z_min": 0.0, "z_max": 0.3, "units": 1, "usage": "Common Garden", "layer": "S", "level_code": "LC02", "type": "garden" },
+    { "id": "MT1", "name": "Metro Tunnel", "z_min": -12.0, "z_max": -8.0, "units": 1, "usage": "Public Infrastructure - Metro Right of Way", "layer": "U", "level_code": "LM01", "type": "metro" },
+    { "id": "UT1", "name": "Utility Line", "z_min": -2.0, "z_max": -1.5, "units": 1, "usage": "Municipal Utility Easement", "layer": "U", "level_code": "LU01", "type": "utility" }
   ]
 }

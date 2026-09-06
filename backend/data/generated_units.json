@@ -1,11 +1,47 @@
 [
   {
     "unit_id": "U001",
+    "ulpin": "23140701001001-U-L-02-U001-3",
+    "layer": "U",
+    "level": "L-02",
+    "level_label": "Basement 2",
+    "unit_label": "Basement 2 - Parking Level 2",
+    "footprint": [
+      [
+        5.0,
+        7.5
+      ],
+      [
+        25.0,
+        7.5
+      ],
+      [
+        25.0,
+        32.5
+      ],
+      [
+        5.0,
+        32.5
+      ],
+      [
+        5.0,
+        7.5
+      ]
+    ],
+    "z_min": -6.0,
+    "z_max": -3.0,
+    "usage": "Parking Level 2",
+    "area_sqm": 500.0,
+    "volume_cbm": 1500.0,
+    "type": "building"
+  },
+  {
+    "unit_id": "U002",
     "ulpin": "23140701001001-U-L-01-U001-2",
     "layer": "U",
     "level": "L-01",
-    "level_label": "Basement",
-    "unit_label": "Basement - Parking",
+    "level_label": "Basement 1",
+    "unit_label": "Basement 1 - Parking",
     "footprint": [
       [
         5.0,
@@ -32,10 +68,11 @@
     "z_max": 0.0,
     "usage": "Parking",
     "area_sqm": 500.0,
-    "volume_cbm": 1500.0
+    "volume_cbm": 1500.0,
+    "type": "building"
   },
   {
-    "unit_id": "U002",
+    "unit_id": "U003",
     "ulpin": "23140701001001-S-L00-U001-1",
     "layer": "S",
     "level": "L00",
@@ -67,10 +104,11 @@
     "z_max": 3.5,
     "usage": "Shop",
     "area_sqm": 500.0,
-    "volume_cbm": 1750.0
+    "volume_cbm": 1750.0,
+    "type": "building"
   },
   {
-    "unit_id": "U003",
+    "unit_id": "U004",
     "ulpin": "23140701001001-S-L01-U001-2",
     "layer": "S",
     "level": "L01",
@@ -102,10 +140,11 @@
     "z_max": 7.0,
     "usage": "Apartments",
     "area_sqm": 125.0,
-    "volume_cbm": 437.5
+    "volume_cbm": 437.5,
+    "type": "building"
   },
   {
-    "unit_id": "U004",
+    "unit_id": "U005",
     "ulpin": "23140701001001-S-L01-U002-3",
     "layer": "S",
     "level": "L01",
@@ -137,10 +176,11 @@
     "z_max": 7.0,
     "usage": "Apartments",
     "area_sqm": 125.0,
-    "volume_cbm": 437.5
+    "volume_cbm": 437.5,
+    "type": "building"
   },
   {
-    "unit_id": "U005",
+    "unit_id": "U006",
     "ulpin": "23140701001001-S-L01-U003-4",
     "layer": "S",
     "level": "L01",
@@ -172,10 +212,11 @@
     "z_max": 7.0,
     "usage": "Apartments",
     "area_sqm": 125.0,
-    "volume_cbm": 437.5
+    "volume_cbm": 437.5,
+    "type": "building"
   },
   {
-    "unit_id": "U006",
+    "unit_id": "U007",
     "ulpin": "23140701001001-S-L01-U004-5",
     "layer": "S",
     "level": "L01",
@@ -207,10 +248,11 @@
     "z_max": 7.0,
     "usage": "Apartments",
     "area_sqm": 125.0,
-    "volume_cbm": 437.5
+    "volume_cbm": 437.5,
+    "type": "building"
   },
   {
-    "unit_id": "U007",
+    "unit_id": "U008",
     "ulpin": "23140701001001-S-L02-U001-3",
     "layer": "S",
     "level": "L02",
@@ -242,10 +284,11 @@
     "z_max": 10.5,
     "usage": "Apartments",
     "area_sqm": 125.0,
-    "volume_cbm": 437.5
+    "volume_cbm": 437.5,
+    "type": "building"
   },
   {
-    "unit_id": "U008",
+    "unit_id": "U009",
     "ulpin": "23140701001001-S-L02-U002-4",
     "layer": "S",
     "level": "L02",
@@ -277,10 +320,11 @@
     "z_max": 10.5,
     "usage": "Apartments",
     "area_sqm": 125.0,
-    "volume_cbm": 437.5
+    "volume_cbm": 437.5,
+    "type": "building"
   },
   {
-    "unit_id": "U009",
+    "unit_id": "U010",
     "ulpin": "23140701001001-S-L02-U003-5",
     "layer": "S",
     "level": "L02",
@@ -312,10 +356,11 @@
     "z_max": 10.5,
     "usage": "Apartments",
     "area_sqm": 125.0,
-    "volume_cbm": 437.5
+    "volume_cbm": 437.5,
+    "type": "building"
   },
   {
-    "unit_id": "U010",
+    "unit_id": "U011",
     "ulpin": "23140701001001-S-L02-U004-6",
     "layer": "S",
     "level": "L02",
@@ -347,10 +392,11 @@
     "z_max": 10.5,
     "usage": "Apartments",
     "area_sqm": 125.0,
-    "volume_cbm": 437.5
+    "volume_cbm": 437.5,
+    "type": "building"
   },
   {
-    "unit_id": "U011",
+    "unit_id": "U012",
     "ulpin": "23140701001001-S-L03-U001-4",
     "layer": "S",
     "level": "L03",
@@ -382,10 +428,11 @@
     "z_max": 14.0,
     "usage": "Apartments",
     "area_sqm": 125.0,
-    "volume_cbm": 437.5
+    "volume_cbm": 437.5,
+    "type": "building"
   },
   {
-    "unit_id": "U012",
+    "unit_id": "U013",
     "ulpin": "23140701001001-S-L03-U002-5",
     "layer": "S",
     "level": "L03",
@@ -417,10 +464,11 @@
     "z_max": 14.0,
     "usage": "Apartments",
     "area_sqm": 125.0,
-    "volume_cbm": 437.5
+    "volume_cbm": 437.5,
+    "type": "building"
   },
   {
-    "unit_id": "U013",
+    "unit_id": "U014",
     "ulpin": "23140701001001-S-L03-U003-6",
     "layer": "S",
     "level": "L03",
@@ -452,10 +500,11 @@
     "z_max": 14.0,
     "usage": "Apartments",
     "area_sqm": 125.0,
-    "volume_cbm": 437.5
+    "volume_cbm": 437.5,
+    "type": "building"
   },
   {
-    "unit_id": "U014",
+    "unit_id": "U015",
     "ulpin": "23140701001001-S-L03-U004-7",
     "layer": "S",
     "level": "L03",
@@ -487,6 +536,187 @@
     "z_max": 14.0,
     "usage": "Apartments",
     "area_sqm": 125.0,
-    "volume_cbm": 437.5
+    "volume_cbm": 437.5,
+    "type": "building"
+  },
+  {
+    "unit_id": "U016",
+    "ulpin": "23140701001001-S-LC01-U001-2",
+    "layer": "S",
+    "level": "LC01",
+    "level_label": "Common Terrace",
+    "unit_label": "Common Terrace - Common Terrace",
+    "footprint": [
+      [
+        5.0,
+        7.5
+      ],
+      [
+        25.0,
+        7.5
+      ],
+      [
+        25.0,
+        32.5
+      ],
+      [
+        5.0,
+        32.5
+      ],
+      [
+        5.0,
+        7.5
+      ]
+    ],
+    "z_min": 14.0,
+    "z_max": 15.5,
+    "usage": "Common Terrace",
+    "area_sqm": 500.0,
+    "volume_cbm": 750.0,
+    "type": "building"
+  },
+  {
+    "unit_id": "U017",
+    "ulpin": "23140701001001-S-LC03-U001-4",
+    "layer": "S",
+    "level": "LC03",
+    "level_label": "Water Tank",
+    "unit_label": "Water Tank",
+    "footprint": [
+      [
+        13.5,
+        18.5
+      ],
+      [
+        16.5,
+        18.5
+      ],
+      [
+        16.5,
+        21.5
+      ],
+      [
+        13.5,
+        21.5
+      ],
+      [
+        13.5,
+        18.5
+      ]
+    ],
+    "z_min": 15.5,
+    "z_max": 17.0,
+    "usage": "Common Utility",
+    "area_sqm": 9.0,
+    "volume_cbm": 13.5,
+    "type": "water_tank"
+  },
+  {
+    "unit_id": "U018",
+    "ulpin": "23140701001001-S-LC02-U001-3",
+    "layer": "S",
+    "level": "LC02",
+    "level_label": "Garden",
+    "unit_label": "Garden",
+    "footprint": [
+      [
+        22,
+        32
+      ],
+      [
+        30,
+        32
+      ],
+      [
+        30,
+        40
+      ],
+      [
+        22,
+        40
+      ],
+      [
+        22,
+        32
+      ]
+    ],
+    "z_min": 0.0,
+    "z_max": 0.3,
+    "usage": "Common Garden",
+    "area_sqm": 64.0,
+    "volume_cbm": 19.2,
+    "type": "garden"
+  },
+  {
+    "unit_id": "U019",
+    "ulpin": "23140701001001-U-LM01-U001-2",
+    "layer": "U",
+    "level": "LM01",
+    "level_label": "Metro Tunnel",
+    "unit_label": "Metro Tunnel",
+    "footprint": [
+      [
+        27.401923788646684,
+        -7.48076211353316
+      ],
+      [
+        32.598076211353316,
+        -4.48076211353316
+      ],
+      [
+        2.598076211353318,
+        47.48076211353316
+      ],
+      [
+        -2.598076211353316,
+        44.48076211353316
+      ],
+      [
+        27.401923788646684,
+        -7.48076211353316
+      ]
+    ],
+    "z_min": -12.0,
+    "z_max": -8.0,
+    "usage": "Public Infrastructure - Metro Right of Way",
+    "area_sqm": 360.0,
+    "volume_cbm": 1440.0,
+    "type": "metro"
+  },
+  {
+    "unit_id": "U020",
+    "ulpin": "23140701001001-U-LU01-U001-2",
+    "layer": "U",
+    "level": "LU01",
+    "level_label": "Utility Line",
+    "unit_label": "Utility Line",
+    "footprint": [
+      [
+        1,
+        0
+      ],
+      [
+        2,
+        0
+      ],
+      [
+        2,
+        40
+      ],
+      [
+        1,
+        40
+      ],
+      [
+        1,
+        0
+      ]
+    ],
+    "z_min": -2.0,
+    "z_max": -1.5,
+    "usage": "Municipal Utility Easement",
+    "area_sqm": 40.0,
+    "volume_cbm": 20.0,
+    "type": "utility"
   }
 ]

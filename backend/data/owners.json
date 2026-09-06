@@ -12,5 +12,11 @@
   { "unit_index": 11, "name": "Karan Mehta", "contact": "90077*****", "ownership_type": "Freehold" },
   { "unit_index": 12, "name": "Riya Nair", "contact": "95588*****", "ownership_type": "Freehold" },
   { "unit_index": 13, "name": "Amit Shah", "contact": "94499*****", "ownership_type": "Freehold" },
-  { "unit_index": 14, "name": "Deepa Iyer", "contact": "93300*****", "ownership_type": "Freehold" }
+  { "unit_index": 14, "name": "Deepa Iyer", "contact": "93300*****", "ownership_type": "Freehold" },
+  { "unit_index": 15, "name": "Pune Municipal Corporation", "contact": "18001*****", "ownership_type": "Public Easement" },
+  { "unit_index": 16, "name": "Society Common Body", "contact": "99999*****", "ownership_type": "Common Ownership" },
+  { "unit_index": 17, "name": "Water Utility Board", "contact": "18002*****", "ownership_type": "Public Easement" },
+  { "unit_index": 18, "name": "Maharashtra Metro Rail Corporation", "contact": "18003*****", "ownership_type": "Public Easement" },
+  { "unit_index": 19, "name": "Pune Municipal Corporation - Water Dept", "contact": "18004*****", "ownership_type": "Public Easement" },
+  { "unit_index": 20, "name": "Society Common Body", "contact": "99999*****", "ownership_type": "Common Ownership" }
 ]
