@@ -60,7 +60,7 @@ function App() {
             </div>
           </div>
           <div className="canvas-container">
-            <Viewer3D explodeValue={explodeValue} showLabels={showLabels} onSelect={setSelectedUnit} />
+            <Viewer3D systemData={systemData} explodeValue={explodeValue} showLabels={showLabels} onSelect={setSelectedUnit} />
           </div>
         </section>
 
