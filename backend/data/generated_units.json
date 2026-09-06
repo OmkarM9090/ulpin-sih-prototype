@@ -1,0 +1,492 @@
+[
+  {
+    "unit_id": "U001",
+    "ulpin": "23140701001001-U-L-01-U001-2",
+    "layer": "U",
+    "level": "L-01",
+    "level_label": "Basement",
+    "unit_label": "Basement - Parking",
+    "footprint": [
+      [
+        5.0,
+        7.5
+      ],
+      [
+        25.0,
+        7.5
+      ],
+      [
+        25.0,
+        32.5
+      ],
+      [
+        5.0,
+        32.5
+      ],
+      [
+        5.0,
+        7.5
+      ]
+    ],
+    "z_min": -3.0,
+    "z_max": 0.0,
+    "usage": "Parking",
+    "area_sqm": 500.0,
+    "volume_cbm": 1500.0
+  },
+  {
+    "unit_id": "U002",
+    "ulpin": "23140701001001-S-L00-U001-1",
+    "layer": "S",
+    "level": "L00",
+    "level_label": "Ground Floor",
+    "unit_label": "Ground Floor - Shop",
+    "footprint": [
+      [
+        5.0,
+        7.5
+      ],
+      [
+        25.0,
+        7.5
+      ],
+      [
+        25.0,
+        32.5
+      ],
+      [
+        5.0,
+        32.5
+      ],
+      [
+        5.0,
+        7.5
+      ]
+    ],
+    "z_min": 0.0,
+    "z_max": 3.5,
+    "usage": "Shop",
+    "area_sqm": 500.0,
+    "volume_cbm": 1750.0
+  },
+  {
+    "unit_id": "U003",
+    "ulpin": "23140701001001-S-L01-U001-2",
+    "layer": "S",
+    "level": "L01",
+    "level_label": "First Floor",
+    "unit_label": "First Floor - Unit 1",
+    "footprint": [
+      [
+        5.0,
+        7.5
+      ],
+      [
+        15.0,
+        7.5
+      ],
+      [
+        15.0,
+        20.0
+      ],
+      [
+        5.0,
+        20.0
+      ],
+      [
+        5.0,
+        7.5
+      ]
+    ],
+    "z_min": 3.5,
+    "z_max": 7.0,
+    "usage": "Apartments",
+    "area_sqm": 125.0,
+    "volume_cbm": 437.5
+  },
+  {
+    "unit_id": "U004",
+    "ulpin": "23140701001001-S-L01-U002-3",
+    "layer": "S",
+    "level": "L01",
+    "level_label": "First Floor",
+    "unit_label": "First Floor - Unit 2",
+    "footprint": [
+      [
+        15.0,
+        7.5
+      ],
+      [
+        25.0,
+        7.5
+      ],
+      [
+        25.0,
+        20.0
+      ],
+      [
+        15.0,
+        20.0
+      ],
+      [
+        15.0,
+        7.5
+      ]
+    ],
+    "z_min": 3.5,
+    "z_max": 7.0,
+    "usage": "Apartments",
+    "area_sqm": 125.0,
+    "volume_cbm": 437.5
+  },
+  {
+    "unit_id": "U005",
+    "ulpin": "23140701001001-S-L01-U003-4",
+    "layer": "S",
+    "level": "L01",
+    "level_label": "First Floor",
+    "unit_label": "First Floor - Unit 3",
+    "footprint": [
+      [
+        5.0,
+        20.0
+      ],
+      [
+        15.0,
+        20.0
+      ],
+      [
+        15.0,
+        32.5
+      ],
+      [
+        5.0,
+        32.5
+      ],
+      [
+        5.0,
+        20.0
+      ]
+    ],
+    "z_min": 3.5,
+    "z_max": 7.0,
+    "usage": "Apartments",
+    "area_sqm": 125.0,
+    "volume_cbm": 437.5
+  },
+  {
+    "unit_id": "U006",
+    "ulpin": "23140701001001-S-L01-U004-5",
+    "layer": "S",
+    "level": "L01",
+    "level_label": "First Floor",
+    "unit_label": "First Floor - Unit 4",
+    "footprint": [
+      [
+        15.0,
+        20.0
+      ],
+      [
+        25.0,
+        20.0
+      ],
+      [
+        25.0,
+        32.5
+      ],
+      [
+        15.0,
+        32.5
+      ],
+      [
+        15.0,
+        20.0
+      ]
+    ],
+    "z_min": 3.5,
+    "z_max": 7.0,
+    "usage": "Apartments",
+    "area_sqm": 125.0,
+    "volume_cbm": 437.5
+  },
+  {
+    "unit_id": "U007",
+    "ulpin": "23140701001001-S-L02-U001-3",
+    "layer": "S",
+    "level": "L02",
+    "level_label": "Second Floor",
+    "unit_label": "Second Floor - Unit 1",
+    "footprint": [
+      [
+        5.0,
+        7.5
+      ],
+      [
+        15.0,
+        7.5
+      ],
+      [
+        15.0,
+        20.0
+      ],
+      [
+        5.0,
+        20.0
+      ],
+      [
+        5.0,
+        7.5
+      ]
+    ],
+    "z_min": 7.0,
+    "z_max": 10.5,
+    "usage": "Apartments",
+    "area_sqm": 125.0,
+    "volume_cbm": 437.5
+  },
+  {
+    "unit_id": "U008",
+    "ulpin": "23140701001001-S-L02-U002-4",
+    "layer": "S",
+    "level": "L02",
+    "level_label": "Second Floor",
+    "unit_label": "Second Floor - Unit 2",
+    "footprint": [
+      [
+        15.0,
+        7.5
+      ],
+      [
+        25.0,
+        7.5
+      ],
+      [
+        25.0,
+        20.0
+      ],
+      [
+        15.0,
+        20.0
+      ],
+      [
+        15.0,
+        7.5
+      ]
+    ],
+    "z_min": 7.0,
+    "z_max": 10.5,
+    "usage": "Apartments",
+    "area_sqm": 125.0,
+    "volume_cbm": 437.5
+  },
+  {
+    "unit_id": "U009",
+    "ulpin": "23140701001001-S-L02-U003-5",
+    "layer": "S",
+    "level": "L02",
+    "level_label": "Second Floor",
+    "unit_label": "Second Floor - Unit 3",
+    "footprint": [
+      [
+        5.0,
+        20.0
+      ],
+      [
+        15.0,
+        20.0
+      ],
+      [
+        15.0,
+        32.5
+      ],
+      [
+        5.0,
+        32.5
+      ],
+      [
+        5.0,
+        20.0
+      ]
+    ],
+    "z_min": 7.0,
+    "z_max": 10.5,
+    "usage": "Apartments",
+    "area_sqm": 125.0,
+    "volume_cbm": 437.5
+  },
+  {
+    "unit_id": "U010",
+    "ulpin": "23140701001001-S-L02-U004-6",
+    "layer": "S",
+    "level": "L02",
+    "level_label": "Second Floor",
+    "unit_label": "Second Floor - Unit 4",
+    "footprint": [
+      [
+        15.0,
+        20.0
+      ],
+      [
+        25.0,
+        20.0
+      ],
+      [
+        25.0,
+        32.5
+      ],
+      [
+        15.0,
+        32.5
+      ],
+      [
+        15.0,
+        20.0
+      ]
+    ],
+    "z_min": 7.0,
+    "z_max": 10.5,
+    "usage": "Apartments",
+    "area_sqm": 125.0,
+    "volume_cbm": 437.5
+  },
+  {
+    "unit_id": "U011",
+    "ulpin": "23140701001001-S-L03-U001-4",
+    "layer": "S",
+    "level": "L03",
+    "level_label": "Third Floor",
+    "unit_label": "Third Floor - Unit 1",
+    "footprint": [
+      [
+        5.0,
+        7.5
+      ],
+      [
+        15.0,
+        7.5
+      ],
+      [
+        15.0,
+        20.0
+      ],
+      [
+        5.0,
+        20.0
+      ],
+      [
+        5.0,
+        7.5
+      ]
+    ],
+    "z_min": 10.5,
+    "z_max": 14.0,
+    "usage": "Apartments",
+    "area_sqm": 125.0,
+    "volume_cbm": 437.5
+  },
+  {
+    "unit_id": "U012",
+    "ulpin": "23140701001001-S-L03-U002-5",
+    "layer": "S",
+    "level": "L03",
+    "level_label": "Third Floor",
+    "unit_label": "Third Floor - Unit 2",
+    "footprint": [
+      [
+        15.0,
+        7.5
+      ],
+      [
+        25.0,
+        7.5
+      ],
+      [
+        25.0,
+        20.0
+      ],
+      [
+        15.0,
+        20.0
+      ],
+      [
+        15.0,
+        7.5
+      ]
+    ],
+    "z_min": 10.5,
+    "z_max": 14.0,
+    "usage": "Apartments",
+    "area_sqm": 125.0,
+    "volume_cbm": 437.5
+  },
+  {
+    "unit_id": "U013",
+    "ulpin": "23140701001001-S-L03-U003-6",
+    "layer": "S",
+    "level": "L03",
+    "level_label": "Third Floor",
+    "unit_label": "Third Floor - Unit 3",
+    "footprint": [
+      [
+        5.0,
+        20.0
+      ],
+      [
+        15.0,
+        20.0
+      ],
+      [
+        15.0,
+        32.5
+      ],
+      [
+        5.0,
+        32.5
+      ],
+      [
+        5.0,
+        20.0
+      ]
+    ],
+    "z_min": 10.5,
+    "z_max": 14.0,
+    "usage": "Apartments",
+    "area_sqm": 125.0,
+    "volume_cbm": 437.5
+  },
+  {
+    "unit_id": "U014",
+    "ulpin": "23140701001001-S-L03-U004-7",
+    "layer": "S",
+    "level": "L03",
+    "level_label": "Third Floor",
+    "unit_label": "Third Floor - Unit 4",
+    "footprint": [
+      [
+        15.0,
+        20.0
+      ],
+      [
+        25.0,
+        20.0
+      ],
+      [
+        25.0,
+        32.5
+      ],
+      [
+        15.0,
+        32.5
+      ],
+      [
+        15.0,
+        20.0
+      ]
+    ],
+    "z_min": 10.5,
+    "z_max": 14.0,
+    "usage": "Apartments",
+    "area_sqm": 125.0,
+    "volume_cbm": 437.5
+  }
+]
