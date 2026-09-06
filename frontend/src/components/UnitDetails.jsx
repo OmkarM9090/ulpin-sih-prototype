@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from 'react';
 import { Canvas, useFrame } from '@react-three/fiber';
+import * as THREE from 'three';
 import PropertyCard from './PropertyCard';
 import { useToast } from './Toast';
 
@@ -17,7 +18,7 @@ const MiniUnitPreview = ({ color, sz_x, sz_y, sz_z }) => {
       <boxGeometry args={[sz_x, sz_y, sz_z]} />
       <meshStandardMaterial color={color} transparent opacity={0.8} />
       <lineSegments>
-        <edgesGeometry args={[new window.THREE.BoxGeometry(sz_x, sz_y, sz_z)]} />
+        <edgesGeometry args={[new THREE.BoxGeometry(sz_x, sz_y, sz_z)]} />
         <lineBasicMaterial color="#ffffff" opacity={0.5} transparent />
       </lineSegments>
     </mesh>

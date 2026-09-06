@@ -1,7 +1,7 @@
 import React from 'react';
 import '../styles.css';
 
-export default function Navbar() {
+export default function Navbar({ onShowInfo }) {
   return (
     <nav style={{
       height: '60px',
@@ -75,8 +75,10 @@ export default function Navbar() {
           width: '32px', height: '32px', borderRadius: '8px', background: 'transparent', border: 'none',
           color: 'var(--text-primary)', cursor: 'pointer', fontWeight: 600
         }}
+        onClick={onShowInfo}
         onMouseOver={(e) => e.currentTarget.style.backgroundColor = 'var(--bg-elevated)'}
         onMouseOut={(e) => e.currentTarget.style.backgroundColor = 'transparent'}
+        title="Help & Info"
         >
           ?
         </button>
