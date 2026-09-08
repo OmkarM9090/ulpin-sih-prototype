@@ -3,6 +3,7 @@ import { Canvas, useFrame } from '@react-three/fiber';
 import * as THREE from 'three';
 import PropertyCard from './PropertyCard';
 import { useToast } from './Toast';
+import { API_BASE_URL } from '../config';
 
 const MiniUnitPreview = ({ color, sz_x, sz_y, sz_z }) => {
   const meshRef = React.useRef();
@@ -31,11 +32,9 @@ export default function UnitDetails({ selectedUnit }) {
   const addToast = useToast();
 
   useEffect(() => {
-    if (!selectedUnit) {
-      setUnitData(null);
-      return;
-    }
-    fetch(`http://localhost:8000/api/unit/${selectedUnit}`)
+    if (!selectedUnit) return;
+    setUnitData(null);
+    fetch(`${API_BASE_URL}/api/unit/${selectedUnit}`)
       .then(res => res.json())
       .then(data => setUnitData(data))
       .catch(err => console.error(err));

@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from 'react';
 import '../styles.css';
+import { API_BASE_URL } from '../config';
 
 export default function Footer() {
   const [status, setStatus] = useState(null);
 
   useEffect(() => {
-    fetch('http://localhost:8000/api/system-status')
+    fetch(`${API_BASE_URL}/api/system-status`)
       .then(res => res.json())
       .then(data => setStatus(data))
       .catch(err => console.error(err));

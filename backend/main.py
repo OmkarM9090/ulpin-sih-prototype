@@ -1,7 +1,7 @@
 import json
 import os
 from datetime import datetime
-from fastapi import FastAPI, HTTPException
+from fastapi import FastAPI, HTTPException, Response
 from fastapi.middleware.cors import CORSMiddleware
 
 from geometry_engine import generate_building_units
@@ -11,7 +11,7 @@ app = FastAPI(title="3D ULPIN API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["http://localhost:5173", "http://127.0.0.1:5173"],
+    allow_origins=["*"], # Allow all origins for production prototype
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -27,6 +27,13 @@ def load_json(filename):
             return json.load(f)
     return None
 
+@app.get("/")
+def read_root():
+    return {"status": "ok", "message": "3D ULPIN API is running"}
+
+@app.get("/favicon.ico")
+def favicon():
+    return Response(status_code=204)
 @app.get("/api/parcel")
 def get_parcel():
     parcel = load_json('parcel.geojson')

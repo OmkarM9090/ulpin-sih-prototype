@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from 'react';
 import Modal from './Modal';
 import { Printer, X, Landmark } from 'lucide-react';
+import { API_BASE_URL } from '../config';
 
 export default function PropertyCard({ ulpin, onClose }) {
   const [data, setData] = useState(null);
 
   useEffect(() => {
-    fetch(`http://localhost:8000/api/property-card/${ulpin}`)
+    fetch(`${API_BASE_URL}/api/property-card/${ulpin}`)
       .then(res => res.json())
       .then(d => setData(d))
       .catch(err => console.error(err));

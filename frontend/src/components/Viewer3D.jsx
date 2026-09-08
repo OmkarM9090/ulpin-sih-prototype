@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
 import { OrbitControls, Grid, Html, Edges, Shape } from '@react-three/drei';
 import * as THREE from 'three';
+import { API_BASE_URL } from '../config';
 
 const getColor = (type, level) => {
   if (type === 'metro') return '#dc2626';
@@ -235,7 +236,7 @@ export default function Viewer3D({
   const [parcelOutline, setParcelOutline] = useState(null);
 
   useEffect(() => {
-    fetch('http://localhost:8000/api/parcel')
+    fetch(`${API_BASE_URL}/api/parcel`)
       .then(r => r.json())
       .then(d => {
         const coords = d.features[0].geometry.coordinates[0];

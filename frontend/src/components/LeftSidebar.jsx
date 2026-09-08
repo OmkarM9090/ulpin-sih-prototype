@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import '../styles.css';
 import { useToast } from './Toast';
+import { API_BASE_URL } from '../config';
 
 const STEPS = [
   { title: "Load 2D Parcel", desc: "Ingesting parent ULPIN geometry" },
@@ -22,7 +23,7 @@ export default function LeftSidebar({ pipelineState, setPipelineState, onPipelin
   const addToast = useToast();
 
   useEffect(() => {
-    fetch('http://localhost:8000/api/data-sources')
+    fetch(`${API_BASE_URL}/api/data-sources`)
       .then(res => res.json())
       .then(data => {
         setSources(data.sources);
@@ -38,7 +39,7 @@ export default function LeftSidebar({ pipelineState, setPipelineState, onPipelin
     if (pipelineState === 'running' && currentStep === -1) {
       setCurrentStep(0);
       addToast('Pipeline started...', 'info');
-      fetch('http://localhost:8000/api/pipeline/run')
+      fetch(`${API_BASE_URL}/api/pipeline/run`)
         .then(res => res.json())
         .then(data => setPipelineData(data))
         .catch(err => {
