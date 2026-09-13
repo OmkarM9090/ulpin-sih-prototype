@@ -319,6 +319,10 @@ export default function LeftSidebar({ pipelineState, setPipelineState, onPipelin
                     <span style={{ color: 'var(--success)' }}>✓</span>
                     <span style={{ color: 'var(--text-secondary)' }}>No unit overlaps detected</span>
                   </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px' }}>
+                    <span style={{ color: 'var(--accent-primary)' }}>ℹ</span>
+                    <span style={{ color: 'var(--text-muted)' }}>Public easement exceptions applied (metro, utility)</span>
+                  </div>
                 </>
               )}
             </div>
