@@ -162,7 +162,63 @@ export default function PropertyCard({ ulpin, onClose }) {
             <div style={{ fontSize: '9px', color: '#94a3b8', marginTop: '6px', fontStyle: 'italic' }}>⚠️ Simulated for prototype demonstration — not real approval</div>
           </div>
 
-          {/* Section 6 - Provenance */}
+          {/* Section 6 - Property History */}
+          <div>
+            <h3 style={{ fontSize: '13px', fontWeight: 600, color: '#475569', marginBottom: '8px', borderBottom: '1px solid #e2e8f0', paddingBottom: '4px' }}>PROPERTY HISTORY</h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '0', position: 'relative' }}>
+              {[
+                { time: '09:40:00', event: '2D Parcel Loaded', desc: 'Parent ULPIN 23140701001001 ingested', icon: '📋' },
+                { time: '09:40:01', event: 'Building Config Applied', desc: '11 levels defined (B2 to Water Tank)', icon: '🏗' },
+                { time: '09:40:02', event: '3D Geometry Generated', desc: '20 volumetric units extruded', icon: '📐' },
+                { time: '09:40:03', event: 'Topology Validated', desc: 'No overlaps, watertight geometry', icon: '✅' },
+                { time: '09:40:04', event: 'Proposed 3D ULPIN Assigned', desc: unit_details['3d_ulpin'], icon: '🏷' },
+              ].map((step, i, arr) => (
+                <div key={i} style={{ display: 'flex', gap: '12px', position: 'relative' }}>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', width: '24px' }}>
+                    <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: '#16a34a', flexShrink: 0 }}></div>
+                    {i < arr.length - 1 && <div style={{ width: '2px', flex: 1, background: '#dcfce7', margin: '2px 0' }}></div>}
+                  </div>
+                  <div style={{ paddingBottom: '12px', flex: 1 }}>
+                    <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+                      <span style={{ fontSize: '11px', fontWeight: 500, color: '#0f172a' }}>{step.icon} {step.event}</span>
+                      <span style={{ fontSize: '9px', color: '#94a3b8', fontFamily: 'monospace' }}>{step.time}</span>
+                    </div>
+                    <div style={{ fontSize: '10px', color: '#64748b' }}>{step.desc}</div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            <div style={{ fontSize: '9px', color: '#94a3b8', marginTop: '4px', fontStyle: 'italic' }}>⚠️ Timestamps simulated for prototype demonstration</div>
+          </div>
+
+          {/* Section 7 - Data Lineage */}
+          <div>
+            <h3 style={{ fontSize: '13px', fontWeight: 600, color: '#475569', marginBottom: '8px', borderBottom: '1px solid #e2e8f0', paddingBottom: '4px' }}>DATA LINEAGE</h3>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '4px', flexWrap: 'wrap', fontSize: '11px' }}>
+              <div style={{ background: '#eff6ff', border: '1px solid #bfdbfe', borderRadius: '6px', padding: '6px 10px', textAlign: 'center' }}>
+                <div style={{ fontSize: '9px', color: '#64748b' }}>Parent ULPIN</div>
+                <div style={{ fontFamily: 'monospace', fontWeight: 600, color: '#1d4ed8' }}>23140701001001</div>
+              </div>
+              <span style={{ color: '#94a3b8' }}>→</span>
+              <div style={{ background: '#f5f3ff', border: '1px solid #c4b5fd', borderRadius: '6px', padding: '6px 10px', textAlign: 'center' }}>
+                <div style={{ fontSize: '9px', color: '#64748b' }}>Building Config</div>
+                <div style={{ fontWeight: 600, color: '#7c3aed' }}>11 Levels</div>
+              </div>
+              <span style={{ color: '#94a3b8' }}>→</span>
+              <div style={{ background: '#f0fdf4', border: '1px solid #bbf7d0', borderRadius: '6px', padding: '6px 10px', textAlign: 'center' }}>
+                <div style={{ fontSize: '9px', color: '#64748b' }}>3D Units</div>
+                <div style={{ fontWeight: 600, color: '#15803d' }}>20 Generated</div>
+              </div>
+              <span style={{ color: '#94a3b8' }}>→</span>
+              <div style={{ background: '#fefce8', border: '1px solid #fde68a', borderRadius: '6px', padding: '6px 10px', textAlign: 'center' }}>
+                <div style={{ fontSize: '9px', color: '#64748b' }}>Proposed 3D ULPIN</div>
+                <div style={{ fontFamily: 'monospace', fontWeight: 600, color: '#a16207', fontSize: '10px' }}>{unit_details['3d_ulpin']}</div>
+              </div>
+            </div>
+            <div style={{ fontSize: '9px', color: '#94a3b8', marginTop: '6px', fontStyle: 'italic' }}>⚠️ Proposed ULPIN extension — not an official government standard</div>
+          </div>
+
+          {/* Section 8 - Provenance */}
           <div>
             <h3 style={{ fontSize: '13px', fontWeight: 600, color: '#475569', marginBottom: '8px', borderBottom: '1px solid #e2e8f0', paddingBottom: '4px' }}>DATA PROVENANCE</h3>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '11px', color: '#64748b' }}>
