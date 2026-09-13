@@ -64,7 +64,26 @@ export default function PropertyCard({ ulpin, onClose }) {
 
         {/* Body */}
         <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          
+
+          {/* Section 0 - ULPIN Hierarchy */}
+          <div>
+            <h3 style={{ fontSize: '13px', fontWeight: 600, color: '#475569', marginBottom: '8px', borderBottom: '1px solid #e2e8f0', paddingBottom: '4px' }}>ULPIN HIERARCHY</h3>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
+              <div style={{ background: '#f0f9ff', border: '1px solid #bae6fd', borderRadius: '6px', padding: '8px 12px', textAlign: 'center', width: '100%' }}>
+                <div style={{ fontSize: '9px', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Parent 2D ULPIN</div>
+                <div style={{ fontFamily: 'monospace', fontSize: '14px', color: '#0284c7', fontWeight: 700, marginTop: '2px' }}>{parent_parcel.ulpin}</div>
+              </div>
+              <div style={{ color: '#94a3b8', fontSize: '14px' }}>↓</div>
+              <div style={{ fontSize: '10px', color: '#64748b', fontStyle: 'italic' }}>3D Extrusion + Topology Validation + Human Verification</div>
+              <div style={{ color: '#94a3b8', fontSize: '14px' }}>↓</div>
+              <div style={{ background: '#f5f3ff', border: '1px solid #c4b5fd', borderRadius: '6px', padding: '8px 12px', textAlign: 'center', width: '100%' }}>
+                <div style={{ fontSize: '9px', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Proposed 3D ULPIN</div>
+                <div style={{ fontFamily: 'monospace', fontSize: '14px', color: '#7c3aed', fontWeight: 700, marginTop: '2px' }}>{unit_details['3d_ulpin']}</div>
+              </div>
+            </div>
+            <div style={{ fontSize: '9px', color: '#94a3b8', marginTop: '6px', fontStyle: 'italic', textAlign: 'center' }}>⚠️ Proposed 3D ULPIN extension — not an official government standard</div>
+          </div>
+
           {/* Section 1 - Parent Parcel */}
           <div>
             <h3 style={{ fontSize: '13px', fontWeight: 600, color: '#475569', marginBottom: '8px', borderBottom: '1px solid #e2e8f0', paddingBottom: '4px' }}>PARENT PARCEL</h3>
