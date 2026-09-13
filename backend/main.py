@@ -1,3 +1,4 @@
+import hashlib
 import json
 import os
 from datetime import datetime
@@ -162,28 +163,54 @@ def get_unit(ulpin: str):
 def get_property_card(ulpin: str):
     unit_data = get_unit(ulpin) # Reuse logic
     parcel = load_json('parcel.geojson')
+    units = load_json('generated_units.json')
     
     unit = unit_data['unit']
     owner = unit_data['owner']
     parcel_props = parcel['features'][0]['properties']
     
+    # Real computed topology validation over the full demo dataset (reuse existing validator)
+    validation = validate_units(units)
+    unit_checks = {
+        "z_bounds_ok": unit['z_min'] < unit['z_max'],
+        "footprint_closed": len(unit['footprint']) >= 4 and unit['footprint'][0] == unit['footprint'][-1],
+        "footprint_min_points": len(unit['footprint']) >= 4,
+    }
+    
+    # Demo fingerprint derived from the unit ULPIN (NOT a cryptographic signature)
+    demo_fingerprint = hashlib.sha256(unit['ulpin'].encode()).hexdigest()[:16]
+    
     return {
-        "title": "3D PROPERTY CARD (PROTOTYPE)",
+        "title": "3D PROPERTY RECORD (PROTOTYPE)",
         "generated_at": datetime.now().isoformat(),
         "parent_parcel": {
             "ulpin": parcel_props['parent_ulpin'],
+            "parcel_id": parcel_props['parcel_id'],
             "area_sqm": parcel_props['area_sqm'],
-            "location": parcel_props['location_label']
+            "location": parcel_props['location_label'],
+            "land_use": parcel_props['land_use']
         },
         "unit_details": {
             "3d_ulpin": unit['ulpin'],
             "level": unit['level_label'],
             "usage": unit['usage'],
+            "layer": unit['layer'],  # 'U' = Underground, 'S' = Surface (from geometry config)
             "area_sqm": unit['area_sqm'],
             "volume_cbm": unit['volume_cbm'],
             "z_range": f"{unit['z_min']}m to {unit['z_max']}m"
         },
         "ownership": owner,
+        "validation": {
+            "dataset_status": validation['status'],
+            "watertight_ok": validation['watertight_ok'],
+            "overlap_ok": validation['overlap_ok'],
+            "unit_checks": unit_checks
+        },
+        "provenance": {
+            "fingerprint": demo_fingerprint,
+            "fingerprint_note": "Demo fingerprint (derived from demo data) \u2014 not a digital signature",
+            "data_basis": "Controlled Demo Data — synthetic geometry; area/volume/Z values derived from demo geometry"
+        },
         "disclaimer": "Prototype \u2014 Not an Official Government Document"
     }
 
