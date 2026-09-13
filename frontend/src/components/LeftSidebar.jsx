@@ -324,6 +324,28 @@ export default function LeftSidebar({ pipelineState, setPipelineState, onPipelin
           <span style={{ color: 'var(--text-primary)' }}>Residential</span>
         </div>
       </div>
+
+      {/* Section D: Why 3D? */}
+      <div style={{ background: 'rgba(56,189,248,0.06)', border: '1px solid rgba(56,189,248,0.2)', borderRadius: '8px', padding: '12px', flexShrink: 0 }}>
+        <div style={{ fontSize: '12px', fontWeight: 600, color: 'var(--accent-primary)', marginBottom: '8px' }}>📐 Why 3D ULPIN?</div>
+        <div style={{ fontSize: '11px', color: 'var(--text-secondary)', lineHeight: 1.5, marginBottom: '8px' }}>
+          Traditional 2D cadastral maps cannot represent:
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+          {[
+            { icon: '🚇', text: 'Underground metro tunnels crossing parcels' },
+            { icon: '🏢', text: 'Vertical property layers (apartments, basements)' },
+            { icon: '💧', text: 'Utility easements at different depths' },
+            { icon: '📊', text: 'Height/depth/Z coordinates per unit' }
+          ].map((item, i) => (
+            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px' }}>
+              <span>{item.icon}</span>
+              <span style={{ color: 'var(--text-secondary)' }}>{item.text}</span>
+            </div>
+          ))}
+        </div>
+        <div style={{ fontSize: '9px', color: 'var(--text-muted)', marginTop: '8px', fontStyle: 'italic' }}>This is why 3D volumetric ULPINs are needed</div>
+      </div>
     </div>
   );
 }
