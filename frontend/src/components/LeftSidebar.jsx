@@ -329,6 +329,37 @@ export default function LeftSidebar({ pipelineState, setPipelineState, onPipelin
             <div style={{ fontSize: '9px', color: 'var(--text-muted)', marginTop: '8px', fontStyle: 'italic' }}>⚠️ Prototype validation — human/surveyor verification required</div>
           </div>
         )}
+
+        {pipelineState === 'complete' && (
+          <div style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-default)', borderRadius: '8px', padding: '12px', marginTop: '4px', flexShrink: 0 }}>
+            <div style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '8px' }}>🔍 Verification Workflow</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(34,197,94,0.06)', borderRadius: '6px', padding: '8px 10px' }}>
+                <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'rgba(34,197,94,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', flexShrink: 0 }}>📋</div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: '11px', fontWeight: 500, color: 'var(--text-primary)' }}>Surveyor Review</div>
+                  <div style={{ fontSize: '9px', color: 'var(--text-muted)' }}>Geometry verified against field survey</div>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '2px' }}>
+                  <span style={{ fontSize: '10px', color: 'var(--success)', fontWeight: 500 }}>✓ Approved</span>
+                  <span style={{ fontSize: '8px', color: 'var(--text-muted)' }}>(Demo Simulated)</span>
+                </div>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(34,197,94,0.06)', borderRadius: '6px', padding: '8px 10px' }}>
+                <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'rgba(34,197,94,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', flexShrink: 0 }}>🏛</div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: '11px', fontWeight: 500, color: 'var(--text-primary)' }}>Authority Approval</div>
+                  <div style={{ fontSize: '9px', color: 'var(--text-muted)' }}>Municipal/Revenue authority sign-off</div>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '2px' }}>
+                  <span style={{ fontSize: '10px', color: 'var(--success)', fontWeight: 500 }}>✓ Approved</span>
+                  <span style={{ fontSize: '8px', color: 'var(--text-muted)' }}>(Demo Simulated)</span>
+                </div>
+              </div>
+            </div>
+            <div style={{ fontSize: '9px', color: 'var(--text-muted)', marginTop: '8px', fontStyle: 'italic' }}>⚠️ Simulated for prototype demonstration — not real approval</div>
+          </div>
+        )}
       </div>
 
       {/* Section C: Session Info */}
