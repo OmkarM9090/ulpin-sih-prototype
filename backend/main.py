@@ -41,6 +41,44 @@ def get_parcel():
         raise HTTPException(status_code=404, detail="Parcel data not found")
     return parcel
 
+@app.get("/api/parcels/search")
+def search_parcels(q: str = ""):
+    """Search parcels by ID, ULPIN, or location (demo data)."""
+    parcel = load_json('parcel.geojson')
+    if not parcel:
+        raise HTTPException(status_code=404, detail="Parcel data not found")
+    
+    results = []
+    query = q.lower().strip()
+    
+    for feature in parcel.get('features', []):
+        props = feature['properties']
+        parcel_id = props.get('parcel_id', '').lower()
+        ulpin = props.get('parent_ulpin', '').lower()
+        location = props.get('location_label', '').lower()
+        land_use = props.get('land_use', '').lower()
+        
+        if (not query or 
+            query in parcel_id or 
+            query in ulpin or 
+            query in location or 
+            query in land_use):
+            results.append({
+                'parcel_id': props.get('parcel_id'),
+                'parent_ulpin': props.get('parent_ulpin'),
+                'area_sqm': props.get('area_sqm'),
+                'land_use': props.get('land_use'),
+                'location': props.get('location_label'),
+                'data_type': 'Controlled Demo Data'
+            })
+    
+    return {
+        'results': results,
+        'total': len(results),
+        'query': q,
+        'data_label': 'Controlled Demo Data — Synthetic cadastral records for prototype demonstration'
+    }
+
 @app.get("/api/data-sources")
 def get_data_sources():
     return {

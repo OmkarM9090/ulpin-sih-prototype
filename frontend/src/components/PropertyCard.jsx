@@ -44,9 +44,9 @@ export default function PropertyCard({ ulpin, onClose }) {
               <Landmark size={24} />
             </div>
             <div>
-              <div style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px' }}>GOVERNMENT OF INDIA</div>
-              <div style={{ fontSize: '16px', fontWeight: 700 }}>3D Property Title Certificate</div>
-              <div style={{ fontSize: '11px', opacity: 0.85 }}>Ministry of Rural Development · Department of Land Resources</div>
+              <div style={{ fontSize: '11px', textTransform: 'uppercase', letterSpacing: '1px' }}>CONTROLLED DEMO DATA</div>
+              <div style={{ fontSize: '16px', fontWeight: 700 }}>3D Property Title Certificate (Prototype)</div>
+              <div style={{ fontSize: '11px', opacity: 0.85 }}>SIH 2026 · PS 26011 · Synthetic Demo Data for Evaluation</div>
             </div>
           </div>
           
@@ -130,8 +130,7 @@ export default function PropertyCard({ ulpin, onClose }) {
         </div>
 
         {/* Footer strip */}
-        <div style={{ background: '#f1f5f9', padding: '12px 24px', display: 'flex', justifyContent: 'space-between', fontSize: '10px', color: '#64748b', borderTop: '1px solid #e2e8f0' }}>
-          <div>This is a PROTOTYPE and NOT an official government document.</div>
+        <div style={{ background: '#f1f5f9', padding: '12px 24px', display: 'flex', justifyContent: 'space-between', fontSize: '10px', color: '#64748b', borderTop: '1px solid #e2e8f0' }}>              <div>⚠️ This is a PROTOTYPE — Controlled Demo Data, NOT an official government document.</div>
           <div>SIH 2026 · PS 26011</div>
         </div>
       </div>
