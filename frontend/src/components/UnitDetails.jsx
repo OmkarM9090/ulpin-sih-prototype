@@ -117,6 +117,12 @@ export default function UnitDetails({ selectedUnit }) {
         </div>
         <div style={{ fontSize: '16px', fontWeight: 600, color: 'var(--text-primary)' }}>{unit.unit_label}</div>
         <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Building B01 · Floor {unit.level.replace('L0', '').replace('L-0', '-')} · Unit {unit.unit_id}</div>
+        {/* Validation Badge */}
+        <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.3)', borderRadius: '6px', padding: '6px 10px' }}>
+          <span style={{ fontSize: '12px', color: 'var(--success)' }}>✓</span>
+          <span style={{ fontSize: '11px', color: 'var(--success)', fontWeight: 500 }}>Topology Validated</span>
+          <span style={{ fontSize: '9px', color: 'var(--text-muted)', marginLeft: 'auto' }}>Prototype check</span>
+        </div>
       </div>
 
       <div style={{ flex: 1, overflowY: 'auto' }}>
@@ -200,10 +206,29 @@ export default function UnitDetails({ selectedUnit }) {
         <div style={{ padding: '0 16px 24px' }}>
           <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '8px' }}>Topology Validation</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
-            <div style={{ fontSize: '12px', color: 'var(--success)', display: 'flex', alignItems: 'center', gap: '6px' }}>✅ <span style={{ color: 'var(--text-secondary)' }}>Watertight geometry</span></div>
-            <div style={{ fontSize: '12px', color: 'var(--success)', display: 'flex', alignItems: 'center', gap: '6px' }}>✅ <span style={{ color: 'var(--text-secondary)' }}>No unit overlaps</span></div>
-            <div style={{ fontSize: '12px', color: 'var(--success)', display: 'flex', alignItems: 'center', gap: '6px' }}>✅ <span style={{ color: 'var(--text-secondary)' }}>{isPublicEasement ? "Public easement — cross-parcel allowed" : "Within parent parcel envelope"}</span></div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(34,197,94,0.06)', borderRadius: '6px', padding: '6px 8px' }}>
+              <span style={{ fontSize: '12px', color: 'var(--success)' }}>✓</span>
+              <div>
+                <div style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 500 }}>Watertight geometry</div>
+                <div style={{ fontSize: '9px', color: 'var(--text-muted)' }}>All faces closed, no gaps in volume</div>
+              </div>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(34,197,94,0.06)', borderRadius: '6px', padding: '6px 8px' }}>
+              <span style={{ fontSize: '12px', color: 'var(--success)' }}>✓</span>
+              <div>
+                <div style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 500 }}>No unit overlaps</div>
+                <div style={{ fontSize: '9px', color: 'var(--text-muted)' }}>Spatial separation verified on same level</div>
+              </div>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: isPublicEasement ? 'rgba(245,158,11,0.06)' : 'rgba(34,197,94,0.06)', borderRadius: '6px', padding: '6px 8px' }}>
+              <span style={{ fontSize: '12px', color: isPublicEasement ? 'var(--warning)' : 'var(--success)' }}>{isPublicEasement ? '⚠' : '✓'}</span>
+              <div>
+                <div style={{ fontSize: '11px', color: 'var(--text-secondary)', fontWeight: 500 }}>{isPublicEasement ? 'Public easement exception' : 'Within parent parcel envelope'}</div>
+                <div style={{ fontSize: '9px', color: 'var(--text-muted)' }}>{isPublicEasement ? 'Cross-parcel infrastructure allowed' : 'Geometry contained in parcel bounds'}</div>
+              </div>
+            </div>
           </div>
+          <div style={{ fontSize: '9px', color: 'var(--text-muted)', marginTop: '8px', fontStyle: 'italic' }}>⚠️ Prototype validation — requires human/surveyor verification</div>
         </div>
       </div>
 

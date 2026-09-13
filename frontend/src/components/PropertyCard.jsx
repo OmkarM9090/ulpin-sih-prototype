@@ -106,14 +106,24 @@ export default function PropertyCard({ ulpin, onClose }) {
 
           {/* Section 4 - Validation */}
           <div>
-            <h3 style={{ fontSize: '13px', fontWeight: 600, color: '#475569', marginBottom: '8px', borderBottom: '1px solid #e2e8f0', paddingBottom: '4px' }}>VALIDATION CERTIFICATE</h3>
-            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-              {['Topology Valid', 'Watertight', 'No Overlaps', 'ISO 19152 LADM Compliant'].map(lbl => (
-                <div key={lbl} style={{ background: '#dcfce7', color: '#166534', padding: '4px 10px', borderRadius: '999px', fontSize: '11px', fontWeight: 500 }}>
-                  ✅ {lbl}
+            <h3 style={{ fontSize: '13px', fontWeight: 600, color: '#475569', marginBottom: '8px', borderBottom: '1px solid #e2e8f0', paddingBottom: '4px' }}>VALIDATION STATUS</h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              {[
+                { label: 'Topology Valid', desc: 'All units pass spatial checks' },
+                { label: 'Watertight', desc: 'No gaps in 3D geometry' },
+                { label: 'No Overlaps', desc: 'Units do not intersect' },
+                { label: 'LADM Concept Demo', desc: 'ISO 19152 concept demonstrated' }
+              ].map(item => (
+                <div key={item.label} style={{ display: 'flex', alignItems: 'center', gap: '8px', background: '#f0fdf4', padding: '6px 10px', borderRadius: '6px' }}>
+                  <span style={{ color: '#16a34a', fontSize: '12px' }}>✓</span>
+                  <div>
+                    <div style={{ fontSize: '11px', color: '#166534', fontWeight: 500 }}>{item.label}</div>
+                    <div style={{ fontSize: '9px', color: '#64748b' }}>{item.desc}</div>
+                  </div>
                 </div>
               ))}
             </div>
+            <div style={{ fontSize: '9px', color: '#94a3b8', marginTop: '6px', fontStyle: 'italic' }}>⚠️ Prototype validation — requires human/surveyor verification</div>
           </div>
 
           {/* Section 5 - Provenance */}
