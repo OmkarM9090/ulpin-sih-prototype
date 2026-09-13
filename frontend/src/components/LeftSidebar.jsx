@@ -13,7 +13,7 @@ const STEPS = [
   { title: "Render Cadastral View", desc: "Building interactive scene" }
 ];
 
-export default function LeftSidebar({ pipelineState, setPipelineState, onPipelineComplete }) {
+export default function LeftSidebar({ pipelineState, setPipelineState, onPipelineComplete, searchControlRef }) {
   const [sources, setSources] = useState([]);
   const [loadingSources, setLoadingSources] = useState(true);
   const [isSourcesOpen, setIsSourcesOpen] = useState(true);
@@ -27,6 +27,27 @@ export default function LeftSidebar({ pipelineState, setPipelineState, onPipelin
   const [searchResults, setSearchResults] = useState([]);
   const [searching, setSearching] = useState(false);
   const [selectedParcel, setSelectedParcel] = useState(null);
+
+  // Expose search automation for Judge Demo mode (drives the real search flow)
+  React.useImperativeHandle(searchControlRef || null, () => ({
+    runSearch: (query) => {
+      setSearchQuery(query);
+      setTimeout(() => {
+        setSearching(true);
+        fetch(`${API_BASE_URL}/api/parcels/search?q=${encodeURIComponent(query)}`)
+          .then(res => res.json())
+          .then(data => {
+            setSearchResults(data.results || []);
+            setSearching(false);
+          })
+          .catch(err => {
+            console.error(err);
+            setSearching(false);
+            addToast('Search failed', 'error');
+          });
+      }, 0);
+    }
+  }), [addToast]);
 
   useEffect(() => {
     fetch(`${API_BASE_URL}/api/data-sources`)
