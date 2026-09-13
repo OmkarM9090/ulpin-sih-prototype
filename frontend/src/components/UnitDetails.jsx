@@ -45,6 +45,18 @@ export default function UnitDetails({ selectedUnit }) {
     addToast('3D-ULPIN copied to clipboard', 'success');
   };
 
+  const downloadUnitJson = () => {
+    if (!unitData) return;
+    const blob = new Blob([JSON.stringify(unitData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${unitData.unit.ulpin}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    addToast('Unit record downloaded (demo data)', 'success');
+  };
+
   const getEmoji = (type, usage) => {
     if (type === 'metro') return '🚇';
     if (type === 'utility') return '💧';
@@ -173,14 +185,22 @@ export default function UnitDetails({ selectedUnit }) {
           </div>
         </div>
 
+        {/* Data Provenance */}
+        <div style={{ padding: '0 16px 8px' }}>
+          <div style={{ display: 'flex', alignItems: 'center', gap: '6px', background: 'rgba(245,158,11,0.08)', border: '1px solid rgba(245,158,11,0.2)', borderRadius: '6px', padding: '6px 10px' }}>
+            <span style={{ fontSize: '10px', background: 'rgba(245,158,11,0.2)', color: 'var(--warning)', padding: '1px 6px', borderRadius: '4px', fontWeight: 600, flexShrink: 0 }}>DEMO</span>
+            <span style={{ fontSize: '10px', color: 'var(--text-muted)' }}>All values are derived from controlled demo geometry</span>
+          </div>
+        </div>
+
         {/* Details Grid */}
         <div style={{ padding: '0 16px 16px', display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
           {[
             { label: 'Layer', value: unit.layer === 'U' ? 'Underground' : 'Surface' },
             { label: 'Level Code', value: unit.level },
             { label: 'Usage', value: unit.usage },
-            { label: 'Area', value: `${unit.area_sqm.toFixed(1)} sqm` },
-            { label: 'Volume', value: `${unit.volume_cbm.toFixed(1)} cbm` },
+            { label: 'Area', value: `${unit.area_sqm.toFixed(1)} sqm`, note: 'Derived from demo' },
+            { label: 'Volume', value: `${unit.volume_cbm.toFixed(1)} cbm`, note: 'Derived from demo' },
             { label: 'Height Range', value: `Z: ${unit.z_min} → ${unit.z_max}` },
             { label: 'Floor Height', value: `${(unit.z_max - unit.z_min).toFixed(1)} m` },
             { label: 'Ownership Type', value: owner?.ownership_type || 'Unknown' }
@@ -188,6 +208,7 @@ export default function UnitDetails({ selectedUnit }) {
             <div key={idx}>
               <div style={{ fontSize: '10px', textTransform: 'uppercase', color: 'var(--text-muted)', marginBottom: '2px' }}>{item.label}</div>
               <div style={{ fontSize: '13px', color: 'var(--text-primary)' }}>{item.value}</div>
+              {item.note && <div style={{ fontSize: '8px', color: 'var(--text-muted)', fontStyle: 'italic' }}>{item.note}</div>}
             </div>
           ))}
         </div>
@@ -232,8 +253,37 @@ export default function UnitDetails({ selectedUnit }) {
           </div>
         </div>
 
+        {/* Provenance & Record Info (derived from existing demo data) */}
+        <div style={{ padding: '0 16px 16px' }}>
+          <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '8px' }}>Provenance & Record Info</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '11px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--bg-elevated)', borderRadius: '6px', padding: '6px 8px' }}>
+              <span style={{ color: 'var(--text-muted)' }}>Parent Parcel</span>
+              <span style={{ color: 'var(--text-primary)', fontFamily: 'monospace' }}>{unitData.provenance?.parcel_id || '—'} · {unitData.provenance?.ulpin_components?.parent_ulpin || '—'}</span>
+            </div>
+            <div style={{ background: 'var(--bg-elevated)', borderRadius: '6px', padding: '6px 8px' }}>
+              <div style={{ color: 'var(--text-muted)', marginBottom: '4px' }}>Derivation Chain</div>
+              <div style={{ color: 'var(--text-secondary)', fontSize: '10px', lineHeight: 1.6 }}>
+                building_config.json → Geometry Engine → 3D ULPIN<br />
+                <span style={{ color: 'var(--text-muted)' }}>Layer {unit.layer} · Level {unit.level} · Unit {unit.unit_id}</span>
+              </div>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--bg-elevated)', borderRadius: '6px', padding: '6px 8px' }}>
+              <span style={{ color: 'var(--text-muted)' }}>ULPIN Checksum</span>
+              {unitData.provenance?.checksum_valid ? (
+                <span style={{ color: 'var(--success)', fontWeight: 500 }}>✓ Valid (recomputed)</span>
+              ) : (
+                <span style={{ color: 'var(--warning)', fontWeight: 500 }}>⚠ Could not verify</span>
+              )}
+            </div>
+            <div style={{ background: 'var(--bg-elevated)', borderRadius: '6px', padding: '6px 8px', color: 'var(--text-muted)', fontStyle: 'italic', fontSize: '10px' }}>
+              Ownership/transaction history: not included in demo dataset.
+            </div>
+          </div>
+        </div>
+
         {/* Validation */}
-        <div style={{ padding: '0 16px 24px' }}>
+        <div style={{ padding: '0 16px 16px' }}>
           <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '8px' }}>Topology Validation</div>
           <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
             <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(34,197,94,0.06)', borderRadius: '6px', padding: '6px 8px' }}>
@@ -260,6 +310,36 @@ export default function UnitDetails({ selectedUnit }) {
           </div>
           <div style={{ fontSize: '9px', color: 'var(--text-muted)', marginTop: '8px', fontStyle: 'italic' }}>⚠️ Prototype validation — requires human/surveyor verification</div>
         </div>
+
+        {/* Verification Status */}
+        <div style={{ padding: '0 16px 24px' }}>
+          <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '8px' }}>Verification Status</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(34,197,94,0.06)', borderRadius: '6px', padding: '8px 10px' }}>
+              <div style={{ width: '24px', height: '24px', borderRadius: '50%', background: 'rgba(34,197,94,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', flexShrink: 0 }}>📋</div>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: '11px', fontWeight: 500, color: 'var(--text-primary)' }}>Surveyor Review</div>
+                <div style={{ fontSize: '9px', color: 'var(--text-muted)' }}>Geometry verified against field survey</div>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '2px' }}>
+                <span style={{ fontSize: '10px', color: 'var(--success)', fontWeight: 500 }}>✓ Reviewed</span>
+                <span style={{ fontSize: '8px', color: 'var(--text-muted)' }}>(Demo)</span>
+              </div>
+            </div>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(34,197,94,0.06)', borderRadius: '6px', padding: '8px 10px' }}>
+              <div style={{ width: '24px', height: '24px', borderRadius: '50%', background: 'rgba(34,197,94,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '12px', flexShrink: 0 }}>🏛</div>
+              <div style={{ flex: 1 }}>
+                <div style={{ fontSize: '11px', fontWeight: 500, color: 'var(--text-primary)' }}>Authority Approval</div>
+                <div style={{ fontSize: '9px', color: 'var(--text-muted)' }}>Municipal/Revenue sign-off</div>
+              </div>
+              <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '2px' }}>
+                <span style={{ fontSize: '10px', color: 'var(--success)', fontWeight: 500 }}>✓ Approved</span>
+                <span style={{ fontSize: '8px', color: 'var(--text-muted)' }}>(Demo)</span>
+              </div>
+            </div>
+          </div>
+          <div style={{ fontSize: '9px', color: 'var(--text-muted)', marginTop: '8px', fontStyle: 'italic' }}>⚠️ Simulated verification for prototype demonstration</div>
+        </div>
       </div>
 
       {/* CTA Block (Sticky Bottom) */}
@@ -268,11 +348,11 @@ export default function UnitDetails({ selectedUnit }) {
           📄 View Property Card
         </button>
         <div style={{ display: 'flex', gap: '8px' }}>
-          <button style={{ flex: 1, height: '32px', background: 'var(--bg-elevated)', color: 'var(--text-primary)', border: '1px solid var(--border-default)', borderRadius: '6px', fontSize: '12px', cursor: 'pointer' }}>
+          <button onClick={downloadUnitJson} style={{ flex: 1, height: '32px', background: 'var(--bg-elevated)', color: 'var(--text-primary)', border: '1px solid var(--border-default)', borderRadius: '6px', fontSize: '12px', cursor: 'pointer' }}>
             ⬇ Download JSON
           </button>
-          <button style={{ flex: 1, height: '32px', background: 'var(--bg-elevated)', color: 'var(--text-primary)', border: '1px solid var(--border-default)', borderRadius: '6px', fontSize: '12px', cursor: 'pointer' }}>
-            🔗 Share Link
+          <button onClick={() => copyToClipboard(unit.ulpin)} style={{ flex: 1, height: '32px', background: 'var(--bg-elevated)', color: 'var(--text-primary)', border: '1px solid var(--border-default)', borderRadius: '6px', fontSize: '12px', cursor: 'pointer' }} title="Copy 3D ULPIN">
+            📋 Copy 3D ULPIN
           </button>
         </div>
       </div>

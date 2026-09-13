@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './styles.css';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -10,6 +10,7 @@ import UnitDetails from './components/UnitDetails';
 import Modal from './components/Modal';
 import { useToast } from './components/Toast';
 import ErrorBoundary from './components/ErrorBoundary';
+import JudgeDemo from './components/JudgeDemo';
 
 function InfoModal({ onClose }) {
   return (
@@ -24,8 +25,21 @@ function InfoModal({ onClose }) {
         <div style={{ flex: 2, padding: '32px' }}>
           <h2 style={{ color: 'var(--text-primary)', marginBottom: '16px', fontSize: '1.5rem', fontWeight: 600 }}>About GeoCadastre 3D</h2>
           <p style={{ fontSize: '0.95rem', marginBottom: '16px', lineHeight: '1.6', color: 'var(--text-secondary)' }}>
-            This proof-of-concept for SIH 2026 (PS 26011) demonstrates a full 7-stage engine for processing 2D cadastral data into hierarchical 3D volumetric property units.
+            This prototype for SIH 2026 (PS 26011) demonstrates the proposed technical workflow for processing synthetic cadastral data into hierarchical 3D volumetric property units. All data is controlled demo data.
           </p>
+          
+          <div style={{ background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.3)', borderRadius: '8px', padding: '12px', marginBottom: '16px' }}>
+            <div style={{ fontSize: '12px', fontWeight: 600, color: 'var(--warning)', marginBottom: '4px' }}>⚠️ Data Honesty</div>            <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
+              All parcel data, measurements, ownership, and validation results shown in this prototype are <strong>synthetic/demo data</strong> created for demonstration purposes. This system does not use real government cadastral data. Production systems would use live drone orthomosaics, LiDAR point clouds, GNSS/CORS anchors, and municipal GIS layers.
+            </div>
+          </div>
+          
+          <div style={{ background: 'rgba(56,189,248,0.08)', border: '1px solid rgba(56,189,248,0.2)', borderRadius: '8px', padding: '12px', marginBottom: '16px' }}>
+            <div style={{ fontSize: '12px', fontWeight: 600, color: 'var(--accent-primary)', marginBottom: '8px' }}>📐 Why 3D ULPIN?</div>
+            <div style={{ fontSize: '11px', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
+              Traditional 2D cadastral maps cannot represent vertical/subsurface property relationships. This prototype demonstrates how 3D volumetric ULPINs can address: underground metro tunnels crossing parcels, vertical property layers (apartments at different heights), utility easements at different depths, and height/depth/Z coordinates per unit.
+            </div>
+          </div>
           
           <div style={{ display: 'flex', gap: '16px', marginTop: '24px' }}>
             <div style={{ flex: 1, background: 'var(--bg-primary)', padding: '16px', borderRadius: '8px', border: '1px solid var(--border-default)' }}>
@@ -33,12 +47,11 @@ function InfoModal({ onClose }) {
               <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Avg. Generation Time</div>
             </div>
             <div style={{ flex: 1, background: 'var(--bg-primary)', padding: '16px', borderRadius: '8px', border: '1px solid var(--border-default)' }}>
-              <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--success)', marginBottom: '4px' }}>100%</div>
-              <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Topology Compliance</div>
+              <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--success)', marginBottom: '4px' }}>✓</div>              <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Prototype Validation</div>
             </div>
             <div style={{ flex: 1, background: 'var(--bg-primary)', padding: '16px', borderRadius: '8px', border: '1px solid var(--border-default)' }}>
-              <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--warning)', marginBottom: '4px' }}>ISO</div>
-              <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>19152 LADM Ready</div>
+              <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--warning)', marginBottom: '4px' }}>LADM</div>
+              <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Concept Demo</div>
             </div>
           </div>
         </div>
@@ -72,6 +85,8 @@ function App() {
   const [pipelineState, setPipelineState] = useState('idle');
   const [systemData, setSystemData] = useState(null);
   const [showInfo, setShowInfo] = useState(false);
+  const [demoActive, setDemoActive] = useState(false);
+  const searchControlRef = useRef(null);
   
   const addToast = useToast();
 
@@ -117,6 +132,7 @@ function App() {
         case 'escape':
           setSelectedUnit(null);
           setShowInfo(false);
+          setDemoActive(false);
           break;
         case 'r':
           handleResetCamera();
@@ -150,7 +166,7 @@ function App() {
 
   return (
     <div className="app-shell">
-      <Navbar onShowInfo={() => setShowInfo(true)} />
+      <Navbar onShowInfo={() => setShowInfo(true)} onShowDemo={() => setDemoActive(true)} />
 
       {showInfo && <InfoModal onClose={() => setShowInfo(false)} />}
 
@@ -159,6 +175,7 @@ function App() {
           pipelineState={pipelineState} 
           setPipelineState={setPipelineState} 
           onPipelineComplete={setSystemData} 
+          searchControlRef={searchControlRef}
         />
 
         <section className="panel-center">
@@ -209,6 +226,17 @@ function App() {
       </main>
 
       <Footer />
+
+      {demoActive && (
+        <JudgeDemo
+          pipelineState={pipelineState}
+          selectedUnit={selectedUnit}
+          explodeValue={explodeValue}
+          cameraPreset={cameraPreset}
+          setQueryInSearch={(q) => searchControlRef.current?.runSearch(q)}
+          onExit={() => setDemoActive(false)}
+        />
+      )}
     </div>
   );
 }
