@@ -11,7 +11,7 @@ app = FastAPI(title="3D ULPIN API")
 
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"], # Allow all origins for production prototype
+    allow_origins=["*"], # Allow all origins (prototype demo only)
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -95,12 +95,20 @@ def get_data_sources():
 
 @app.get("/api/system-status")
 def get_system_status():
+    # Compute status from the actual demo dataset instead of claiming static values
+    units = load_json('generated_units.json')
+    if units:
+        validation = validate_units(units)
+        units_registered = validation['total_units']
+        topology_status = validation['status']
+    else:
+        units_registered = 0
+        topology_status = "NO DATA"
     return {
         "backend": "online",
         "database": "in-memory (prototype)",
-        "units_registered": 20,
-        "topology_status": "VALID",
-        "last_pipeline_run": "2026-01-15T09:42:11Z",
+        "units_registered": units_registered,
+        "topology_status": topology_status,
         "version": "1.0.0-demo"
     }
 
