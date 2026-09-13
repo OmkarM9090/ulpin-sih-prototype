@@ -21,6 +21,12 @@ export default function LeftSidebar({ pipelineState, setPipelineState, onPipelin
   const [currentStep, setCurrentStep] = useState(-1);
   const [pipelineData, setPipelineData] = useState(null);
   const addToast = useToast();
+  
+  // Search state
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [searching, setSearching] = useState(false);
+  const [selectedParcel, setSelectedParcel] = useState(null);
 
   useEffect(() => {
     fetch(`${API_BASE_URL}/api/data-sources`)
@@ -34,6 +40,34 @@ export default function LeftSidebar({ pipelineState, setPipelineState, onPipelin
         setLoadingSources(false);
       });
   }, []);
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (!searchQuery.trim()) {
+      setSearchResults([]);
+      return;
+    }
+    setSearching(true);
+    fetch(`${API_BASE_URL}/api/parcels/search?q=${encodeURIComponent(searchQuery)}`)
+      .then(res => res.json())
+      .then(data => {
+        setSearchResults(data.results || []);
+        setSearching(false);
+      })
+      .catch(err => {
+        console.error(err);
+        setSearching(false);
+        addToast('Search failed', 'error');
+      });
+  };
+
+  const handleSelectParcel = (parcel) => {
+    setSelectedParcel(parcel);
+    setSearchResults([]);
+    setSearchQuery('');
+    addToast(`Selected parcel ${parcel.parcel_id} — running pipeline`, 'success');
+    setPipelineState('running');
+  };
 
   useEffect(() => {
     if (pipelineState === 'running' && currentStep === -1) {
@@ -88,6 +122,73 @@ export default function LeftSidebar({ pipelineState, setPipelineState, onPipelin
       flexDirection: 'column',
       gap: '16px'
     }}>
+      {/* Section 0: Property Search */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        <div style={{ fontSize: '14px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px' }}>
+          🔍 Search Property
+        </div>
+        <form onSubmit={handleSearch} style={{ display: 'flex', gap: '6px' }}>
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Parcel ID, ULPIN, or location"
+            style={{
+              flex: 1, height: '36px', backgroundColor: 'var(--bg-primary)',
+              border: '1px solid var(--border-default)', borderRadius: '8px',
+              padding: '0 12px', color: 'var(--text-primary)', fontSize: '13px',
+              outline: 'none'
+            }}
+            onFocus={(e) => e.target.style.borderColor = 'var(--accent-primary)'}
+            onBlur={(e) => e.target.style.borderColor = 'var(--border-default)'}
+          />
+          <button type="submit" style={{ height: '36px', padding: '0 14px', background: 'var(--gradient-brand)', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 600, fontSize: '13px', cursor: 'pointer' }}>
+            {searching ? '...' : 'Search'}
+          </button>
+        </form>
+        
+        {searchResults.length > 0 && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            {searchResults.map((result) => (
+              <div
+                key={result.parcel_id}
+                onClick={() => handleSelectParcel(result)}
+                style={{
+                  backgroundColor: 'var(--bg-primary)', border: '1px solid var(--border-default)',
+                  borderRadius: '8px', padding: '10px 12px', cursor: 'pointer',
+                  transition: 'all 0.2s'
+                }}
+                onMouseOver={(e) => { e.currentTarget.style.borderColor = 'var(--accent-primary)'; e.currentTarget.style.backgroundColor = 'var(--bg-elevated)'; }}
+                onMouseOut={(e) => { e.currentTarget.style.borderColor = 'var(--border-default)'; e.currentTarget.style.backgroundColor = 'var(--bg-primary)'; }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                  <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-primary)' }}>📋 {result.parcel_id}</span>
+                  <span style={{ fontSize: '10px', background: 'var(--bg-elevated)', color: 'var(--text-muted)', padding: '2px 6px', borderRadius: '4px' }}>{result.data_type}</span>
+                </div>
+                <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontFamily: 'monospace' }}>{result.parent_ulpin}</div>
+                <div style={{ fontSize: '11px', color: 'var(--text-secondary)', marginTop: '2px' }}>{result.location} · {result.area_sqm} sqm · {result.land_use}</div>
+              </div>
+            ))}
+            <div style={{ fontSize: '10px', fontStyle: 'italic', color: 'var(--text-muted)', textAlign: 'center', marginTop: '4px' }}>
+              ⚠️ Controlled Demo Data — Synthetic cadastral records for prototype demonstration
+            </div>
+          </div>
+        )}
+
+        {selectedParcel && (
+          <div style={{ background: 'rgba(56,189,248,0.08)', border: '1px solid var(--accent-primary)', borderRadius: '8px', padding: '10px 12px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+              <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--accent-primary)' }}>📍 Selected</span>
+              <span style={{ fontSize: '10px', color: 'var(--text-muted)', cursor: 'pointer' }} onClick={() => setSelectedParcel(null)}>✕ Clear</span>
+            </div>
+            <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-primary)' }}>{selectedParcel.parcel_id} · {selectedParcel.parent_ulpin}</div>
+            <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>{selectedParcel.location}</div>
+          </div>
+        )}
+      </div>
+
+      <div style={{ height: '1px', backgroundColor: 'var(--border-subtle)', flexShrink: 0 }}></div>
+
       {/* Section A: Input Data Sources */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
         <div 
@@ -135,7 +236,7 @@ export default function LeftSidebar({ pipelineState, setPipelineState, onPipelin
               ))
             )}
             <div style={{ fontSize: '11px', fontStyle: 'italic', color: 'var(--text-muted)', textAlign: 'center', marginTop: '4px' }}>
-              🔒 Sample datasets — production ingests live drone/LiDAR feeds
+              🔒 Controlled Demo Data — Production ingests live drone/LiDAR feeds
             </div>
           </div>
         )}
