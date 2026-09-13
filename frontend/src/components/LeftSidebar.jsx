@@ -227,10 +227,11 @@ export default function LeftSidebar({ pipelineState, setPipelineState, onPipelin
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{src.name}</div>
                     <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{src.format} · {src.spec} · {src.size_mb}MB</div>
+                    <div style={{ fontSize: '9px', color: 'var(--text-muted)', fontStyle: 'italic' }}>Production: {src.id === 'drone' ? 'Live orthomosaic' : src.id === 'lidar' ? 'Live point cloud' : src.id === 'dem' ? 'Bhuvan DEM' : src.id === 'floorplan' ? 'Municipal plans' : src.id === 'gnss' ? 'GNSS/CORS data' : 'Municipal GIS layer'}</div>
                   </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                    <div style={{ fontSize: '14px' }}>✅</div>
-                    <div style={{ fontSize: '10px', color: 'var(--success)' }}>Ingested</div>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px' }}>
+                    <div style={{ fontSize: '10px', background: 'rgba(245,158,11,0.15)', color: 'var(--warning)', padding: '1px 6px', borderRadius: '4px', fontWeight: 500 }}>Demo</div>
+                    <div style={{ fontSize: '8px', color: 'var(--text-muted)', fontStyle: 'italic' }}>Synthetic</div>
                   </div>
                 </div>
               ))
