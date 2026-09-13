@@ -28,14 +28,13 @@ function InfoModal({ onClose }) {
           </p>
           
           <div style={{ background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.3)', borderRadius: '8px', padding: '12px', marginBottom: '16px' }}>
-            <div style={{ fontSize: '12px', fontWeight: 600, color: 'var(--warning)', marginBottom: '4px' }}>\u26a0\ufe0f Data Honesty</div>
-            <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
+            <div style={{ fontSize: '12px', fontWeight: 600, color: 'var(--warning)', marginBottom: '4px' }}>⚠️ Data Honesty</div>            <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
               All parcel data, measurements, ownership, and validation results shown in this prototype are <strong>synthetic/demo data</strong> created for demonstration purposes. This system does not use real government cadastral data. Production systems would use live drone orthomosaics, LiDAR point clouds, GNSS/CORS anchors, and municipal GIS layers.
             </div>
           </div>
           
           <div style={{ background: 'rgba(56,189,248,0.08)', border: '1px solid rgba(56,189,248,0.2)', borderRadius: '8px', padding: '12px', marginBottom: '16px' }}>
-            <div style={{ fontSize: '12px', fontWeight: 600, color: 'var(--accent-primary)', marginBottom: '8px' }}>\ud83d\udcd0 Why 3D ULPIN?</div>
+            <div style={{ fontSize: '12px', fontWeight: 600, color: 'var(--accent-primary)', marginBottom: '8px' }}>📐 Why 3D ULPIN?</div>
             <div style={{ fontSize: '11px', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
               Traditional 2D cadastral maps cannot represent vertical/subsurface property relationships. This prototype demonstrates how 3D volumetric ULPINs can address: underground metro tunnels crossing parcels, vertical property layers (apartments at different heights), utility easements at different depths, and height/depth/Z coordinates per unit.
             </div>
@@ -47,8 +46,7 @@ function InfoModal({ onClose }) {
               <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Avg. Generation Time</div>
             </div>
             <div style={{ flex: 1, background: 'var(--bg-primary)', padding: '16px', borderRadius: '8px', border: '1px solid var(--border-default)' }}>
-              <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--success)', marginBottom: '4px' }}>&#10003;</div>
-              <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Prototype Validation</div>
+              <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--success)', marginBottom: '4px' }}>✓</div>              <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Prototype Validation</div>
             </div>
             <div style={{ flex: 1, background: 'var(--bg-primary)', padding: '16px', borderRadius: '8px', border: '1px solid var(--border-default)' }}>
               <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--warning)', marginBottom: '4px' }}>LADM</div>
