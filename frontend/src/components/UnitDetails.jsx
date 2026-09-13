@@ -232,6 +232,35 @@ export default function UnitDetails({ selectedUnit }) {
           </div>
         </div>
 
+        {/* Provenance & Record Info (derived from existing demo data) */}
+        <div style={{ padding: '0 16px 16px' }}>
+          <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '8px' }}>Provenance & Record Info</div>
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px', fontSize: '11px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--bg-elevated)', borderRadius: '6px', padding: '6px 8px' }}>
+              <span style={{ color: 'var(--text-muted)' }}>Parent Parcel</span>
+              <span style={{ color: 'var(--text-primary)', fontFamily: 'monospace' }}>{unitData.provenance?.parcel_id || '—'} · {unitData.provenance?.ulpin_components?.parent_ulpin || '—'}</span>
+            </div>
+            <div style={{ background: 'var(--bg-elevated)', borderRadius: '6px', padding: '6px 8px' }}>
+              <div style={{ color: 'var(--text-muted)', marginBottom: '4px' }}>Derivation Chain</div>
+              <div style={{ color: 'var(--text-secondary)', fontSize: '10px', lineHeight: 1.6 }}>
+                building_config.json → Geometry Engine → 3D ULPIN<br />
+                <span style={{ color: 'var(--text-muted)' }}>Layer {unit.layer} · Level {unit.level} · Unit {unit.unit_id}</span>
+              </div>
+            </div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'var(--bg-elevated)', borderRadius: '6px', padding: '6px 8px' }}>
+              <span style={{ color: 'var(--text-muted)' }}>ULPIN Checksum</span>
+              {unitData.provenance?.checksum_valid ? (
+                <span style={{ color: 'var(--success)', fontWeight: 500 }}>✓ Valid (recomputed)</span>
+              ) : (
+                <span style={{ color: 'var(--warning)', fontWeight: 500 }}>⚠ Could not verify</span>
+              )}
+            </div>
+            <div style={{ background: 'var(--bg-elevated)', borderRadius: '6px', padding: '6px 8px', color: 'var(--text-muted)', fontStyle: 'italic', fontSize: '10px' }}>
+              Ownership/transaction history: not included in demo dataset.
+            </div>
+          </div>
+        </div>
+
         {/* Validation */}
         <div style={{ padding: '0 16px 24px' }}>
           <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '8px' }}>Topology Validation</div>

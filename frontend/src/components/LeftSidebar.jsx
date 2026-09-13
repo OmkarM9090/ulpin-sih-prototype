@@ -28,6 +28,9 @@ export default function LeftSidebar({ pipelineState, setPipelineState, onPipelin
   const [searching, setSearching] = useState(false);
   const [selectedParcel, setSelectedParcel] = useState(null);
 
+  // Parcel info from API (Session Info section) — falls back to null, never hardcoded
+  const [parcelInfo, setParcelInfo] = useState(null);
+
   useEffect(() => {
     fetch(`${API_BASE_URL}/api/data-sources`)
       .then(res => res.json())
@@ -39,6 +42,19 @@ export default function LeftSidebar({ pipelineState, setPipelineState, onPipelin
         console.error(err);
         setLoadingSources(false);
       });
+    fetch(`${API_BASE_URL}/api/parcel`)
+      .then(res => res.json())
+      .then(data => {
+        const props = data.features?.[0]?.properties;
+        if (props) setParcelInfo({
+          parcelId: props.parcel_id,
+          parentUlpin: props.parent_ulpin,
+          location: props.location_label,
+          landUse: props.land_use,
+          areaSqm: props.area_sqm
+        });
+      })
+      .catch(err => console.error(err));
   }, []);
 
   const handleSearch = (e) => {
@@ -97,7 +113,8 @@ export default function LeftSidebar({ pipelineState, setPipelineState, onPipelin
   }, [currentStep, pipelineData, onPipelineComplete, setPipelineState, addToast]);
 
   const handleCopyUlpin = () => {
-    navigator.clipboard.writeText('23140701001001');
+    if (!parcelInfo?.parentUlpin) return;
+    navigator.clipboard.writeText(parcelInfo.parentUlpin);
     addToast('Copied to clipboard', 'success');
   };
 
@@ -331,23 +348,27 @@ export default function LeftSidebar({ pipelineState, setPipelineState, onPipelin
         )}
       </div>
 
-      {/* Section C: Session Info */}
+      {/* Section C: Session Info (from /api/parcel) */}
       <div style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-default)', borderRadius: '8px', padding: '12px', display: 'flex', flexDirection: 'column', gap: '6px', flexShrink: 0 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px' }}>
           <span style={{ color: 'var(--text-muted)' }}>Parcel:</span>
-          <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>P001</span>
+          <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{parcelInfo?.parcelId || '—'}</span>
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', alignItems: 'center' }}>
           <span style={{ color: 'var(--text-muted)' }}>Parent ULPIN:</span>
-          <span onClick={handleCopyUlpin} style={{ color: 'var(--accent-primary)', fontFamily: 'monospace', cursor: 'pointer' }} title="Click to copy">23140701001001 📋</span>
+          {parcelInfo ? (
+            <span onClick={handleCopyUlpin} style={{ color: 'var(--accent-primary)', fontFamily: 'monospace', cursor: 'pointer' }} title="Click to copy">{parcelInfo.parentUlpin} 📋</span>
+          ) : (
+            <span style={{ color: 'var(--text-muted)' }}>—</span>
+          )}
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px' }}>
           <span style={{ color: 'var(--text-muted)' }}>Location:</span>
-          <span style={{ color: 'var(--text-primary)' }}>Pune, Maharashtra</span>
+          <span style={{ color: 'var(--text-primary)' }}>{parcelInfo?.location || '—'}</span>
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px' }}>
           <span style={{ color: 'var(--text-muted)' }}>Land Use:</span>
-          <span style={{ color: 'var(--text-primary)' }}>Residential</span>
+          <span style={{ color: 'var(--text-primary)' }}>{parcelInfo?.landUse || '—'}</span>
         </div>
       </div>
     </div>
