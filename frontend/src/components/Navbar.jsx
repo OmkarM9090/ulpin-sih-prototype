@@ -68,6 +68,13 @@ export default function Navbar({ onShowInfo, onShowDemo }) {
           </button>
         )}
         <div style={{
+          background: 'rgba(245,158,11,0.1)', border: '1px solid var(--warning)', color: 'var(--warning)',
+          fontSize: '11px', borderRadius: '999px', padding: '4px 10px', display: 'flex', alignItems: 'center', gap: '6px'
+        }}>
+          <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--warning)' }}></div>
+          Demo Mode
+        </div>
+        <div style={{
           background: 'rgba(34,197,94,0.1)', border: '1px solid var(--success)', color: 'var(--success)',
           fontSize: '11px', borderRadius: '999px', padding: '4px 10px', display: 'flex', alignItems: 'center', gap: '6px'
         }}>
