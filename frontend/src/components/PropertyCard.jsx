@@ -64,7 +64,26 @@ export default function PropertyCard({ ulpin, onClose }) {
 
         {/* Body */}
         <div style={{ padding: '24px', display: 'flex', flexDirection: 'column', gap: '20px' }}>
-          
+
+          {/* Section 0 - ULPIN Hierarchy */}
+          <div>
+            <h3 style={{ fontSize: '13px', fontWeight: 600, color: '#475569', marginBottom: '8px', borderBottom: '1px solid #e2e8f0', paddingBottom: '4px' }}>ULPIN HIERARCHY</h3>
+            <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '4px' }}>
+              <div style={{ background: '#f0f9ff', border: '1px solid #bae6fd', borderRadius: '6px', padding: '8px 12px', textAlign: 'center', width: '100%' }}>
+                <div style={{ fontSize: '9px', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Parent 2D ULPIN</div>
+                <div style={{ fontFamily: 'monospace', fontSize: '14px', color: '#0284c7', fontWeight: 700, marginTop: '2px' }}>{parent_parcel.ulpin}</div>
+              </div>
+              <div style={{ color: '#94a3b8', fontSize: '14px' }}>↓</div>
+              <div style={{ fontSize: '10px', color: '#64748b', fontStyle: 'italic' }}>3D Extrusion + Topology Validation + Human Verification</div>
+              <div style={{ color: '#94a3b8', fontSize: '14px' }}>↓</div>
+              <div style={{ background: '#f5f3ff', border: '1px solid #c4b5fd', borderRadius: '6px', padding: '8px 12px', textAlign: 'center', width: '100%' }}>
+                <div style={{ fontSize: '9px', color: '#64748b', textTransform: 'uppercase', letterSpacing: '0.05em' }}>Proposed 3D ULPIN</div>
+                <div style={{ fontFamily: 'monospace', fontSize: '14px', color: '#7c3aed', fontWeight: 700, marginTop: '2px' }}>{unit_details['3d_ulpin']}</div>
+              </div>
+            </div>
+            <div style={{ fontSize: '9px', color: '#94a3b8', marginTop: '6px', fontStyle: 'italic', textAlign: 'center' }}>⚠️ Proposed 3D ULPIN extension — not an official government standard</div>
+          </div>
+
           {/* Section 1 - Parent Parcel */}
           <div>
             <h3 style={{ fontSize: '13px', fontWeight: 600, color: '#475569', marginBottom: '8px', borderBottom: '1px solid #e2e8f0', paddingBottom: '4px' }}>PARENT PARCEL</h3>
@@ -106,14 +125,54 @@ export default function PropertyCard({ ulpin, onClose }) {
 
           {/* Section 4 - Validation */}
           <div>
-            <h3 style={{ fontSize: '13px', fontWeight: 600, color: '#475569', marginBottom: '8px', borderBottom: '1px solid #e2e8f0', paddingBottom: '4px' }}>VALIDATION CERTIFICATE</h3>
-            <div style={{ display: 'flex', gap: '8px', flexWrap: 'wrap' }}>
-              {['Topology Valid', 'Watertight', 'No Overlaps', 'ISO 19152 LADM Compliant'].map(lbl => (
-                <div key={lbl} style={{ background: '#dcfce7', color: '#166534', padding: '4px 10px', borderRadius: '999px', fontSize: '11px', fontWeight: 500 }}>
-                  ✅ {lbl}
+            <h3 style={{ fontSize: '13px', fontWeight: 600, color: '#475569', marginBottom: '8px', borderBottom: '1px solid #e2e8f0', paddingBottom: '4px' }}>VALIDATION STATUS</h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              {[
+                { label: 'Topology Valid', desc: 'All units pass spatial checks' },
+                { label: 'Watertight', desc: 'No gaps in 3D geometry' },
+                { label: 'No Overlaps', desc: 'Units do not intersect' },
+                { label: 'LADM Concept Demo', desc: 'ISO 19152 concept demonstrated' }
+              ].map(item => (
+                <div key={item.label} style={{ display: 'flex', alignItems: 'center', gap: '8px', background: '#f0fdf4', padding: '6px 10px', borderRadius: '6px' }}>
+                  <span style={{ color: '#16a34a', fontSize: '12px' }}>✓</span>
+                  <div>
+                    <div style={{ fontSize: '11px', color: '#166534', fontWeight: 500 }}>{item.label}</div>
+                    <div style={{ fontSize: '9px', color: '#64748b' }}>{item.desc}</div>
+                  </div>
                 </div>
               ))}
             </div>
+            <div style={{ fontSize: '9px', color: '#94a3b8', marginTop: '6px', fontStyle: 'italic' }}>⚠️ Prototype validation — requires human/surveyor verification</div>
+          </div>
+
+          {/* Section 5.5 - Verification Chain */}
+          <div>
+            <h3 style={{ fontSize: '13px', fontWeight: 600, color: '#475569', marginBottom: '8px', borderBottom: '1px solid #e2e8f0', paddingBottom: '4px' }}>VERIFICATION CHAIN</h3>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: '#f0fdf4', borderRadius: '6px', padding: '8px 10px' }}>
+                <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: '#dcfce7', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', flexShrink: 0 }}>📋</div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: '11px', fontWeight: 500, color: '#166534' }}>Surveyor Review</div>
+                  <div style={{ fontSize: '9px', color: '#64748b' }}>Geometry verified against field survey</div>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontSize: '10px', color: '#16a34a', fontWeight: 500 }}>✓ Approved</div>
+                  <div style={{ fontSize: '8px', color: '#94a3b8' }}>(Demo Simulated)</div>
+                </div>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: '#f0fdf4', borderRadius: '6px', padding: '8px 10px' }}>
+                <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: '#dcfce7', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', flexShrink: 0 }}>🏛</div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: '11px', fontWeight: 500, color: '#166534' }}>Authority Approval</div>
+                  <div style={{ fontSize: '9px', color: '#64748b' }}>Municipal/Revenue authority sign-off</div>
+                </div>
+                <div style={{ textAlign: 'right' }}>
+                  <div style={{ fontSize: '10px', color: '#16a34a', fontWeight: 500 }}>✓ Approved</div>
+                  <div style={{ fontSize: '8px', color: '#94a3b8' }}>(Demo Simulated)</div>
+                </div>
+              </div>
+            </div>
+            <div style={{ fontSize: '9px', color: '#94a3b8', marginTop: '6px', fontStyle: 'italic' }}>⚠️ Simulated for prototype demonstration — not real approval</div>
           </div>
 
           {/* Section 5 - Provenance */}
