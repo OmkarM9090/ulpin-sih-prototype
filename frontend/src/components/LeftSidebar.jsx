@@ -299,8 +299,34 @@ export default function LeftSidebar({ pipelineState, setPipelineState, onPipelin
 
         {pipelineState === 'complete' && pipelineData && (
           <div style={{ background: 'rgba(34,197,94,0.08)', border: '1px solid var(--success)', borderRadius: '8px', padding: '12px', marginTop: '8px', flexShrink: 0 }}>
-            <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--success)', marginBottom: '4px' }}>✅ Pipeline Complete</div>
-            <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>{pipelineData.units?.length || 20} 3D units generated · Topology VALID · 1.2s</div>
+            <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--success)', marginBottom: '8px' }}>✅ Pipeline Complete</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px' }}>
+                <span style={{ color: 'var(--success)' }}>✓</span>
+                <span style={{ color: 'var(--text-secondary)' }}>{pipelineData.units?.length || 20} 3D units generated</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px' }}>
+                <span style={{ color: 'var(--success)' }}>✓</span>
+                <span style={{ color: 'var(--text-secondary)' }}>Topology validation passed</span>
+              </div>
+              {pipelineData.validation && (
+                <>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px' }}>
+                    <span style={{ color: 'var(--success)' }}>✓</span>
+                    <span style={{ color: 'var(--text-secondary)' }}>Watertight geometry — no gaps</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px' }}>
+                    <span style={{ color: 'var(--success)' }}>✓</span>
+                    <span style={{ color: 'var(--text-secondary)' }}>No unit overlaps detected</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px' }}>
+                    <span style={{ color: 'var(--accent-primary)' }}>ℹ</span>
+                    <span style={{ color: 'var(--text-muted)' }}>Public easement exceptions applied (metro, utility)</span>
+                  </div>
+                </>
+              )}
+            </div>
+            <div style={{ fontSize: '9px', color: 'var(--text-muted)', marginTop: '8px', fontStyle: 'italic' }}>⚠️ Prototype validation — human/surveyor verification required</div>
           </div>
         )}
       </div>

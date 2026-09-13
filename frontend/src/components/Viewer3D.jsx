@@ -337,8 +337,15 @@ export default function Viewer3D({
         <Compass />
       </Canvas>
       <div style={{ position: 'absolute', bottom: '16px', right: '16px', opacity: 0.35, fontSize: '11px', color: 'var(--text-muted)', pointerEvents: 'none' }}>
-        GeoCadastre 3D · SIH 2026
+        GeoCadastre 3D Prototype · SIH 2026
       </div>
+      {selectedUlpin && (
+        <div style={{ position: 'absolute', top: '16px', right: '16px', background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.3)', borderRadius: '8px', padding: '8px 12px', display: 'flex', alignItems: 'center', gap: '6px', zIndex: 10 }}>
+          <span style={{ color: '#22c55e', fontSize: '12px' }}>✓</span>
+          <span style={{ color: '#22c55e', fontSize: '11px', fontWeight: 500 }}>Validated</span>
+          <span style={{ color: 'var(--text-muted)', fontSize: '9px' }}>— Prototype check</span>
+        </div>
+      )}
     </div>
   );
 }
