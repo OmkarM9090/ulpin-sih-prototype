@@ -45,6 +45,18 @@ export default function UnitDetails({ selectedUnit }) {
     addToast('3D-ULPIN copied to clipboard', 'success');
   };
 
+  const downloadUnitJson = () => {
+    if (!unitData) return;
+    const blob = new Blob([JSON.stringify(unitData, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a');
+    a.href = url;
+    a.download = `${unitData.unit.ulpin}.json`;
+    a.click();
+    URL.revokeObjectURL(url);
+    addToast('Unit record downloaded (demo data)', 'success');
+  };
+
   const getEmoji = (type, usage) => {
     if (type === 'metro') return '🚇';
     if (type === 'utility') return '💧';
@@ -307,11 +319,11 @@ export default function UnitDetails({ selectedUnit }) {
           📄 View Property Card
         </button>
         <div style={{ display: 'flex', gap: '8px' }}>
-          <button style={{ flex: 1, height: '32px', background: 'var(--bg-elevated)', color: 'var(--text-primary)', border: '1px solid var(--border-default)', borderRadius: '6px', fontSize: '12px', cursor: 'pointer' }}>
+          <button onClick={downloadUnitJson} style={{ flex: 1, height: '32px', background: 'var(--bg-elevated)', color: 'var(--text-primary)', border: '1px solid var(--border-default)', borderRadius: '6px', fontSize: '12px', cursor: 'pointer' }}>
             ⬇ Download JSON
           </button>
-          <button style={{ flex: 1, height: '32px', background: 'var(--bg-elevated)', color: 'var(--text-primary)', border: '1px solid var(--border-default)', borderRadius: '6px', fontSize: '12px', cursor: 'pointer' }}>
-            🔗 Share Link
+          <button onClick={() => copyToClipboard(unit.ulpin)} style={{ flex: 1, height: '32px', background: 'var(--bg-elevated)', color: 'var(--text-primary)', border: '1px solid var(--border-default)', borderRadius: '6px', fontSize: '12px', cursor: 'pointer' }} title="Copy 3D ULPIN">
+            📋 Copy 3D ULPIN
           </button>
         </div>
       </div>
