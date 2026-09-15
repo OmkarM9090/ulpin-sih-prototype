@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import './styles.css';
 import Navbar from './components/Navbar';
 import Footer from './components/Footer';
@@ -10,6 +10,7 @@ import UnitDetails from './components/UnitDetails';
 import Modal from './components/Modal';
 import { useToast } from './components/Toast';
 import ErrorBoundary from './components/ErrorBoundary';
+import JudgeDemo from './components/JudgeDemo';
 
 function InfoModal({ onClose }) {
   return (
@@ -84,6 +85,8 @@ function App() {
   const [pipelineState, setPipelineState] = useState('idle');
   const [systemData, setSystemData] = useState(null);
   const [showInfo, setShowInfo] = useState(false);
+  const [demoActive, setDemoActive] = useState(false);
+  const searchControlRef = useRef(null);
   
   const addToast = useToast();
 
@@ -129,6 +132,7 @@ function App() {
         case 'escape':
           setSelectedUnit(null);
           setShowInfo(false);
+          setDemoActive(false);
           break;
         case 'r':
           handleResetCamera();
@@ -162,7 +166,7 @@ function App() {
 
   return (
     <div className="app-shell">
-      <Navbar onShowInfo={() => setShowInfo(true)} />
+      <Navbar onShowInfo={() => setShowInfo(true)} onShowDemo={() => setDemoActive(true)} />
 
       {showInfo && <InfoModal onClose={() => setShowInfo(false)} />}
 
@@ -171,6 +175,7 @@ function App() {
           pipelineState={pipelineState} 
           setPipelineState={setPipelineState} 
           onPipelineComplete={setSystemData} 
+          searchControlRef={searchControlRef}
         />
 
         <section className="panel-center">
@@ -221,6 +226,17 @@ function App() {
       </main>
 
       <Footer />
+
+      {demoActive && (
+        <JudgeDemo
+          pipelineState={pipelineState}
+          selectedUnit={selectedUnit}
+          explodeValue={explodeValue}
+          cameraPreset={cameraPreset}
+          setQueryInSearch={(q) => searchControlRef.current?.runSearch(q)}
+          onExit={() => setDemoActive(false)}
+        />
+      )}
     </div>
   );
 }
