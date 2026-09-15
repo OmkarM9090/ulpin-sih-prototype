@@ -152,3 +152,72 @@ input[type=range] {
   width: 100%;
   height: 100%;
 }
+
+/* ============ Change 12: UI/UX polish (restrained, no layout changes) ============ */
+
+/* Crisper text rendering; tabular numerals keep data panels aligned */
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: 'tnum' 1, 'lnum' 1;
+}
+
+/* Brand-tinted text selection */
+::selection {
+  background: rgba(56, 189, 248, 0.28);
+  color: var(--text-primary);
+}
+
+/* Accessible focus ring for keyboard navigation */
+:focus-visible {
+  outline: 2px solid var(--accent-primary);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+/* Refined scrollbars for the data-heavy side panels */
+::-webkit-scrollbar {
+  width: 10px;
+  height: 10px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: var(--border-default);
+  border-radius: 8px;
+  border: 2px solid transparent;
+  background-clip: content-box;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background-color: var(--border-strong);
+}
+
+/* Disabled controls: clear affordance, no accidental hover lift */
+button:disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+  transform: none;
+}
+
+/* Prevent flex overflow blowouts when panels are resized */
+.panel-left,
+.panel-right,
+.panel-center {
+  min-width: 0;
+  min-height: 0;
+}
+
+/* Respect users who prefer reduced motion */
+@media (prefers-reduced-motion: reduce) {
+  * {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+    scroll-behavior: auto !important;
+  }
+}
