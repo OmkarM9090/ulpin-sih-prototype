@@ -24,8 +24,15 @@ function InfoModal({ onClose }) {
         <div style={{ flex: 2, padding: '32px' }}>
           <h2 style={{ color: 'var(--text-primary)', marginBottom: '16px', fontSize: '1.5rem', fontWeight: 600 }}>About GeoCadastre 3D</h2>
           <p style={{ fontSize: '0.95rem', marginBottom: '16px', lineHeight: '1.6', color: 'var(--text-secondary)' }}>
-            This proof-of-concept for SIH 2026 (PS 26011) demonstrates a full 7-stage engine for processing 2D cadastral data into hierarchical 3D volumetric property units.
+            This prototype for SIH 2026 (PS 26011) demonstrates the proposed technical workflow for processing synthetic cadastral data into hierarchical 3D volumetric property units. All data is controlled demo data.
           </p>
+          
+          <div style={{ background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.3)', borderRadius: '8px', padding: '12px', marginBottom: '16px' }}>
+            <div style={{ fontSize: '12px', fontWeight: 600, color: 'var(--warning)', marginBottom: '4px' }}>⚠️ Data Honesty</div>
+            <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
+              All parcel data, measurements, ownership, and validation results shown in this prototype are <strong>synthetic/demo data</strong> created for demonstration purposes. This system does not use real government cadastral data. Production systems would use live drone orthomosaics, LiDAR point clouds, GNSS/CORS anchors, and municipal GIS layers.
+            </div>
+          </div>
           
           <div style={{ display: 'flex', gap: '16px', marginTop: '24px' }}>
             <div style={{ flex: 1, background: 'var(--bg-primary)', padding: '16px', borderRadius: '8px', border: '1px solid var(--border-default)' }}>
@@ -33,12 +40,12 @@ function InfoModal({ onClose }) {
               <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Avg. Generation Time</div>
             </div>
             <div style={{ flex: 1, background: 'var(--bg-primary)', padding: '16px', borderRadius: '8px', border: '1px solid var(--border-default)' }}>
-              <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--success)', marginBottom: '4px' }}>100%</div>
-              <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Topology Compliance</div>
+              <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--success)', marginBottom: '4px' }}>✓</div>
+              <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Prototype Validation</div>
             </div>
             <div style={{ flex: 1, background: 'var(--bg-primary)', padding: '16px', borderRadius: '8px', border: '1px solid var(--border-default)' }}>
-              <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--warning)', marginBottom: '4px' }}>ISO</div>
-              <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>19152 LADM Ready</div>
+              <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--warning)', marginBottom: '4px' }}>LADM</div>
+              <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Concept Demo</div>
             </div>
           </div>
         </div>
