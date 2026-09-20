@@ -1,134 +1,70 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useRef, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { OrbitControls, Grid, Html, Edges, Shape } from '@react-three/drei';
+import { OrbitControls, Grid, Html, Plane, Edges, Instance, Instances } from '@react-three/drei';
 import * as THREE from 'three';
-import { API_BASE_URL } from '../config';
 
-const getColor = (type, level) => {
-  if (type === 'metro') return '#dc2626';
-  if (type === 'utility') return '#3b82f6';
-  if (type === 'garden') return '#16a34a';
-  if (type === 'water_tank') return '#06b6d4';
-  if (level === 'L-01' || level === 'L-02') return '#f59e0b';
-  if (level === 'L00') return '#eab308';
-  if (level === 'L01') return '#38bdf8';
-  if (level === 'L02') return '#818cf8';
-  if (level === 'L03') return '#c084fc';
-  if (level === 'LC01') return '#a855f7';
-  return '#cbd5e1';
+const ParcelBoundary = () => {
+  return (
+    <group>
+      {/* Cyan outline & slight fill */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.01, 0]}>
+        <planeGeometry args={[25, 20]} />
+        <meshBasicMaterial color="#22d3ee" transparent opacity={0.08} side={THREE.DoubleSide} />
+        <Edges scale={1} color="#22d3ee" />
+      </mesh>
+      
+      {/* Label */}
+      <Html position={[0, 19, 0]} center zIndexRange={[100, 0]} style={{ pointerEvents: 'none' }}>
+        <div style={{
+          background: 'rgba(5, 8, 15, 0.8)', color: 'white', padding: '4px 10px',
+          borderRadius: '4px', fontSize: '11px', whiteSpace: 'nowrap',
+          border: '1px solid var(--border-2)', boxShadow: '0 4px 6px rgba(0,0,0,0.3)',
+          fontFamily: 'var(--mono)', fontWeight: 600
+        }}>
+          UP-LKO-P123456 · 2,450 m²
+        </div>
+      </Html>
+    </group>
+  );
 };
 
-const getOpacity = (type, level) => {
-  if (type === 'metro') return 0.65;
-  if (type === 'utility') return 0.75;
-  if (type === 'garden') return 0.6;
-  if (level === 'L-01' || level === 'L-02') return 0.75;
-  return 0.85;
-};
-
-const getEmoji = (type) => {
-  if (type === 'metro') return '🚇';
-  if (type === 'utility') return '💧';
-  if (type === 'garden') return '🌳';
-  if (type === 'water_tank') return '🚰';
-  return '';
-};
-
-// Returns a level index to multiply by 4 for explode
-const getLevelIndex = (level, type) => {
-  if (type === 'metro') return -3;
-  if (level === 'L-02') return -2;
-  if (level === 'L-01') return -1;
-  if (level === 'LU01') return -0.5; // utility
-  if (level === 'L00') return 0;
-  if (level === 'LC02') return 0; // garden
-  if (level === 'L01') return 1;
-  if (level === 'L02') return 2;
-  if (level === 'L03') return 3;
-  if (level === 'LC01') return 4; // terrace
-  if (level === 'LC03') return 5; // water tank
-  return 0;
-};
-
-const UnitMesh = ({ unit, explodeValue, showLabels, isSelected, onSelect }) => {
+const Floor = ({ level, yPos, color, isSelected, onClick }) => {
   const [hovered, setHovered] = useState(false);
   const meshRef = useRef();
-  
-  const xs = unit.footprint.map(p => p[0]);
-  const ys = unit.footprint.map(p => p[1]);
-  const cx = (Math.min(...xs) + Math.max(...xs)) / 2;
-  const cy = (Math.min(...ys) + Math.max(...ys)) / 2;
-  const sz_x = Math.max(...xs) - Math.min(...xs);
-  const sz_z = Math.max(...ys) - Math.min(...ys);
-  
-  const height = unit.z_max - unit.z_min;
-  const center_y = unit.z_min + height / 2;
-
-  const levelIdx = getLevelIndex(unit.level, unit.type);
-  const explodeOffset = (explodeValue / 100) * (levelIdx * 4);
-  const finalY = center_y + explodeOffset;
-
-  const color = getColor(unit.type, unit.level);
-  const opacity = getOpacity(unit.type, unit.level);
-  const emoji = getEmoji(unit.type);
-  
-  const alwaysShowEmoji = !!emoji;
 
   useFrame(() => {
     if (meshRef.current) {
-      meshRef.current.position.y = THREE.MathUtils.lerp(meshRef.current.position.y, finalY, 0.1);
-      const targetScale = hovered ? 1.02 : 1.0;
-      meshRef.current.scale.lerp(new THREE.Vector3(targetScale, targetScale, targetScale), 0.1);
+      const targetScale = (isSelected || hovered) ? 1.02 : 1.0;
+      meshRef.current.scale.lerp(new THREE.Vector3(targetScale, 1, targetScale), 0.1);
     }
   });
 
-  useEffect(() => {
-    document.body.style.cursor = hovered ? 'pointer' : 'auto';
-    return () => { document.body.style.cursor = 'auto'; };
-  }, [hovered]);
-
   return (
-    <group position={[cx, 0, cy]} ref={meshRef}>
+    <group position={[0, yPos, 0]}>
       <mesh
-        onClick={(e) => { e.stopPropagation(); onSelect(unit.ulpin); }}
-        onPointerOver={(e) => { e.stopPropagation(); setHovered(true); }}
-        onPointerOut={(e) => { e.stopPropagation(); setHovered(false); }}
-        castShadow
-        receiveShadow
+        ref={meshRef}
+        onClick={(e) => { e.stopPropagation(); onClick(`UNIT-L${level}`); }}
+        onPointerOver={(e) => { e.stopPropagation(); setHovered(true); document.body.style.cursor = 'pointer'; }}
+        onPointerOut={(e) => { e.stopPropagation(); setHovered(false); document.body.style.cursor = 'auto'; }}
+        castShadow receiveShadow
       >
-        <boxGeometry args={[sz_x, height, sz_z]} />
+        <boxGeometry args={[18, 3, 14]} />
         <meshStandardMaterial 
           color={color}
-          transparent 
-          opacity={opacity}
-          emissive={color}
-          emissiveIntensity={hovered ? 0.3 : 0}
-          roughness={0.2}
-          metalness={0.1}
+          emissive={isSelected ? "#22d3ee" : (hovered ? "#14b8a6" : "#000000")}
+          emissiveIntensity={isSelected ? 0.4 : (hovered ? 0.2 : 0)}
+          roughness={0.8}
         />
-        <Edges 
-          scale={1.001} 
-          color={isSelected ? '#fbbf24' : hovered ? '#38bdf8' : 'rgba(255,255,255,0.35)'} 
-          threshold={15} 
-        />
+        {(isSelected || hovered) && <Edges color="#22d3ee" scale={1.01} />}
       </mesh>
       
-      {(showLabels || alwaysShowEmoji) && (
-        <Html distanceFactor={12} position={[0, height / 2 + 0.5, 0]} center zIndexRange={[100, 0]} style={{ pointerEvents: 'none' }}>
+      {(isSelected || hovered) && (
+        <Html position={[0, 1.5, 0]} center style={{ pointerEvents: 'none' }}>
           <div style={{
-            background: 'rgba(15, 23, 42, 0.85)',
-            color: 'white',
-            padding: '4px 8px',
-            borderRadius: '4px',
-            fontSize: '11px',
-            whiteSpace: 'nowrap',
-            border: `1px solid ${unit.layer === 'U' ? '#f59e0b' : '#38bdf8'}`,
-            boxShadow: '0 4px 6px rgba(0,0,0,0.3)',
-            fontWeight: '600'
+            background: 'var(--bg-1)', color: 'var(--accent)', border: '1px solid var(--accent)',
+            padding: '4px 8px', borderRadius: '4px', fontSize: '10px', fontWeight: 700
           }}>
-            {emoji && `${emoji} `}
-            {(showLabels) ? unit.unit_id : ''}
-            {unit.layer === 'U' && <span style={{ fontSize: '9px', marginLeft: '4px', opacity: 0.7 }}>Z:{unit.z_min}\u2192{unit.z_max}</span>}
+            UNIT-L{level}
           </div>
         </Html>
       )}
@@ -136,224 +72,184 @@ const UnitMesh = ({ unit, explodeValue, showLabels, isSelected, onSelect }) => {
   );
 };
 
-// Creates a 2D shape for the parcel boundary extrusion
-const ExtrudedParcel = ({ coords }) => {
-  if (!coords || coords.length === 0) return null;
-  const shape = new THREE.Shape();
-  shape.moveTo(coords[0].x, coords[0].z);
-  for (let i = 1; i < coords.length; i++) {
-    shape.lineTo(coords[i].x, coords[i].z);
-  }
-  
-  const extrudeSettings = { depth: 0.05, bevelEnabled: false };
-  
+const Windows = () => {
   return (
-    <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.05, 0]} receiveShadow>
-      <extrudeGeometry args={[shape, extrudeSettings]} />
-      <meshBasicMaterial color="#38bdf8" transparent opacity={0.05} />
-      <Edges scale={1.001} color="#38bdf8" />
-    </mesh>
+    <Instances limit={100} castShadow>
+      <boxGeometry args={[0.8, 1.2, 0.1]} />
+      <meshStandardMaterial color="#05080f" roughness={0.1} metalness={0.8} />
+      {/* Generate windows along the Z-faces (front and back) */}
+      {[1.5, 4.5, 7.5, 10.5, 13.5, 16.5].map((y, i) => (
+        <React.Fragment key={i}>
+          {[-7, -3, 3, 7].map((x, j) => (
+            <React.Fragment key={`${i}-${j}`}>
+              <Instance position={[x, y, 7.05]} />
+              <Instance position={[x, y, -7.05]} />
+            </React.Fragment>
+          ))}
+        </React.Fragment>
+      ))}
+      {/* Generate windows along the X-faces (left and right) */}
+      {[1.5, 4.5, 7.5, 10.5, 13.5, 16.5].map((y, i) => (
+        <React.Fragment key={`side-${i}`}>
+          {[-4, 0, 4].map((z, j) => (
+            <React.Fragment key={`side-${i}-${j}`}>
+              <Instance position={[9.05, y, z]} rotation={[0, Math.PI / 2, 0]} />
+              <Instance position={[-9.05, y, z]} rotation={[0, Math.PI / 2, 0]} />
+            </React.Fragment>
+          ))}
+        </React.Fragment>
+      ))}
+    </Instances>
   );
 };
 
-const CameraController = ({ preset, resetTrigger }) => {
+const Roof = () => (
+  <group position={[0, 18, 0]}>
+    {/* Railing */}
+    <mesh position={[0, 0.4, 0]} castShadow>
+      <boxGeometry args={[18, 0.8, 14]} />
+      <meshStandardMaterial color="#52525b" transparent opacity={0.6} />
+    </mesh>
+    {/* Water Tanks */}
+    <mesh position={[6, 1, -4]} castShadow>
+      <cylinderGeometry args={[0.8, 0.8, 2, 16]} />
+      <meshStandardMaterial color="#0284c7" />
+    </mesh>
+    <mesh position={[4, 1, -4]} castShadow>
+      <cylinderGeometry args={[0.8, 0.8, 2, 16]} />
+      <meshStandardMaterial color="#0284c7" />
+    </mesh>
+  </group>
+);
+
+const RealisticBuilding = ({ selectedUnit, onSelect }) => {
+  const colors = ['#d4d4d8', '#a1a1aa', '#d4d4d8', '#a1a1aa', '#d4d4d8', '#a1a1aa'];
+  
+  return (
+    <group>
+      {/* Ground Floor Entrance */}
+      <mesh position={[0, 1.2, 7.02]}>
+        <boxGeometry args={[3, 2.4, 0.1]} />
+        <meshStandardMaterial color="#18181b" />
+      </mesh>
+
+      {/* Floors */}
+      {colors.map((color, i) => (
+        <Floor 
+          key={i} 
+          level={i} 
+          yPos={1.5 + i * 3} 
+          color={color} 
+          isSelected={selectedUnit === `UNIT-L${i}`} 
+          onClick={onSelect}
+        />
+      ))}
+      
+      <Windows />
+      <Roof />
+    </group>
+  );
+};
+
+const UndergroundLayer = () => {
+  return (
+    <group>
+      {/* Basement 1 & 2 */}
+      <mesh position={[0, -2, 0]}>
+        <boxGeometry args={[20, 3, 16]} />
+        <meshStandardMaterial color="#f59e0b" transparent opacity={0.4} />
+      </mesh>
+      <mesh position={[0, -5, 0]}>
+        <boxGeometry args={[20, 3, 16]} />
+        <meshStandardMaterial color="#f59e0b" transparent opacity={0.4} />
+      </mesh>
+
+      {/* Metro Tunnel */}
+      <mesh position={[0, -10, 0]} rotation={[0, Math.PI / 4, 0]}>
+        <boxGeometry args={[6, 6, 60]} />
+        <meshStandardMaterial color="#dc2626" transparent opacity={0.6} />
+        <Html position={[0, 3, 0]} center style={{ pointerEvents: 'none' }}>
+          <div style={{ color: '#dc2626', fontSize: '10px', background: 'rgba(0,0,0,0.5)', padding: '2px 4px', borderRadius: '4px', whiteSpace: 'nowrap' }}>
+            UM-00451 · Metro Tunnel
+          </div>
+        </Html>
+      </mesh>
+
+      {/* Utility Line */}
+      <mesh position={[-11, -3, 0]}>
+        <boxGeometry args={[1, 1, 20]} />
+        <meshStandardMaterial color="#3b82f6" transparent opacity={0.8} />
+        <Html position={[0, 1, 0]} center style={{ pointerEvents: 'none' }}>
+          <div style={{ color: '#38bdf8', fontSize: '10px', background: 'rgba(0,0,0,0.5)', padding: '2px 4px', borderRadius: '4px', whiteSpace: 'nowrap' }}>
+            UW-00733 · HT Power
+          </div>
+        </Html>
+      </mesh>
+    </group>
+  );
+};
+
+const CameraController = ({ preset }) => {
   const { camera, controls } = useThree();
   
-  useEffect(() => {
+  React.useEffect(() => {
     if (!controls) return;
-    
-    let targetPos = new THREE.Vector3(35, 25, 35);
-    let targetLook = new THREE.Vector3(0, 7, 0);
+    let targetPos = new THREE.Vector3(45, 30, 45);
+    let targetLook = new THREE.Vector3(0, 8, 0);
     
     if (preset === 'top') {
-      targetPos.set(15, 80, 20);
-      targetLook.set(15, 0, 20);
-    } else if (preset === 'front') {
-      targetPos.set(15, 5, 80);
-      targetLook.set(15, 5, 20);
-    } else if (preset === 'underground') {
-      targetPos.set(15, -30, 60);
-      targetLook.set(15, -5, 20);
+      targetPos.set(0, 80, 0);
+      targetLook.set(0, 0, 0);
+    } else if (preset === 'side') {
+      targetPos.set(60, 10, 0);
     }
     
-    // Animate camera
     const startPos = camera.position.clone();
     const startTarget = controls.target.clone();
     let frame = 0;
     const animate = () => {
       frame++;
-      const t = frame / 30; // 30 frames approx 0.5s
+      const t = frame / 30;
       camera.position.lerpVectors(startPos, targetPos, t);
       controls.target.lerpVectors(startTarget, targetLook, t);
       controls.update();
       if (frame < 30) requestAnimationFrame(animate);
     };
     animate();
-    
-  }, [preset, resetTrigger, camera, controls]);
+  }, [preset, camera, controls]);
   
   return null;
 };
 
-const Compass = () => {
-  const { camera } = useThree();
-  const [rotation, setRotation] = useState(0);
-
-  useFrame(() => {
-    const angle = Math.atan2(camera.position.x, camera.position.z);
-    setRotation(angle);
-  });
-
-  return (
-    <Html position={[-30, 5, 30]} center zIndexRange={[10, 0]}>
-      <div style={{
-        width: '60px', height: '60px', background: 'var(--bg-panel)',
-        borderRadius: '8px', border: '1px solid var(--border-subtle)',
-        display: 'flex', alignItems: 'center', justifyContent: 'center',
-        boxShadow: 'var(--shadow-md)', color: 'var(--text-muted)', fontSize: '10px',
-        fontWeight: 600, position: 'relative'
-      }}>
-        <div style={{ position: 'absolute', top: 4 }}>N</div>
-        <div style={{ position: 'absolute', bottom: 4 }}>S</div>
-        <div style={{ position: 'absolute', right: 4 }}>E</div>
-        <div style={{ position: 'absolute', left: 4 }}>W</div>
-        <div style={{
-          width: '40px', height: '40px', border: '2px solid var(--border-default)', borderRadius: '50%',
-          transform: `rotate(${-rotation}rad)`, transition: 'transform 0.1s'
-        }}>
-          <div style={{ width: '2px', height: '18px', background: 'var(--danger)', margin: '0 auto' }}></div>
-          <div style={{ width: '2px', height: '18px', background: 'var(--text-primary)', margin: '0 auto' }}></div>
-        </div>
-      </div>
-    </Html>
-  );
-};
-
-export default function Viewer3D({ 
-  systemData, explodeValue, showLabels, showGrid, 
-  visibleLayers, cameraPreset, resetTrigger,
-  selectedUlpin, onSelect 
-}) {
-  const [parcelOutline, setParcelOutline] = useState(null);
-
-  useEffect(() => {
-    fetch(`${API_BASE_URL}/api/parcel`)
-      .then(r => r.json())
-      .then(d => {
-        const coords = d.features[0].geometry.coordinates[0];
-        const points = coords.map(p => new THREE.Vector3(p[0], 0, p[1]));
-        setParcelOutline(points);
-      })
-      .catch(e => console.error(e));
-  }, []);
-
-  const units = systemData?.units || [];
+export default function Viewer3D({ visibleLayers, cameraPreset, resetTrigger, selectedUlpin, onSelect }) {
+  // Use selectedUlpin to control highlighting, but for this realistic scene we map it to our units.
+  // We check visibleLayers from PropertyMap (e.g. utilities, tunnels, units, buildings, parcels).
   
-  const filteredUnits = units.filter(u => {
-    if (u.type === 'metro' && !visibleLayers.metro) return false;
-    if (u.type === 'utility' && !visibleLayers.utility) return false;
-    if (u.type === 'garden' && !visibleLayers.common) return false;
-    if (u.type === 'water_tank' && !visibleLayers.terrace) return false;
-    if (u.level === 'LC01' && !visibleLayers.terrace) return false;
-    if ((u.level === 'L-01' || u.level === 'L-02') && !visibleLayers.basements) return false;
-    if ((u.level === 'L00' || u.level === 'L01' || u.level === 'L02' || u.level === 'L03') && !visibleLayers.apartments) return false;
-    return true;
-  });
+  const showUnderground = visibleLayers?.utilities || visibleLayers?.tunnels;
 
   return (
-    <div style={{ 
-      width: '100%', height: '100%', 
-      background: 'radial-gradient(circle at center, #0b1120 0%, #06080f 100%)' 
-    }}>
-      <Canvas shadows camera={{ position: [35, 25, 35], fov: 45, near: 0.1, far: 500 }}>
-        <fog attach="fog" args={['#0b1120', 80, 220]} />
+    <div style={{ width: '100%', height: '100%', background: '#05080f' }}>
+      <Canvas shadows camera={{ position: [45, 30, 45], fov: 45, near: 0.1, far: 500 }}>
+        <fog attach="fog" args={['#05080f', 60, 200]} />
         
-        <ambientLight intensity={0.55} />
-        <hemisphereLight args={['#38bdf8', '#0b1120', 0.35]} />
-        <directionalLight 
-          position={[25, 40, 20]} 
-          intensity={1.1} 
-          castShadow 
-          shadow-mapSize={[2048, 2048]} 
-        />
+        <ambientLight intensity={0.4} />
+        <hemisphereLight args={['#22d3ee', '#0a1220', 0.3]} />
+        <directionalLight position={[30, 40, 20]} intensity={1.2} castShadow shadow-mapSize={[2048, 2048]} />
+
+        <CameraController preset={cameraPreset} key={resetTrigger} />
+        <OrbitControls dampingFactor={0.08} enablePan={true} minDistance={15} maxDistance={150} />
+
+        <Plane args={[300, 300]} rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]} receiveShadow>
+          <meshStandardMaterial color="#05080f" />
+        </Plane>
+
+        <Grid cellColor="#14213d" sectionColor="#22d3ee" fadeDistance={120} infiniteGrid={true} position={[0, 0, 0]} />
+
+        {visibleLayers?.parcels && <ParcelBoundary />}
+        {visibleLayers?.buildings && <RealisticBuilding selectedUnit={selectedUlpin} onSelect={onSelect} />}
+        {showUnderground && <UndergroundLayer />}
         
-        <CameraController preset={cameraPreset} resetTrigger={resetTrigger} />
-        <OrbitControls 
-          dampingFactor={0.08} 
-          enablePan={true} 
-          minDistance={12} 
-          maxDistance={120} 
-          maxPolarAngle={cameraPreset === 'underground' ? Math.PI : Math.PI * 0.49}
-        />
-        
-        {/* Ground */}
-        <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]} receiveShadow>
-          <planeGeometry args={[200, 200]} />
-          <meshStandardMaterial color="#0d1524" transparent opacity={0.65} depthWrite={false} />
-        </mesh>
-
-        {showGrid && (
-          <Grid infiniteGrid fadeDistance={100} sectionColor="#334155" cellColor="#1e293b" position={[0, 0, 0]} />
-        )}
-
-        {/* Parcel Boundary */}
-        {visibleLayers.boundary && parcelOutline && (
-          <ExtrudedParcel coords={parcelOutline} />
-        )}
-
-        {/* Building Footprint in White */}
-        {visibleLayers.boundary && units.length > 0 && (() => {
-          const gf = units.find(u => u.level === 'L00');
-          if (gf) {
-            const pts = gf.footprint.map(p => new THREE.Vector3(p[0], 0.06, p[1]));
-            return (
-              <line>
-                <bufferGeometry>
-                  <bufferAttribute 
-                    attach="attributes-position" 
-                    count={pts.length}
-                    array={new Float32Array(pts.flatMap(p => [p.x, p.y, p.z]))}
-                    itemSize={3}
-                  />
-                </bufferGeometry>
-                <lineBasicMaterial color="#f8fafc" transparent opacity={0.3} linewidth={2} />
-              </line>
-            );
-          }
-          return null;
-        })()}
-
-        {/* 3D Property Units */}
-        {filteredUnits.map((unit) => (
-          <UnitMesh 
-            key={unit.unit_id} 
-            unit={unit} 
-            explodeValue={explodeValue} 
-            showLabels={showLabels} 
-            isSelected={selectedUlpin === unit.ulpin}
-            onSelect={onSelect} 
-          />
-        ))}
-
-        <Compass />
       </Canvas>
-      <div style={{ position: 'absolute', bottom: '16px', right: '16px', opacity: 0.35, fontSize: '11px', color: 'var(--text-muted)', pointerEvents: 'none' }}>
-        GeoCadastre 3D Prototype · SIH 2026
-      </div>
-      {cameraPreset === 'underground' && (
-        <div style={{ position: 'absolute', top: '16px', right: '16px', background: 'rgba(56,189,248,0.1)', border: '1px solid rgba(56,189,248,0.3)', borderRadius: '8px', padding: '8px 12px', display: 'flex', alignItems: 'center', gap: '6px', zIndex: 10 }}>
-          <span style={{ color: 'var(--accent-primary)', fontSize: '12px' }}>\ud83d\udcd0</span>
-          <span style={{ color: 'var(--accent-primary)', fontSize: '11px', fontWeight: 500 }}>Underground View</span>
-          <span style={{ color: 'var(--text-muted)', fontSize: '9px' }}>\u2014 Z: -12m to 0m</span>
-        </div>
-      )}
-      {selectedUlpin && (
-        <div style={{ position: 'absolute', top: cameraPreset === 'underground' ? '60px' : '16px', right: '16px', background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.3)', borderRadius: '8px', padding: '8px 12px', display: 'flex', alignItems: 'center', gap: '6px', zIndex: 10 }}>
-          <span style={{ color: '#22c55e', fontSize: '12px' }}>✓</span>
-          <span style={{ color: '#22c55e', fontSize: '11px', fontWeight: 500 }}>Validated</span>
-          <span style={{ color: 'var(--text-muted)', fontSize: '9px' }}>— Prototype check</span>
-        </div>
-      )}
     </div>
   );
 }
