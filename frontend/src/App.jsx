@@ -1,244 +1,40 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React from 'react';
+import { BrowserRouter, Routes, Route, Navigate } from 'react-router-dom';
+import AppShell from './layouts/AppShell';
+import LandingShell from './layouts/LandingShell';
+import Landing from './pages/Landing';
+import Overview from './pages/Overview';
+import PropertyMap from './pages/PropertyMap';
+import Parcels from './pages/Parcels';
+import Buildings from './pages/Buildings';
+import VerticalUnits from './pages/VerticalUnits';
+import Validation from './pages/Validation';
+import Reports from './pages/Reports';
 import './styles.css';
-import Navbar from './components/Navbar';
-import Footer from './components/Footer';
-import LeftSidebar from './components/LeftSidebar';
-import Viewer3D from './components/Viewer3D';
-import ViewerToolbar from './components/ViewerToolbar';
-import ViewerLegend from './components/ViewerLegend';
-import UnitDetails from './components/UnitDetails';
-import Modal from './components/Modal';
-import { useToast } from './components/Toast';
-import ErrorBoundary from './components/ErrorBoundary';
-import JudgeDemo from './components/JudgeDemo';
-
-function InfoModal({ onClose }) {
-  return (
-    <Modal onClose={onClose}>
-      <div style={{
-        backgroundColor: 'var(--bg-panel)', color: 'var(--text-primary)', width: '100vw', maxWidth: '800px',
-        borderRadius: '16px', position: 'relative', overflow: 'hidden',
-        border: '1px solid var(--border-subtle)', boxShadow: 'var(--shadow-lg)',
-        display: 'flex'
-      }}>
-        {/* Left column */}
-        <div style={{ flex: 2, padding: '32px' }}>
-          <h2 style={{ color: 'var(--text-primary)', marginBottom: '16px', fontSize: '1.5rem', fontWeight: 600 }}>About GeoCadastre 3D</h2>
-          <p style={{ fontSize: '0.95rem', marginBottom: '16px', lineHeight: '1.6', color: 'var(--text-secondary)' }}>
-            This prototype for SIH 2026 (PS 26011) demonstrates the proposed technical workflow for processing synthetic cadastral data into hierarchical 3D volumetric property units. All data is controlled demo data.
-          </p>
-          
-          <div style={{ background: 'rgba(245,158,11,0.1)', border: '1px solid rgba(245,158,11,0.3)', borderRadius: '8px', padding: '12px', marginBottom: '16px' }}>
-            <div style={{ fontSize: '12px', fontWeight: 600, color: 'var(--warning)', marginBottom: '4px' }}>⚠️ Data Honesty</div>            <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>
-              All parcel data, measurements, ownership, and validation results shown in this prototype are <strong>synthetic/demo data</strong> created for demonstration purposes. This system does not use real government cadastral data. Production systems would use live drone orthomosaics, LiDAR point clouds, GNSS/CORS anchors, and municipal GIS layers.
-            </div>
-          </div>
-          
-          <div style={{ background: 'rgba(56,189,248,0.08)', border: '1px solid rgba(56,189,248,0.2)', borderRadius: '8px', padding: '12px', marginBottom: '16px' }}>
-            <div style={{ fontSize: '12px', fontWeight: 600, color: 'var(--accent-primary)', marginBottom: '8px' }}>📐 Why 3D ULPIN?</div>
-            <div style={{ fontSize: '11px', color: 'var(--text-secondary)', lineHeight: 1.6 }}>
-              Traditional 2D cadastral maps cannot represent vertical/subsurface property relationships. This prototype demonstrates how 3D volumetric ULPINs can address: underground metro tunnels crossing parcels, vertical property layers (apartments at different heights), utility easements at different depths, and height/depth/Z coordinates per unit.
-            </div>
-          </div>
-          
-          <div style={{ display: 'flex', gap: '16px', marginTop: '24px' }}>
-            <div style={{ flex: 1, background: 'var(--bg-primary)', padding: '16px', borderRadius: '8px', border: '1px solid var(--border-default)' }}>
-              <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--accent-primary)', marginBottom: '4px' }}>1.2s</div>
-              <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Avg. Generation Time</div>
-            </div>
-            <div style={{ flex: 1, background: 'var(--bg-primary)', padding: '16px', borderRadius: '8px', border: '1px solid var(--border-default)' }}>
-              <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--success)', marginBottom: '4px' }}>✓</div>              <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Prototype Validation</div>
-            </div>
-            <div style={{ flex: 1, background: 'var(--bg-primary)', padding: '16px', borderRadius: '8px', border: '1px solid var(--border-default)' }}>
-              <div style={{ fontSize: '24px', fontWeight: 700, color: 'var(--warning)', marginBottom: '4px' }}>LADM</div>
-              <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>Concept Demo</div>
-            </div>
-          </div>
-        </div>
-
-        {/* Right column */}
-        <div style={{ flex: 1, padding: '32px', background: 'var(--bg-elevated)', borderLeft: '1px solid var(--border-subtle)' }}>
-          <button onClick={onClose} style={{ position: 'absolute', top: '16px', right: '16px', background: 'transparent', color: 'var(--text-muted)', border: 'none', fontSize: '20px', cursor: 'pointer' }}>✕</button>
-          <h3 style={{ fontSize: '1rem', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '24px' }}>Keyboard Shortcuts</h3>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
-            {[
-              { key: 'Space', desc: 'Run Pipeline' },
-              { key: 'Esc', desc: 'Clear Selection / Close Modals' },
-              { key: 'R', desc: 'Reset Camera' },
-              { key: '1-4', desc: 'Camera Presets' },
-              { key: 'L', desc: 'Toggle Labels' },
-              { key: 'G', desc: 'Toggle Grid' }
-            ].map(shortcut => (
-              <div key={shortcut.key} style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <kbd style={{ background: 'var(--bg-primary)', border: '1px solid var(--border-default)', borderRadius: '4px', padding: '4px 8px', fontSize: '11px', fontFamily: 'monospace', color: 'var(--text-primary)', boxShadow: '0 2px 0 var(--border-subtle)' }}>{shortcut.key}</kbd>
-                <span style={{ fontSize: '12px', color: 'var(--text-muted)' }}>{shortcut.desc}</span>
-              </div>
-            ))}
-          </div>
-        </div>
-      </div>
-    </Modal>
-  );
-}
 
 function App() {
-  const [pipelineState, setPipelineState] = useState('idle');
-  const [systemData, setSystemData] = useState(null);
-  const [showInfo, setShowInfo] = useState(false);
-  const [demoActive, setDemoActive] = useState(false);
-  const searchControlRef = useRef(null);
-  
-  const addToast = useToast();
-
-  // Viewer state
-  const [explodeValue, setExplodeValue] = useState(0);
-  const [showLabels, setShowLabels] = useState(true);
-  const [showGrid, setShowGrid] = useState(true);
-  const [cameraPreset, setCameraPreset] = useState('isometric');
-  const [resetTrigger, setResetTrigger] = useState(0);
-  const [selectedUnit, setSelectedUnit] = useState(null);
-  
-  const [visibleLayers, setVisibleLayers] = useState({
-    apartments: true,
-    basements: true,
-    terrace: true,
-    metro: true,
-    utility: true,
-    common: true,
-    boundary: true
-  });
-
-  const toggleLayer = (layerId) => {
-    setVisibleLayers(prev => ({ ...prev, [layerId]: !prev[layerId] }));
-  };
-
-  const handleResetCamera = () => {
-    setCameraPreset('isometric');
-    setResetTrigger(prev => prev + 1);
-    addToast('View reset to Isometric', 'info');
-  };
-
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-
-      switch(e.key.toLowerCase()) {
-        case ' ': // space
-          e.preventDefault();
-          if (pipelineState !== 'running' && pipelineState !== 'complete') {
-            setPipelineState('running');
-          }
-          break;
-        case 'escape':
-          setSelectedUnit(null);
-          setShowInfo(false);
-          setDemoActive(false);
-          break;
-        case 'r':
-          handleResetCamera();
-          break;
-        case '1':
-          setCameraPreset('isometric');
-          break;
-        case '2':
-          setCameraPreset('top');
-          break;
-        case '3':
-          setCameraPreset('front');
-          break;
-        case '4':
-          setCameraPreset('underground');
-          break;
-        case 'l':
-          setShowLabels(prev => !prev);
-          break;
-        case 'g':
-          setShowGrid(prev => !prev);
-          break;
-        default:
-          break;
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [pipelineState]);
-
   return (
-    <div className="app-shell">
-      <Navbar onShowInfo={() => setShowInfo(true)} onShowDemo={() => setDemoActive(true)} />
-
-      {showInfo && <InfoModal onClose={() => setShowInfo(false)} />}
-
-      <main className="app-main">
-        <LeftSidebar 
-          pipelineState={pipelineState} 
-          setPipelineState={setPipelineState} 
-          onPipelineComplete={setSystemData} 
-          searchControlRef={searchControlRef}
-        />
-
-        <section className="panel-center">
-          <ViewerToolbar 
-            explodeValue={explodeValue} setExplodeValue={setExplodeValue}
-            showLabels={showLabels} setShowLabels={setShowLabels}
-            showGrid={showGrid} setShowGrid={setShowGrid}
-            cameraPreset={cameraPreset} setCameraPreset={setCameraPreset}
-            onResetCamera={handleResetCamera}
-            visibleLayers={visibleLayers} toggleLayer={toggleLayer}
-          />
-          
-          <div className="canvas-container" style={{ position: 'relative' }}>
-            {(!systemData || pipelineState !== 'complete') && (
-              <div style={{
-                position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
-                background: 'rgba(15,23,42,0.85)', backdropFilter: 'blur(8px)',
-                border: '1px solid var(--border-subtle)', borderRadius: '12px',
-                padding: '16px 24px', color: 'var(--text-primary)', fontSize: '14px', fontWeight: 500,
-                pointerEvents: 'none', zIndex: 10, display: 'flex', alignItems: 'center', gap: '12px',
-                boxShadow: 'var(--shadow-lg)'
-              }}>
-                <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--accent-primary)', animation: 'pulse 1.5s infinite' }}></div>
-                Awaiting Data Ingestion / Run Pipeline to start
-              </div>
-            )}
-            <ErrorBoundary>
-              <Viewer3D 
-                systemData={systemData} 
-                explodeValue={explodeValue} 
-                showLabels={showLabels} 
-                showGrid={showGrid}
-                visibleLayers={visibleLayers}
-                cameraPreset={cameraPreset}
-                resetTrigger={resetTrigger}
-                selectedUlpin={selectedUnit}
-                onSelect={setSelectedUnit} 
-              />
-            </ErrorBoundary>
-          </div>
-          
-          <ViewerLegend />
-        </section>
-
-        <aside className="panel-right">
-          <UnitDetails selectedUnit={selectedUnit} />
-        </aside>
-      </main>
-
-      <Footer />
-
-      {demoActive && (
-        <JudgeDemo
-          pipelineState={pipelineState}
-          selectedUnit={selectedUnit}
-          explodeValue={explodeValue}
-          cameraPreset={cameraPreset}
-          setQueryInSearch={(q) => searchControlRef.current?.runSearch(q)}
-          onExit={() => setDemoActive(false)}
-        />
-      )}
-    </div>
+    <BrowserRouter>
+      <Routes>
+        <Route element={<LandingShell />}>
+          <Route path="/" element={<Landing />} />
+        </Route>
+        
+        <Route element={<AppShell />}>
+          <Route path="/overview" element={<Overview />} />
+          <Route path="/map" element={<PropertyMap />} />
+          <Route path="/parcels" element={<Parcels />} />
+          <Route path="/buildings" element={<Buildings />} />
+          <Route path="/units" element={<VerticalUnits />} />
+          <Route path="/validation" element={<Validation />} />
+          <Route path="/reports" element={<Reports />} />
+          {/* Catch-all to fallback to /map if authenticated or / depending on flow. For demo, redirect unknown to map */}
+          <Route path="*" element={<Navigate to="/map" replace />} />
+        </Route>
+      </Routes>
+    </BrowserRouter>
   );
 }
 
 export default App;
+
