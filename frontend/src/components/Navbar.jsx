@@ -1,9 +1,14 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { NavLink, Link } from 'react-router-dom';
-import { LayoutGrid, Map, Layers, Building2, Boxes, ShieldCheck, FileText, Search, Radio, Bell, User } from 'lucide-react';
+import { LayoutGrid, Map, Layers, Building2, Boxes, ShieldCheck, FileText, Search, Radio, Bell, User, Clock, ChevronRight } from 'lucide-react';
 import logoUrl from '../assets/logo.svg';
+import { useToast } from './Toast';
 
 export default function Navbar({ onShowInfo, onShowDemo }) {
+  const addToast = useToast();
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isSearchFocused, setIsSearchFocused] = useState(false);
+
   const navLinks = [
     { to: '/overview', icon: LayoutGrid, label: 'Overview' },
     { to: '/map', icon: Map, label: '3D Property Map' },
@@ -13,6 +18,12 @@ export default function Navbar({ onShowInfo, onShowDemo }) {
     { to: '/validation', icon: ShieldCheck, label: 'Validation' },
     { to: '/reports', icon: FileText, label: 'Reports' },
   ];
+
+  const handleSearchSelect = (result) => {
+    addToast(`Navigating to ${result}`, 'success');
+    setIsSearchFocused(false);
+    setSearchQuery('');
+  };
 
   return (
     <header style={{
@@ -80,21 +91,78 @@ export default function Navbar({ onShowInfo, onShowDemo }) {
 
       {/* Right: Search, Demo, Avatar */}
       <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
-        <div style={{
-          position: 'relative', width: '400px', display: 'flex', alignItems: 'center'
-        }}>
-          <Search size={16} color="var(--text-3)" style={{ position: 'absolute', left: '12px' }} />
-          <input
-            type="text"
-            placeholder="Search ULPIN, parcel, building, unit…"
-            style={{
-              width: '100%', background: 'var(--bg-1)', border: '1px solid var(--border-2)',
-              borderRadius: '6px', padding: '8px 12px 8px 36px', color: 'var(--text-1)',
-              fontSize: '13px', outline: 'none', transition: 'border-color var(--transition)'
-            }}
-            onFocus={(e) => e.target.style.borderColor = 'var(--accent)'}
-            onBlur={(e) => e.target.style.borderColor = 'var(--border-2)'}
-          />
+        
+        {/* Global Search */}
+        <div style={{ position: 'relative', width: '400px' }}>
+          <div style={{ position: 'relative', display: 'flex', alignItems: 'center' }}>
+            <Search size={16} color={isSearchFocused ? 'var(--accent)' : 'var(--text-3)'} style={{ position: 'absolute', left: '12px', transition: 'color var(--transition)' }} />
+            <input
+              type="text"
+              placeholder="Search ULPIN, parcel, building, unit…"
+              value={searchQuery}
+              onChange={(e) => setSearchQuery(e.target.value)}
+              onFocus={() => setIsSearchFocused(true)}
+              onBlur={() => setTimeout(() => setIsSearchFocused(false), 200)}
+              style={{
+                width: '100%', background: 'var(--bg-1)', border: isSearchFocused ? '1px solid var(--accent)' : '1px solid var(--border-2)',
+                borderRadius: '6px', padding: '8px 12px 8px 36px', color: 'var(--text-1)',
+                fontSize: '13px', outline: 'none', transition: 'border-color var(--transition)',
+                boxShadow: isSearchFocused ? '0 0 0 3px rgba(34, 211, 238, 0.1)' : 'none'
+              }}
+            />
+          </div>
+
+          {/* Search Dropdown */}
+          {isSearchFocused && (
+            <div style={{
+              position: 'absolute', top: '100%', left: 0, right: 0, marginTop: '8px',
+              background: 'var(--bg-2)', border: '1px solid var(--border-1)',
+              borderRadius: '8px', boxShadow: '0 8px 24px rgba(0,0,0,0.4)',
+              overflow: 'hidden', zIndex: 110, display: 'flex', flexDirection: 'column'
+            }}>
+              {!searchQuery ? (
+                <>
+                  <div style={{ padding: '8px 12px', fontSize: '11px', fontWeight: 600, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.05em', borderBottom: '1px solid var(--border-2)' }}>
+                    Recent Searches
+                  </div>
+                  {['UP-LKO-P123456 (Parcel)', '09-12345-0012-L03-R (Unit)', 'Lucknow Metro B1'].map(recent => (
+                    <div 
+                      key={recent}
+                      onClick={() => handleSearchSelect(recent)}
+                      style={{ padding: '10px 12px', display: 'flex', alignItems: 'center', gap: '8px', fontSize: '13px', color: 'var(--text-2)', cursor: 'pointer', borderBottom: '1px solid var(--border-2)' }}
+                      onMouseOver={(e) => e.currentTarget.style.background = 'var(--bg-3)'}
+                      onMouseOut={(e) => e.currentTarget.style.background = 'transparent'}
+                    >
+                      <Clock size={14} color="var(--text-4)" />
+                      {recent}
+                    </div>
+                  ))}
+                </>
+              ) : (
+                <>
+                  <div style={{ padding: '8px 12px', fontSize: '11px', fontWeight: 600, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.05em', borderBottom: '1px solid var(--border-2)' }}>
+                    Mock Results for "{searchQuery}"
+                  </div>
+                  {[
+                    `UP-LKO-${searchQuery.toUpperCase()}-001`,
+                    `3D-ULPIN: 09-${searchQuery}-12345`,
+                    `${searchQuery} Commercial Complex`
+                  ].map(result => (
+                    <div 
+                      key={result}
+                      onClick={() => handleSearchSelect(result)}
+                      style={{ padding: '10px 12px', display: 'flex', alignItems: 'center', justifyContent: 'space-between', fontSize: '13px', color: 'var(--text-1)', cursor: 'pointer', borderBottom: '1px solid var(--border-2)' }}
+                      onMouseOver={(e) => { e.currentTarget.style.background = 'var(--bg-3)'; e.currentTarget.style.color = 'var(--accent)'; }}
+                      onMouseOut={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--text-1)'; }}
+                    >
+                      <span>{result}</span>
+                      <ChevronRight size={14} />
+                    </div>
+                  ))}
+                </>
+              )}
+            </div>
+          )}
         </div>
 
         <button
