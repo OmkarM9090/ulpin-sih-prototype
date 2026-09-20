@@ -1,8 +1,8 @@
 import React, { useState, useRef } from 'react';
 import { Outlet } from 'react-router-dom';
 import Navbar from '../components/Navbar';
-import Footer from '../components/Footer';
 import LeftSidebar from '../components/LeftSidebar';
+import BottomActionBar from '../components/BottomActionBar';
 import Modal from '../components/Modal';
 import JudgeDemo from '../components/JudgeDemo';
 
@@ -87,12 +87,7 @@ export default function AppShell() {
         </section>
       </main>
 
-      {/* Placeholder for BottomActionBar */}
-      <div style={{ height: '48px', background: 'var(--bg-2)', borderTop: '1px solid var(--border-1)' }}>
-          {/* Bottom action bar will go here */}
-      </div>
-
-      <Footer />
+      <BottomActionBar />
 
       {demoActive && (
         <JudgeDemo
