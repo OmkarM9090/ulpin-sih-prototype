@@ -222,6 +222,30 @@ def get_property_card(ulpin: str):
         "disclaimer": "Prototype \u2014 Not an Official Government Document"
     }
 
+@app.get("/api/overview-stats")
+def get_overview_stats():
+    units = load_json('generated_units.json') or []
+    parcels = 11 # 1 modelled + 10 2D only from spec
+    buildings = 4 # 1 modeled + 3 pending from spec
+    underground = 3 # B1, B2, Metro from spec
+    
+    return {
+        "total_parcels": parcels,
+        "buildings": buildings,
+        "units": len(units),
+        "underground": underground,
+        "conflicts": 0,
+        "verified": len(units),
+        "activity": [
+            {"title": "3D ULPIN generated for F05-U10", "time": "2 minutes ago", "color": "#14b8a6"},
+            {"title": "Spatial validation completed", "time": "15 minutes ago", "color": "#22c55e"},
+            {"title": "Unit extrusion pipeline finished", "time": "1 hour ago", "color": "#3b82f6"},
+            {"title": "Underground metro asset mapped", "time": "3 hours ago", "color": "#8b5cf6"},
+            {"title": "Parcel UP-LKO-P123456 ingested", "time": "5 hours ago", "color": "#f59e0b"},
+            {"title": "Demo dataset initialized", "time": "1 day ago", "color": "#94a3b8"}
+        ]
+    }
+
 if __name__ == "__main__":
     import uvicorn
     uvicorn.run("main:app", host="127.0.0.1", port=8000, reload=True)
