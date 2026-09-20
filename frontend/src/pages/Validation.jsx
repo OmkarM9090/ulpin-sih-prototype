@@ -3,11 +3,11 @@ import { ShieldCheck, CheckCircle2, XCircle } from 'lucide-react';
 
 export default function Validation() {
   const logs = [
-    { check: 'Topological Overlap Detection', target: 'Building UP-LKO-B239', result: 'Pass', time: '12:45:03' },
+    { check: 'Topological Overlap Detection', target: 'Building MH-PUN-B239', result: 'Pass', time: '12:45:03' },
     { check: 'Z-Range Continuity', target: 'Unit 09-12345-0012-L02', result: 'Pass', time: '12:45:01' },
-    { check: 'Underground Clearance (Metro)', target: 'Parcel UP-LKO-P123456', result: 'Warning', time: '12:44:58' },
+    { check: 'Underground Clearance (Metro)', target: 'Parcel MH-PUN-P123456', result: 'Warning', time: '12:44:58' },
     { check: 'LADM Schema Compliance', target: 'Demo Dataset', result: 'Pass', time: '12:44:10' },
-    { check: '3D Geometry Watertightness', target: 'Building UP-LKO-B239', result: 'Fail', time: '12:43:55' }
+    { check: '3D Geometry Watertightness', target: 'Building MH-PUN-B239', result: 'Fail', time: '12:43:55' }
   ];
 
   return (

@@ -105,7 +105,7 @@ export default function PropertyCardModal({ unitId, onClose }) {
                 <Key size={16} /> <h3 style={{ fontSize: '14px', fontWeight: 600 }}>Access Rights</h3>
               </div>
               <div style={{ background: 'var(--bg-1)', padding: '16px', borderRadius: '8px', border: '1px solid var(--border-2)', fontSize: '13px', color: 'var(--text-2)', lineHeight: 1.5 }}>
-                Shared access to ground lobby, elevator shaft C, and emergency stairwell 2 defined via topological links to parent building BLD-UP-LKO-B239.
+                Shared access to ground lobby, elevator shaft C, and emergency stairwell 2 defined via topological links to parent building BLD-MH-PUN-B239.
               </div>
             </section>
 

@@ -3,10 +3,10 @@ import { Layers } from 'lucide-react';
 
 export default function Parcels() {
   const parcels = [
-    { id: 'UP-LKO-P123456', area: '2,450 m²', status: '3D Modelled', owner: 'State Govt', updated: '2 hrs ago' },
-    { id: 'UP-LKO-P123457', area: '1,200 m²', status: 'Pending 3D Extrusion', owner: 'Pvt Ltd', updated: '1 day ago' },
-    { id: 'UP-LKO-P123458', area: '850 m²', status: '2D Registered', owner: 'Individual', updated: '3 days ago' },
-    { id: 'UP-LKO-P123459', area: '3,100 m²', status: '2D Registered', owner: 'Municipal Corp', updated: '1 week ago' },
+    { id: 'MH-PUN-P123456', area: '2,450 m²', status: '3D Modelled', owner: 'State Govt', updated: '2 hrs ago' },
+    { id: 'MH-PUN-P123457', area: '1,200 m²', status: 'Pending 3D Extrusion', owner: 'Pvt Ltd', updated: '1 day ago' },
+    { id: 'MH-PUN-P123458', area: '850 m²', status: '2D Registered', owner: 'Individual', updated: '3 days ago' },
+    { id: 'MH-PUN-P123459', area: '3,100 m²', status: '2D Registered', owner: 'Municipal Corp', updated: '1 week ago' },
   ];
 
   return (

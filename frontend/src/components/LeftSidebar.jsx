@@ -74,11 +74,11 @@ export default function LeftSidebar() {
       }}>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <span>Survey Circle</span>
-          <span style={{ color: 'var(--text-1)' }}>LKO-06</span>
+          <span style={{ color: 'var(--text-1)' }}>PUN-06</span>
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <span>CRS</span>
-          <span style={{ color: 'var(--text-1)' }}>EPSG:32644</span>
+          <span style={{ color: 'var(--text-1)' }}>Local Demo Space</span>
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between' }}>
           <span>Engine</span>

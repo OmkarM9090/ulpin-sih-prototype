@@ -21,7 +21,7 @@ const ParcelBoundary = () => {
           border: '1px solid var(--border-2)', boxShadow: '0 4px 6px rgba(0,0,0,0.3)',
           fontFamily: 'var(--mono)', fontWeight: 600
         }}>
-          UP-LKO-P123456 · 2,450 m²
+          MH-PUN-P123456 · 2,450 m²
         </div>
       </Html>
     </group>

@@ -118,7 +118,7 @@ export default function Navbar({ onShowInfo, onShowDemo }) {
                   <div style={{ padding: '8px 12px', fontSize: '11px', fontWeight: 600, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.05em', borderBottom: '1px solid var(--border-2)' }}>
                     Recent Searches
                   </div>
-                  {['UP-LKO-P123456 (Parcel)', '09-12345-0012-L03-R (Unit)', 'Lucknow Metro B1'].map(recent => (
+                  {['MH-PUN-P123456 (Parcel)', '09-12345-0012-L03-R (Unit)', 'Pune Metro B1'].map(recent => (
                     <div 
                       key={recent}
                       onClick={() => handleSearchSelect(recent)}
@@ -137,7 +137,7 @@ export default function Navbar({ onShowInfo, onShowDemo }) {
                     Mock Results for "{searchQuery}"
                   </div>
                   {[
-                    `UP-LKO-${searchQuery.toUpperCase()}-001`,
+                    `MH-PUN-${searchQuery.toUpperCase()}-001`,
                     `3D-ULPIN: 09-${searchQuery}-12345`,
                     `${searchQuery} Commercial Complex`
                   ].map(result => (

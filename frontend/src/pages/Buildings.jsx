@@ -3,10 +3,10 @@ import { Building2 } from 'lucide-react';
 
 export default function Buildings() {
   const buildings = [
-    { id: 'BLD-UP-LKO-B239', floors: 6, maxZ: '+18.0m', minZ: '-5.0m', footprint: '350 m²', use: 'Mixed Residential' },
-    { id: 'BLD-UP-LKO-B240', floors: 2, maxZ: '+8.0m', minZ: '0.0m', footprint: '120 m²', use: 'Commercial' },
-    { id: 'BLD-UP-LKO-B241', floors: 1, maxZ: '+4.5m', minZ: '0.0m', footprint: '85 m²', use: 'Retail' },
-    { id: 'BLD-UP-LKO-B242', floors: 4, maxZ: '+12.0m', minZ: '0.0m', footprint: '210 m²', use: 'Residential' },
+    { id: 'BLD-MH-PUN-B239', floors: 6, maxZ: '+18.0m', minZ: '-5.0m', footprint: '350 m²', use: 'Mixed Residential' },
+    { id: 'BLD-MH-PUN-B240', floors: 2, maxZ: '+8.0m', minZ: '0.0m', footprint: '120 m²', use: 'Commercial' },
+    { id: 'BLD-MH-PUN-B241', floors: 1, maxZ: '+4.5m', minZ: '0.0m', footprint: '85 m²', use: 'Retail' },
+    { id: 'BLD-MH-PUN-B242', floors: 4, maxZ: '+12.0m', minZ: '0.0m', footprint: '210 m²', use: 'Residential' },
   ];
 
   return (

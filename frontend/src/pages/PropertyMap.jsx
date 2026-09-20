@@ -32,6 +32,18 @@ export default function PropertyMap() {
   const [selectedUnit, setSelectedUnit] = useState(null);
   const [showAIModal, setShowAIModal] = useState(false);
   const [showPropertyCard, setShowPropertyCard] = useState(false);
+  const [showLayers, setShowLayers] = useState(false);
+  const layersRef = useRef(null);
+
+  useEffect(() => {
+    const handleClickOutside = (e) => {
+      if (layersRef.current && !layersRef.current.contains(e.target)) {
+        setShowLayers(false);
+      }
+    };
+    if (showLayers) document.addEventListener('mousedown', handleClickOutside);
+    return () => document.removeEventListener('mousedown', handleClickOutside);
+  }, [showLayers]);
 
   useEffect(() => {
     if (demoAction === 'AI_EXTRACTION') setShowAIModal(true);
@@ -48,6 +60,9 @@ export default function PropertyMap() {
       }
       if (e.key === 'r' || e.key === 'R') {
         handleResetCamera();
+      }
+      if (e.key === 'Escape') {
+        setShowLayers(false);
       }
     };
     window.addEventListener('keydown', handleKeyDown);
@@ -192,10 +207,10 @@ export default function PropertyMap() {
               3D PROPERTY MODEL
             </div>
             <div style={{ fontSize: '12px', color: 'var(--text-1)', fontFamily: 'var(--mono)', marginBottom: '2px' }}>
-              UP-LKO-P123456 · B-239
+              MH-PUN-P123456 · B-239
             </div>
             <div style={{ fontSize: '11px', color: 'var(--text-4)' }}>
-              26.8467° N, 80.9462° E · EPSG:32644 · DEM OFF
+              Scene Coordinates · Local Demo Space · DEM OFF
             </div>
           </div>
 
@@ -261,51 +276,118 @@ export default function PropertyMap() {
             </div>
           </div>
 
-          {/* Overlay: Top-Right LAYERS Panel */}
-          <div style={{
-            position: 'absolute', top: '24px', right: '24px', width: '220px',
-            background: 'var(--bg-2)', border: '1px solid var(--border-1)',
-            borderRadius: '8px', display: 'flex', flexDirection: 'column', overflow: 'hidden',
-            boxShadow: '0 8px 24px rgba(0,0,0,0.4)'
-          }}>
-            <div style={{
-              padding: '12px 16px', borderBottom: '1px solid var(--border-1)',
-              display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-1)'
-            }}>
+          {/* Overlay: Top-Right LAYERS Popover */}
+          <div ref={layersRef} style={{ position: 'absolute', top: '24px', right: '24px', zIndex: 50 }}>
+            {/* Toggle Button */}
+            <button
+              onClick={() => setShowLayers(!showLayers)}
+              style={{
+                background: showLayers ? 'var(--bg-3)' : 'var(--bg-2)', border: '1px solid var(--border-1)',
+                borderRadius: '8px', padding: '8px 12px', display: 'flex', alignItems: 'center', gap: '8px',
+                color: showLayers ? 'var(--text-1)' : 'var(--text-2)', cursor: 'pointer',
+                boxShadow: '0 4px 12px rgba(0,0,0,0.3)', transition: 'all var(--transition)'
+              }}
+              onMouseOver={(e) => { e.currentTarget.style.background = 'var(--bg-3)'; e.currentTarget.style.color = 'var(--text-1)'; }}
+              onMouseOut={(e) => { e.currentTarget.style.background = showLayers ? 'var(--bg-3)' : 'var(--bg-2)'; e.currentTarget.style.color = showLayers ? 'var(--text-1)' : 'var(--text-2)'; }}
+            >
               <Layers size={16} />
               <span style={{ fontSize: '12px', fontWeight: 600, letterSpacing: '0.05em' }}>LAYERS</span>
-            </div>
-            <div style={{ padding: '12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
-              {[
-                { key: 'parcels', label: 'Parcels' },
-                { key: 'buildings', label: 'Buildings' },
-                { key: 'floors', label: 'Floors' },
-                { key: 'units', label: 'Property Units' },
-                { key: 'roads', label: 'Roads' },
-                { key: 'utilities', label: 'Underground Utilities' },
-                { key: 'tunnels', label: 'Tunnels' },
-                { key: 'labels', label: 'Labels' },
-                { key: 'dem', label: 'DEM / Terrain' },
-              ].map(layer => (
-                <label key={layer.key} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
-                  <input 
-                    type="checkbox" 
-                    style={{ display: 'none' }} 
-                    checked={layers[layer.key]} 
-                    onChange={() => toggleLayer(layer.key)} 
-                  />
-                  <div style={{
-                    width: '14px', height: '14px', borderRadius: '3px',
-                    border: layers[layer.key] ? '1px solid var(--accent)' : '1px solid var(--border-2)',
-                    background: layers[layer.key] ? 'var(--accent)' : 'transparent',
-                    display: 'flex', alignItems: 'center', justifyContent: 'center'
-                  }}>
-                    {layers[layer.key] && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--bg-0)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>}
-                  </div>
-                  <span style={{ fontSize: '12px', color: 'var(--text-2)' }}>{layer.label}</span>
-                </label>
-              ))}
-            </div>
+            </button>
+
+            {/* Popover Panel */}
+            {showLayers && (
+              <div style={{
+                position: 'absolute', top: '100%', right: 0, marginTop: '8px', width: '240px',
+                background: 'var(--bg-2)', border: '1px solid var(--border-1)',
+                borderRadius: '8px', display: 'flex', flexDirection: 'column', overflow: 'hidden',
+                boxShadow: '0 12px 32px rgba(0,0,0,0.5)', zIndex: 51,
+                animation: 'fade-in 0.15s ease-out'
+              }}>
+                <div style={{ padding: '12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+                  <div style={{ fontSize: '10px', fontWeight: 600, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>Map Layers</div>
+                  {[
+                    { key: 'parcels', label: 'Parcels' },
+                    { key: 'buildings', label: 'Buildings' },
+                    { key: 'floors', label: 'Floors' },
+                    { key: 'units', label: 'Property Units' }
+                  ].map(layer => (
+                    <label key={layer.key} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                      <input 
+                        type="checkbox" 
+                        style={{ display: 'none' }} 
+                        checked={layers[layer.key]} 
+                        onChange={() => toggleLayer(layer.key)} 
+                      />
+                      <div style={{
+                        width: '14px', height: '14px', borderRadius: '3px',
+                        border: layers[layer.key] ? '1px solid var(--accent)' : '1px solid var(--border-2)',
+                        background: layers[layer.key] ? 'var(--accent)' : 'transparent',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        transition: 'all 0.1s'
+                      }}>
+                        {layers[layer.key] && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--bg-0)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>}
+                      </div>
+                      <span style={{ fontSize: '12px', color: layers[layer.key] ? 'var(--text-1)' : 'var(--text-2)' }}>{layer.label}</span>
+                    </label>
+                  ))}
+
+                  <div style={{ height: '1px', background: 'var(--border-2)', margin: '4px 0' }}></div>
+                  <div style={{ fontSize: '10px', fontWeight: 600, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>Infrastructure</div>
+                  
+                  {[
+                    { key: 'roads', label: 'Roads' },
+                    { key: 'utilities', label: 'Underground Utilities' },
+                    { key: 'tunnels', label: 'Tunnels' }
+                  ].map(layer => (
+                    <label key={layer.key} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                      <input 
+                        type="checkbox" 
+                        style={{ display: 'none' }} 
+                        checked={layers[layer.key]} 
+                        onChange={() => toggleLayer(layer.key)} 
+                      />
+                      <div style={{
+                        width: '14px', height: '14px', borderRadius: '3px',
+                        border: layers[layer.key] ? '1px solid var(--accent)' : '1px solid var(--border-2)',
+                        background: layers[layer.key] ? 'var(--accent)' : 'transparent',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        transition: 'all 0.1s'
+                      }}>
+                        {layers[layer.key] && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--bg-0)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>}
+                      </div>
+                      <span style={{ fontSize: '12px', color: layers[layer.key] ? 'var(--text-1)' : 'var(--text-2)' }}>{layer.label}</span>
+                    </label>
+                  ))}
+                  
+                  <div style={{ height: '1px', background: 'var(--border-2)', margin: '4px 0' }}></div>
+                  <div style={{ fontSize: '10px', fontWeight: 600, color: 'var(--text-3)', textTransform: 'uppercase', letterSpacing: '0.05em', marginBottom: '4px' }}>Context</div>
+
+                  {[
+                    { key: 'labels', label: 'Labels' },
+                    { key: 'dem', label: 'DEM / Terrain' }
+                  ].map(layer => (
+                    <label key={layer.key} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                      <input 
+                        type="checkbox" 
+                        style={{ display: 'none' }} 
+                        checked={layers[layer.key]} 
+                        onChange={() => toggleLayer(layer.key)} 
+                      />
+                      <div style={{
+                        width: '14px', height: '14px', borderRadius: '3px',
+                        border: layers[layer.key] ? '1px solid var(--accent)' : '1px solid var(--border-2)',
+                        background: layers[layer.key] ? 'var(--accent)' : 'transparent',
+                        display: 'flex', alignItems: 'center', justifyContent: 'center',
+                        transition: 'all 0.1s'
+                      }}>
+                        {layers[layer.key] && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--bg-0)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>}
+                      </div>
+                      <span style={{ fontSize: '12px', color: layers[layer.key] ? 'var(--text-1)' : 'var(--text-2)' }}>{layer.label}</span>
+                    </label>
+                  ))}
+                </div>
+              </div>
+            )}
           </div>
         </div>
 
@@ -367,15 +449,15 @@ export default function PropertyMap() {
                 <div style={{ height: '1px', background: 'var(--border-1)' }}></div>
 
                 <div>
-                  <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-1)', marginBottom: '12px' }}>Spatial Coordinates (Center)</div>
+                  <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-1)', marginBottom: '12px' }}>Spatial Identity (Center)</div>
                   <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '12px' }}>
                     <div style={{ background: 'var(--bg-1)', padding: '10px', borderRadius: '6px', border: '1px solid var(--border-2)' }}>
-                      <div style={{ fontSize: '11px', color: 'var(--text-3)', marginBottom: '2px' }}>Latitude</div>
-                      <div style={{ fontSize: '13px', color: 'var(--text-1)', fontFamily: 'var(--mono)' }}>26.846721° N</div>
+                      <div style={{ fontSize: '11px', color: 'var(--text-3)', marginBottom: '2px' }}>Northing</div>
+                      <div style={{ fontSize: '13px', color: 'var(--text-1)', fontFamily: 'var(--mono)' }}>Scene Local Y</div>
                     </div>
                     <div style={{ background: 'var(--bg-1)', padding: '10px', borderRadius: '6px', border: '1px solid var(--border-2)' }}>
-                      <div style={{ fontSize: '11px', color: 'var(--text-3)', marginBottom: '2px' }}>Longitude</div>
-                      <div style={{ fontSize: '13px', color: 'var(--text-1)', fontFamily: 'var(--mono)' }}>80.946211° E</div>
+                      <div style={{ fontSize: '11px', color: 'var(--text-3)', marginBottom: '2px' }}>Easting</div>
+                      <div style={{ fontSize: '13px', color: 'var(--text-1)', fontFamily: 'var(--mono)' }}>Scene Local X</div>
                     </div>
                   </div>
                 </div>

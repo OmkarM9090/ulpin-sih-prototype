@@ -36,7 +36,7 @@ export default function Overview() {
       <div>
         <h1 style={{ fontSize: '24px', fontWeight: 700, color: 'var(--text-1)', marginBottom: '8px' }}>Land Administration Overview</h1>
         <div style={{ fontSize: '13px', color: 'var(--text-3)' }}>
-          Lucknow Circle · Synthetic demonstration dataset · 3D-ULPIN engine v0.9
+          Pune Circle · Synthetic demonstration dataset · 3D-ULPIN engine v0.9
         </div>
       </div>
 
