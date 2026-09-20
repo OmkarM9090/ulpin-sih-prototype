@@ -4,6 +4,7 @@ import { RotateCcw, Square, MoveHorizontal, Box, Layers, MousePointerClick } fro
 import Viewer3D from '../components/Viewer3D';
 import ErrorBoundary from '../components/ErrorBoundary';
 import AIModal from '../components/AIModal';
+import PropertyCardModal from '../components/PropertyCardModal';
 
 export default function PropertyMap() {
   const { systemData, pipelineState, setPipelineState } = useOutletContext();
@@ -14,6 +15,7 @@ export default function PropertyMap() {
   const [resetTrigger, setResetTrigger] = useState(0);
   const [selectedUnit, setSelectedUnit] = useState(null);
   const [showAIModal, setShowAIModal] = useState(false);
+  const [showPropertyCard, setShowPropertyCard] = useState(false);
 
   const compassRef = useRef(null);
 
@@ -350,7 +352,10 @@ export default function PropertyMap() {
                 </div>
 
                 <div style={{ marginTop: 'auto', display: 'flex', flexDirection: 'column', gap: '8px', paddingTop: '24px' }}>
-                  <button style={{ width: '100%', background: 'var(--accent)', color: 'var(--bg-0)', padding: '10px', borderRadius: '6px', fontSize: '13px', fontWeight: 600, border: 'none', cursor: 'pointer' }}>
+                  <button 
+                    onClick={() => setShowPropertyCard(true)}
+                    style={{ width: '100%', background: 'var(--accent)', color: 'var(--bg-0)', padding: '10px', borderRadius: '6px', fontSize: '13px', fontWeight: 600, border: 'none', cursor: 'pointer' }}
+                  >
                     View LADM Record
                   </button>
                   <button style={{ width: '100%', background: 'transparent', color: 'var(--text-2)', border: '1px solid var(--border-2)', padding: '10px', borderRadius: '6px', fontSize: '13px', fontWeight: 600, cursor: 'pointer' }}>
@@ -376,6 +381,7 @@ export default function PropertyMap() {
       </div>
 
       {showAIModal && <AIModal onClose={() => setShowAIModal(false)} onComplete={handleAIComplete} />}
+      {showPropertyCard && <PropertyCardModal unitId={selectedUnit} onClose={() => setShowPropertyCard(false)} />}
     </div>
   );
 }
