@@ -1,74 +1,49 @@
-# GeoCadastre 3D (SIH 26011)
+# GeoCadastre 3D :: ULPIN Prototype
 
-**SIH 2026 Prototype · Problem Statement 26011**
+**Problem Statement:** PS 26011 - 3D Property Registration & Validation (SIH 2026)
+**Team:** [Your Team Name]
+**Project Name:** BHU-3D / GeoCadastre 3D
 
-> ⚠️ **Controlled Demo Data** — This prototype uses synthetic/cadastral data for demonstration purposes only. It does not contain real government cadastral records.
+## Overview
+GeoCadastre 3D is a highly interactive, WebGL-powered spatial data registry prototype designed to tackle the complexities of vertically stacked property ownership (apartments, commercial towers, underground infrastructure like metro tunnels). 
 
-This is a proof-of-concept demonstrating the proposed technical workflow for transforming a 2D land parcel (parent ULPIN) into segmented, watertight 3D property volumes, each assigned a proposed hierarchical 3D-ULPIN.
+It extends the traditional 2D land parcel framework into a hierarchical **3D Volumetric ULPIN** (Unique Land Parcel Identification Number) system, compliant with LADM (Land Administration Domain Model) concepts.
 
-## 🌟 Problem Statement Overview
+### Key Features Demonstrated
+1. **Interactive 3D Cadastre (WebGL/Three.js):** Real-time spatial visualization of extruded buildings, stratified floor units, and underground utility/metro easements on top of 2D base parcels.
+2. **Algorithmic Unit Extraction (Simulated):** A visual pipeline demonstrating how raw BIM/IFC geometric data is parsed, checked for manifold watertightness, and exploded into discrete volumetric units.
+3. **Automated Spatial Validation:** Simulates the detection of topological conflicts (e.g., overlapping property volumes, Z-range anomalies) to ensure legal registry integrity.
+4. **Hierarchical 3D ULPIN Assignment:** Generates unique, cryptographically verifiable 3D property identifiers (e.g., `09-12345-0012-L03-R`).
+5. **LADM Property Title Records:** Rich UI dashboards combining ownership encumbrances with precise 3D spatial geometry matrices.
 
-In densely populated urban areas, vertical property ownership (apartments, underground metros, utilities) is poorly represented by traditional 2D cadastral maps. **Problem Statement 26011** requires a solution to extend the 14-digit Unique Land Parcel Identification Number (ULPIN) into the 3rd dimension. 
+## Tech Stack
+* **Frontend Framework:** React 18, Vite
+* **Routing:** React Router v6
+* **3D Graphics:** Three.js, `@react-three/fiber`, `@react-three/drei`
+* **Icons:** Lucide React
+* **Styling:** Custom Vanilla CSS (Dark Navy / Glassmorphism Aesthetic)
 
-Our solution demonstrates ingesting 2D parcels, extruding vertical volumes, validating 3D topological constraints (ensuring no spatial overlaps), and generating proposed hierarchical 3D-ULPINs.
-
-## ✨ Core Features
-
-1. **7-Stage Geometric Pipeline:** A demo engine from footprint extraction and floor segmentation to 3D volume extrusion.
-2. **Topological Validation (Prototype):** Built-in geometric engine that checks generated units for watertightness and overlap — a prototype check, not a guarantee; results require human/surveyor verification.
-3. **Proposed 3D-ULPIN Generation:** Demonstrates appending logical floor and unit descriptors to the parent 2D ULPIN base.
-4. **Interactive Cadastral Canvas:** 3D WebGL viewer with explode logic, camera presets, layered filtering, and interactive property selection.
-5. **Prototype Property Records:** Generate demo property records detailing unit data, Z-bounds, derivation provenance, and encumbrances — clearly labeled as prototype outputs.
-
-## 📋 Scope & Limitations
-
-
-This prototype demonstrates a **proposed technical workflow** only. The following are explicitly **out of scope**:
-
-
-- **AI-assisted extraction** (building/floor extraction from imagery or point clouds) is *conceptual* — all geometry in this demo is generated from a controlled configuration file, not inferred from sensor data.
-- **Live data ingestion** — no drone, LiDAR, GNSS/CORS, or municipal GIS feeds are connected; listed data sources are declared demo placeholders.
-- **Legal authority** — outputs are not legal documents; ownership adjudication, boundary determination, and approval remain human/surveyor/authority processes that this prototype does not perform.
-- **Validation guarantees** — the topology validator is a prototype check on demo geometry; passing it does not certify real-world accuracy.
-
-
-All parcel data, measurements, ownership records, and validation results shown are **Controlled Demo Data** or **derived from demo geometry**.
-
-
-## 🚀 How to Run the Demo
-
-**Pre-requisites:**
-- Python 3.10+
-- Node.js & npm
+## Getting Started
 
 ### Quick Start (Windows)
-We have provided a convenient launch script. Simply right-click `start.ps1` and select **Run with PowerShell**, or execute it from your terminal:
-```powershell
-.\start.ps1
-```
+Simply double-click the `demo.bat` file located in the root directory. This will automatically install dependencies (if missing) and start the local Vite development server.
 
 ### Manual Start
+1. Open your terminal.
+2. Navigate to the frontend directory: `cd frontend`
+3. Install dependencies: `npm install`
+4. Start the server: `npm run dev`
+5. Open your browser to `http://localhost:5173`
 
-**1. Start the Backend**
-Open a terminal and run:
-```cmd
-cd backend
-python -m pip install fastapi uvicorn pydantic shapely
-python -m uvicorn main:app --reload --port 8000
-```
+## Judging & Demo Mode
+The application includes a built-in "Demo Auto-Play" script designed specifically for presentation environments.
 
-**2. Start the Frontend**
-Open a **second** terminal and run:
-```cmd
-cd frontend
-npm install
-npm run dev
-```
+* **To activate:** Click the `[DEMO MODE]` button in the top right Navbar.
+* **What happens:** The app will take over and automatically navigate through a predefined script simulating the entire ULPIN generation, spatial validation, and property inspection workflow.
+* **To exit:** Press the `ESC` key at any time to regain manual control.
 
-Navigate to **http://localhost:5173** in your web browser.
+## Disclaimer
+> **⚠️ Data Honesty Notice:** All parcel data, measurements, ownership details, Aadhaar hashes, and validation results shown in this prototype are entirely **synthetic and mocked** for demonstration purposes. This system does not interface with any real government databases.
 
-## 🛠️ Tech Stack
-
-- **Frontend:** React, Vite, Three.js, React Three Fiber (R3F), Drei, Vanilla CSS (Custom Design System)
-- **Backend:** Python, FastAPI, Shapely (Computational Geometry)
-- **Data Exchange:** GeoJSON, REST APIs
+---
+*Built for the Smart India Hackathon 2026*

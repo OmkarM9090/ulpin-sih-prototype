@@ -19,19 +19,20 @@ export default class ErrorBoundary extends React.Component {
       return (
         <div style={{
           width: '100%', height: '100%', display: 'flex', flexDirection: 'column',
-          alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--bg-primary)',
-          color: 'var(--text-primary)', padding: '32px', textAlign: 'center'
+          alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--bg-0)',
+          color: 'var(--text-1)', padding: '32px', textAlign: 'center'
         }}>
           <div style={{ fontSize: '48px', marginBottom: '16px' }}>💥</div>
           <h3 style={{ fontSize: '18px', fontWeight: 600, color: 'var(--danger)', marginBottom: '8px' }}>3D Viewer Crashed</h3>
-          <p style={{ fontSize: '13px', color: 'var(--text-muted)', maxWidth: '400px', marginBottom: '16px' }}>
+          <p style={{ fontSize: '13px', color: 'var(--text-3)', maxWidth: '400px', marginBottom: '16px' }}>
             The WebGL context encountered a fatal error. This usually happens if the graphics driver crashes or invalid geometry was passed to the scene.
           </p>
           <button 
             onClick={() => window.location.reload()}
             style={{
-              background: 'var(--bg-elevated)', border: '1px solid var(--border-default)',
-              color: 'var(--text-primary)', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer'
+              background: 'var(--bg-1)', border: '1px solid var(--border-2)',
+              color: 'var(--text-1)', padding: '8px 16px', borderRadius: '8px', cursor: 'pointer',
+              fontSize: '13px', fontWeight: 600
             }}
           >
             Reload Application

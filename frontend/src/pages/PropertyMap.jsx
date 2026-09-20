@@ -1,10 +1,26 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, Suspense } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { RotateCcw, Square, MoveHorizontal, Box, Layers, MousePointerClick } from 'lucide-react';
-import Viewer3D from '../components/Viewer3D';
 import ErrorBoundary from '../components/ErrorBoundary';
 import AIModal from '../components/AIModal';
 import PropertyCardModal from '../components/PropertyCardModal';
+
+const Viewer3D = React.lazy(() => import('../components/Viewer3D'));
+
+const ViewerFallback = () => (
+  <div style={{
+    width: '100%', height: '100%', display: 'flex', flexDirection: 'column',
+    alignItems: 'center', justifyContent: 'center', backgroundColor: 'var(--bg-0)', color: 'var(--accent)'
+  }}>
+    <div className="spin" style={{
+      width: '40px', height: '40px', border: '3px solid rgba(34, 211, 238, 0.2)',
+      borderTopColor: 'var(--accent)', borderRadius: '50%', marginBottom: '16px',
+      boxShadow: '0 0 15px rgba(34, 211, 238, 0.4)'
+    }} />
+    <div style={{ fontSize: '13px', fontWeight: 600, letterSpacing: '0.1em' }}>INITIALIZING 3D ENGINE...</div>
+    <style>{`.spin { animation: spin 1s linear infinite; } @keyframes spin { 100% { transform: rotate(360deg); } }`}</style>
+  </div>
+);
 
 export default function PropertyMap() {
   const { systemData, pipelineState, setPipelineState, demoAction } = useOutletContext();
@@ -149,19 +165,21 @@ export default function PropertyMap() {
         <div style={{ flex: 1, position: 'relative', background: 'var(--bg-0)' }}>
           
           <ErrorBoundary>
-            <Viewer3D 
-              systemData={systemData} 
-              explodeValue={0} 
-              showLabels={activeLayers.labels} 
-              showGrid={true}
-              visibleLayers={activeLayers}
-              cameraPreset={cameraPreset}
-              resetTrigger={resetTrigger}
-              selectedUlpin={selectedUnit}
-              onSelect={setSelectedUnit}
-              viewMode={viewMode}
-              onCameraRotate={handleCameraRotate}
-            />
+            <Suspense fallback={<ViewerFallback />}>
+              <Viewer3D 
+                systemData={systemData} 
+                explodeValue={0} 
+                showLabels={activeLayers.labels} 
+                showGrid={true}
+                visibleLayers={activeLayers}
+                cameraPreset={cameraPreset}
+                resetTrigger={resetTrigger}
+                selectedUlpin={selectedUnit}
+                onSelect={setSelectedUnit}
+                viewMode={viewMode}
+                onCameraRotate={handleCameraRotate}
+              />
+            </Suspense>
           </ErrorBoundary>
 
           {/* Overlay: Bottom-Left Card */}
