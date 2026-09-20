@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { useOutletContext } from 'react-router-dom';
 import { RotateCcw, Square, MoveHorizontal, Box, Layers, MousePointerClick } from 'lucide-react';
 import Viewer3D from '../components/Viewer3D';
@@ -13,14 +13,16 @@ export default function PropertyMap() {
   const [resetTrigger, setResetTrigger] = useState(0);
   const [selectedUnit, setSelectedUnit] = useState(null);
 
+  const compassRef = useRef(null);
+
   const [layers, setLayers] = useState({
     parcels: true,
     buildings: true,
     floors: true,
     units: true,
     roads: true,
-    utilities: true,
-    tunnels: true,
+    utilities: false,
+    tunnels: false,
     labels: true,
     dem: false
   });
@@ -37,6 +39,18 @@ export default function PropertyMap() {
     setResetTrigger(prev => prev + 1);
   };
 
+  const handleCameraRotate = (angle) => {
+    if (compassRef.current) {
+      compassRef.current.style.transform = `rotate(${-angle}rad)`;
+    }
+  };
+
+  const activeLayers = {
+    ...layers,
+    utilities: layers.utilities || showUnderground,
+    tunnels: layers.tunnels || showUnderground
+  };
+
   return (
     <div style={{ display: 'flex', flexDirection: 'column', width: '100%', height: '100%', position: 'relative' }}>
       
@@ -48,7 +62,7 @@ export default function PropertyMap() {
         {/* Left: 2D/3D Toggle */}
         <div style={{ display: 'flex', background: 'var(--bg-1)', borderRadius: '6px', padding: '2px', border: '1px solid var(--border-2)' }}>
           <button
-            onClick={() => setViewMode('2D')}
+            onClick={() => { setViewMode('2D'); setCameraPreset('top'); }}
             style={{
               padding: '6px 16px', borderRadius: '4px', fontSize: '12px', fontWeight: 600,
               background: viewMode === '2D' ? 'rgba(34, 211, 238, 0.1)' : 'transparent',
@@ -58,7 +72,7 @@ export default function PropertyMap() {
             2D VIEW
           </button>
           <button
-            onClick={() => setViewMode('3D')}
+            onClick={() => { setViewMode('3D'); setCameraPreset('isometric'); }}
             style={{
               padding: '6px 16px', borderRadius: '4px', fontSize: '12px', fontWeight: 600,
               background: viewMode === '3D' ? 'rgba(34, 211, 238, 0.1)' : 'transparent',
@@ -105,17 +119,18 @@ export default function PropertyMap() {
         <div style={{ flex: 1, position: 'relative', background: 'var(--bg-0)' }}>
           
           <ErrorBoundary>
-            {/* Viewer3D integration - currently reusing old props, will be updated in Change 9 */}
             <Viewer3D 
               systemData={systemData} 
               explodeValue={0} 
-              showLabels={layers.labels} 
+              showLabels={activeLayers.labels} 
               showGrid={true}
-              visibleLayers={layers}
+              visibleLayers={activeLayers}
               cameraPreset={cameraPreset}
               resetTrigger={resetTrigger}
               selectedUlpin={selectedUnit}
-              onSelect={setSelectedUnit} 
+              onSelect={setSelectedUnit}
+              viewMode={viewMode}
+              onCameraRotate={handleCameraRotate}
             />
           </ErrorBoundary>
 
@@ -177,19 +192,23 @@ export default function PropertyMap() {
               ))}
             </div>
             
-            {/* Compass (Placeholder for now) */}
+            {/* Compass */}
             <div style={{
               width: '60px', height: '60px', borderRadius: '50%',
               background: 'var(--bg-3)', border: '1px solid var(--accent)',
               display: 'flex', alignItems: 'center', justifyContent: 'center',
-              position: 'relative'
+              position: 'relative',
+              boxShadow: '0 4px 12px rgba(0,0,0,0.5)'
             }}>
-              <span style={{ position: 'absolute', top: '4px', fontSize: '10px', color: 'var(--text-2)' }}>N</span>
-              <span style={{ position: 'absolute', bottom: '4px', fontSize: '10px', color: 'var(--text-2)' }}>S</span>
-              <span style={{ position: 'absolute', right: '4px', fontSize: '10px', color: 'var(--text-2)' }}>E</span>
-              <span style={{ position: 'absolute', left: '4px', fontSize: '10px', color: 'var(--text-2)' }}>W</span>
-              {/* Central needle */}
-              <div style={{ width: '2px', height: '30px', background: 'var(--danger)', borderRadius: '2px' }}></div>
+              <span style={{ position: 'absolute', top: '4px', fontSize: '10px', color: 'var(--text-2)', fontWeight: 700 }}>N</span>
+              <span style={{ position: 'absolute', bottom: '4px', fontSize: '10px', color: 'var(--text-2)', fontWeight: 700 }}>S</span>
+              <span style={{ position: 'absolute', right: '4px', fontSize: '10px', color: 'var(--text-2)', fontWeight: 700 }}>E</span>
+              <span style={{ position: 'absolute', left: '4px', fontSize: '10px', color: 'var(--text-2)', fontWeight: 700 }}>W</span>
+              {/* Central needle container rotated via ref */}
+              <div ref={compassRef} style={{ width: '40px', height: '40px', borderRadius: '50%', transition: 'transform 0.1s linear' }}>
+                <div style={{ width: '2px', height: '20px', background: 'var(--danger)', margin: '0 auto', borderRadius: '2px' }}></div>
+                <div style={{ width: '2px', height: '20px', background: 'var(--text-1)', margin: '0 auto', borderRadius: '2px' }}></div>
+              </div>
             </div>
           </div>
 
@@ -220,6 +239,12 @@ export default function PropertyMap() {
                 { key: 'dem', label: 'DEM / Terrain' },
               ].map(layer => (
                 <label key={layer.key} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                  <input 
+                    type="checkbox" 
+                    style={{ display: 'none' }} 
+                    checked={layers[layer.key]} 
+                    onChange={() => toggleLayer(layer.key)} 
+                  />
                   <div style={{
                     width: '14px', height: '14px', borderRadius: '3px',
                     border: layers[layer.key] ? '1px solid var(--accent)' : '1px solid var(--border-2)',

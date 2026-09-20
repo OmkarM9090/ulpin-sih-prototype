@@ -189,7 +189,24 @@ const UndergroundLayer = () => {
   );
 };
 
-const CameraController = ({ preset }) => {
+const CompassObserver = ({ onCameraRotate }) => {
+  const { camera } = useThree();
+  const lastAngle = useRef(null);
+
+  useFrame(() => {
+    if (onCameraRotate) {
+      const angle = Math.atan2(camera.position.x, camera.position.z);
+      // Small optimization: only callback if angle changes by > 0.01 rad
+      if (lastAngle.current === null || Math.abs(lastAngle.current - angle) > 0.01) {
+        lastAngle.current = angle;
+        onCameraRotate(angle);
+      }
+    }
+  });
+  return null;
+};
+
+const CameraController = ({ preset, viewMode }) => {
   const { camera, controls } = useThree();
   
   React.useEffect(() => {
@@ -197,7 +214,7 @@ const CameraController = ({ preset }) => {
     let targetPos = new THREE.Vector3(45, 30, 45);
     let targetLook = new THREE.Vector3(0, 8, 0);
     
-    if (preset === 'top') {
+    if (viewMode === '2D' || preset === 'top') {
       targetPos.set(0, 80, 0);
       targetLook.set(0, 0, 0);
     } else if (preset === 'side') {
@@ -216,28 +233,39 @@ const CameraController = ({ preset }) => {
       if (frame < 30) requestAnimationFrame(animate);
     };
     animate();
-  }, [preset, camera, controls]);
+  }, [preset, viewMode, camera, controls]);
   
   return null;
 };
 
-export default function Viewer3D({ visibleLayers, cameraPreset, resetTrigger, selectedUlpin, onSelect }) {
+export default function Viewer3D({ visibleLayers, cameraPreset, resetTrigger, selectedUlpin, onSelect, viewMode, onCameraRotate }) {
   // Use selectedUlpin to control highlighting, but for this realistic scene we map it to our units.
   // We check visibleLayers from PropertyMap (e.g. utilities, tunnels, units, buildings, parcels).
   
   const showUnderground = visibleLayers?.utilities || visibleLayers?.tunnels;
+  const is2D = viewMode === '2D';
 
   return (
     <div style={{ width: '100%', height: '100%', background: '#05080f' }}>
       <Canvas shadows camera={{ position: [45, 30, 45], fov: 45, near: 0.1, far: 500 }}>
         <fog attach="fog" args={['#05080f', 60, 200]} />
         
+        <CompassObserver onCameraRotate={onCameraRotate} />
+
         <ambientLight intensity={0.4} />
         <hemisphereLight args={['#22d3ee', '#0a1220', 0.3]} />
         <directionalLight position={[30, 40, 20]} intensity={1.2} castShadow shadow-mapSize={[2048, 2048]} />
 
-        <CameraController preset={cameraPreset} key={resetTrigger} />
-        <OrbitControls dampingFactor={0.08} enablePan={true} minDistance={15} maxDistance={150} />
+        <CameraController preset={cameraPreset} viewMode={viewMode} key={resetTrigger} />
+        
+        <OrbitControls 
+          dampingFactor={0.08} 
+          enablePan={true} 
+          minDistance={15} 
+          maxDistance={150}
+          maxPolarAngle={is2D ? 0 : Math.PI / 2}
+          minPolarAngle={is2D ? 0 : 0}
+        />
 
         <Plane args={[300, 300]} rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]} receiveShadow>
           <meshStandardMaterial color="#05080f" />
