@@ -1,8 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Shield, AlertTriangle, CheckCircle2, XCircle, Loader2 } from 'lucide-react';
 import { useToast } from './Toast';
 
-export default function BottomActionBar() {
+export default function BottomActionBar({ demoAction }) {
   const addToast = useToast();
   
   const [isValidating, setIsValidating] = useState(false);
@@ -34,6 +34,12 @@ export default function BottomActionBar() {
       addToast('Validation complete: 0 conflicts found.', 'success');
     }, 1200);
   };
+
+  useEffect(() => {
+    if (demoAction === 'VALIDATION') {
+      handleRunValidation();
+    }
+  }, [demoAction]);
 
   return (
     <div style={{

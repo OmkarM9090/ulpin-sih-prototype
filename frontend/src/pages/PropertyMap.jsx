@@ -7,7 +7,7 @@ import AIModal from '../components/AIModal';
 import PropertyCardModal from '../components/PropertyCardModal';
 
 export default function PropertyMap() {
-  const { systemData, pipelineState, setPipelineState } = useOutletContext();
+  const { systemData, pipelineState, setPipelineState, demoAction } = useOutletContext();
   
   const [viewMode, setViewMode] = useState('3D'); // '2D' or '3D'
   const [showUnderground, setShowUnderground] = useState(false);
@@ -16,6 +16,12 @@ export default function PropertyMap() {
   const [selectedUnit, setSelectedUnit] = useState(null);
   const [showAIModal, setShowAIModal] = useState(false);
   const [showPropertyCard, setShowPropertyCard] = useState(false);
+
+  useEffect(() => {
+    if (demoAction === 'AI_EXTRACTION') setShowAIModal(true);
+    if (demoAction === 'SELECT_UNIT') setSelectedUnit('UNIT-L3');
+    if (demoAction === 'SHOW_CARD') setShowPropertyCard(true);
+  }, [demoAction]);
 
   const compassRef = useRef(null);
 

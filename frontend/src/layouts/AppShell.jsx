@@ -1,10 +1,9 @@
-import React, { useState, useRef } from 'react';
-import { Outlet } from 'react-router-dom';
+import React, { useState, useRef, useEffect } from 'react';
+import { Outlet, useNavigate } from 'react-router-dom';
 import Navbar from '../components/Navbar';
 import LeftSidebar from '../components/LeftSidebar';
 import BottomActionBar from '../components/BottomActionBar';
 import Modal from '../components/Modal';
-import JudgeDemo from '../components/JudgeDemo';
 
 function InfoModal({ onClose }) {
   return (
@@ -66,10 +65,75 @@ export default function AppShell() {
   const [systemData, setSystemData] = useState(null);
   const [showInfo, setShowInfo] = useState(false);
   const [demoActive, setDemoActive] = useState(false);
+  const [demoAction, setDemoAction] = useState(null);
+  
+  const navigate = useNavigate();
   const searchControlRef = useRef(null);
+
+  // Auto-play demo script
+  useEffect(() => {
+    if (!demoActive) {
+      setDemoAction(null);
+      return;
+    }
+
+    let active = true;
+
+    const runScript = async () => {
+      navigate('/map');
+      
+      await new Promise(r => setTimeout(r, 1000));
+      if (!active) return;
+      
+      // Step 1: Run AI
+      setDemoAction('AI_EXTRACTION');
+      
+      // Step 2: Wait for AI to finish (modal is ~3s)
+      await new Promise(r => setTimeout(r, 3500));
+      if (!active) return;
+      
+      // Step 3: Run Validation (simulate)
+      setDemoAction('VALIDATION');
+      
+      await new Promise(r => setTimeout(r, 1500));
+      if (!active) return;
+      
+      // Step 4: Select Unit
+      setDemoAction('SELECT_UNIT');
+      
+      await new Promise(r => setTimeout(r, 2000));
+      if (!active) return;
+      
+      // Step 5: Show Card
+      setDemoAction('SHOW_CARD');
+    };
+
+    runScript();
+
+    return () => { active = false; };
+  }, [demoActive, navigate]);
   
   return (
-    <div className="app-shell">
+    <div className="app-shell" style={{ display: 'flex', flexDirection: 'column', height: '100vh', width: '100vw', overflow: 'hidden' }}>
+      
+      {demoActive && (
+        <div style={{
+          background: 'var(--warning)', color: '#000', padding: '6px',
+          textAlign: 'center', fontSize: '12px', fontWeight: 700, letterSpacing: '0.1em',
+          display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '12px',
+          zIndex: 9999
+        }}>
+          <span className="pulse-dot" style={{ width: '8px', height: '8px', background: '#000', borderRadius: '50%' }}></span>
+          DEMO AUTO-PLAY ACTIVE
+          <button 
+            onClick={() => setDemoActive(false)}
+            style={{ background: 'rgba(0,0,0,0.2)', border: 'none', color: '#000', padding: '2px 8px', borderRadius: '4px', fontSize: '10px', cursor: 'pointer', marginLeft: '12px', fontWeight: 700 }}
+          >
+            ESC TO EXIT
+          </button>
+        </div>
+      )}
+
       <Navbar onShowInfo={() => setShowInfo(true)} onShowDemo={() => setDemoActive(true)} />
 
       {showInfo && <InfoModal onClose={() => setShowInfo(false)} />}
@@ -83,19 +147,20 @@ export default function AppShell() {
         />
 
         <section className="panel-center" style={{ flex: 1, position: 'relative', display: 'flex', flexDirection: 'column', overflow: 'hidden' }}>
-          <Outlet context={{ systemData, pipelineState, setPipelineState }} />
+          <Outlet context={{ systemData, pipelineState, setPipelineState, demoAction }} />
         </section>
       </main>
 
-      <BottomActionBar />
+      <BottomActionBar demoAction={demoAction} />
 
-      {demoActive && (
-        <JudgeDemo
-          pipelineState={pipelineState}
-          setQueryInSearch={(q) => searchControlRef.current?.runSearch(q)}
-          onExit={() => setDemoActive(false)}
-        />
-      )}
+      <style>{`
+        @keyframes pulse-black {
+          0% { box-shadow: 0 0 0 0 rgba(0, 0, 0, 0.7); }
+          70% { box-shadow: 0 0 0 6px rgba(0, 0, 0, 0); }
+          100% { box-shadow: 0 0 0 0 rgba(0, 0, 0, 0); }
+        }
+        .pulse-dot { animation: pulse-black 1.5s infinite; }
+      `}</style>
     </div>
   );
 }
