@@ -13,7 +13,7 @@ const STEPS = [
   { title: "Render Cadastral View", desc: "Building interactive scene" }
 ];
 
-export default function LeftSidebar({ pipelineState, setPipelineState, onPipelineComplete }) {
+export default function LeftSidebar({ pipelineState, setPipelineState, onPipelineComplete, searchControlRef }) {
   const [sources, setSources] = useState([]);
   const [loadingSources, setLoadingSources] = useState(true);
   const [isSourcesOpen, setIsSourcesOpen] = useState(true);
@@ -21,6 +21,36 @@ export default function LeftSidebar({ pipelineState, setPipelineState, onPipelin
   const [currentStep, setCurrentStep] = useState(-1);
   const [pipelineData, setPipelineData] = useState(null);
   const addToast = useToast();
+  
+  // Search state
+  const [searchQuery, setSearchQuery] = useState('');
+  const [searchResults, setSearchResults] = useState([]);
+  const [searching, setSearching] = useState(false);
+  const [selectedParcel, setSelectedParcel] = useState(null);
+
+  // Parcel info from API (Session Info section) — falls back to null, never hardcoded
+  const [parcelInfo, setParcelInfo] = useState(null);
+
+  // Expose search automation for Judge Demo mode (drives the real search flow)
+  React.useImperativeHandle(searchControlRef || null, () => ({
+    runSearch: (query) => {
+      setSearchQuery(query);
+      setTimeout(() => {
+        setSearching(true);
+        fetch(`${API_BASE_URL}/api/parcels/search?q=${encodeURIComponent(query)}`)
+          .then(res => res.json())
+          .then(data => {
+            setSearchResults(data.results || []);
+            setSearching(false);
+          })
+          .catch(err => {
+            console.error(err);
+            setSearching(false);
+            addToast('Search failed', 'error');
+          });
+      }, 0);
+    }
+  }), [addToast]);
 
   useEffect(() => {
     fetch(`${API_BASE_URL}/api/data-sources`)
@@ -33,7 +63,48 @@ export default function LeftSidebar({ pipelineState, setPipelineState, onPipelin
         console.error(err);
         setLoadingSources(false);
       });
+    fetch(`${API_BASE_URL}/api/parcel`)
+      .then(res => res.json())
+      .then(data => {
+        const props = data.features?.[0]?.properties;
+        if (props) setParcelInfo({
+          parcelId: props.parcel_id,
+          parentUlpin: props.parent_ulpin,
+          location: props.location_label,
+          landUse: props.land_use,
+          areaSqm: props.area_sqm
+        });
+      })
+      .catch(err => console.error(err));
   }, []);
+
+  const handleSearch = (e) => {
+    e.preventDefault();
+    if (!searchQuery.trim()) {
+      setSearchResults([]);
+      return;
+    }
+    setSearching(true);
+    fetch(`${API_BASE_URL}/api/parcels/search?q=${encodeURIComponent(searchQuery)}`)
+      .then(res => res.json())
+      .then(data => {
+        setSearchResults(data.results || []);
+        setSearching(false);
+      })
+      .catch(err => {
+        console.error(err);
+        setSearching(false);
+        addToast('Search failed', 'error');
+      });
+  };
+
+  const handleSelectParcel = (parcel) => {
+    setSelectedParcel(parcel);
+    setSearchResults([]);
+    setSearchQuery('');
+    addToast(`Selected parcel ${parcel.parcel_id} — running pipeline`, 'success');
+    setPipelineState('running');
+  };
 
   useEffect(() => {
     if (pipelineState === 'running' && currentStep === -1) {
@@ -63,7 +134,8 @@ export default function LeftSidebar({ pipelineState, setPipelineState, onPipelin
   }, [currentStep, pipelineData, onPipelineComplete, setPipelineState, addToast]);
 
   const handleCopyUlpin = () => {
-    navigator.clipboard.writeText('23140701001001');
+    if (!parcelInfo?.parentUlpin) return;
+    navigator.clipboard.writeText(parcelInfo.parentUlpin);
     addToast('Copied to clipboard', 'success');
   };
 
@@ -88,6 +160,73 @@ export default function LeftSidebar({ pipelineState, setPipelineState, onPipelin
       flexDirection: 'column',
       gap: '16px'
     }}>
+      {/* Section 0: Property Search */}
+      <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+        <div style={{ fontSize: '14px', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '8px' }}>
+          🔍 Search Property
+        </div>
+        <form onSubmit={handleSearch} style={{ display: 'flex', gap: '6px' }}>
+          <input
+            type="text"
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            placeholder="Parcel ID, ULPIN, or location"
+            style={{
+              flex: 1, height: '36px', backgroundColor: 'var(--bg-primary)',
+              border: '1px solid var(--border-default)', borderRadius: '8px',
+              padding: '0 12px', color: 'var(--text-primary)', fontSize: '13px',
+              outline: 'none'
+            }}
+            onFocus={(e) => e.target.style.borderColor = 'var(--accent-primary)'}
+            onBlur={(e) => e.target.style.borderColor = 'var(--border-default)'}
+          />
+          <button type="submit" style={{ height: '36px', padding: '0 14px', background: 'var(--gradient-brand)', color: '#fff', border: 'none', borderRadius: '8px', fontWeight: 600, fontSize: '13px', cursor: 'pointer' }}>
+            {searching ? '...' : 'Search'}
+          </button>
+        </form>
+        
+        {searchResults.length > 0 && (
+          <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+            {searchResults.map((result) => (
+              <div
+                key={result.parcel_id}
+                onClick={() => handleSelectParcel(result)}
+                style={{
+                  backgroundColor: 'var(--bg-primary)', border: '1px solid var(--border-default)',
+                  borderRadius: '8px', padding: '10px 12px', cursor: 'pointer',
+                  transition: 'all 0.2s'
+                }}
+                onMouseOver={(e) => { e.currentTarget.style.borderColor = 'var(--accent-primary)'; e.currentTarget.style.backgroundColor = 'var(--bg-elevated)'; }}
+                onMouseOut={(e) => { e.currentTarget.style.borderColor = 'var(--border-default)'; e.currentTarget.style.backgroundColor = 'var(--bg-primary)'; }}
+              >
+                <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+                  <span style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-primary)' }}>📋 {result.parcel_id}</span>
+                  <span style={{ fontSize: '10px', background: 'var(--bg-elevated)', color: 'var(--text-muted)', padding: '2px 6px', borderRadius: '4px' }}>{result.data_type}</span>
+                </div>
+                <div style={{ fontSize: '11px', color: 'var(--text-muted)', fontFamily: 'monospace' }}>{result.parent_ulpin}</div>
+                <div style={{ fontSize: '11px', color: 'var(--text-secondary)', marginTop: '2px' }}>{result.location} · {result.area_sqm} sqm · {result.land_use}</div>
+              </div>
+            ))}
+            <div style={{ fontSize: '10px', fontStyle: 'italic', color: 'var(--text-muted)', textAlign: 'center', marginTop: '4px' }}>
+              ⚠️ Controlled Demo Data — Synthetic cadastral records for prototype demonstration
+            </div>
+          </div>
+        )}
+
+        {selectedParcel && (
+          <div style={{ background: 'rgba(56,189,248,0.08)', border: '1px solid var(--accent-primary)', borderRadius: '8px', padding: '10px 12px' }}>
+            <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '4px' }}>
+              <span style={{ fontSize: '12px', fontWeight: 600, color: 'var(--accent-primary)' }}>📍 Selected</span>
+              <span style={{ fontSize: '10px', color: 'var(--text-muted)', cursor: 'pointer' }} onClick={() => setSelectedParcel(null)}>✕ Clear</span>
+            </div>
+            <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--text-primary)' }}>{selectedParcel.parcel_id} · {selectedParcel.parent_ulpin}</div>
+            <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>{selectedParcel.location}</div>
+          </div>
+        )}
+      </div>
+
+      <div style={{ height: '1px', backgroundColor: 'var(--border-subtle)', flexShrink: 0 }}></div>
+
       {/* Section A: Input Data Sources */}
       <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
         <div 
@@ -126,16 +265,17 @@ export default function LeftSidebar({ pipelineState, setPipelineState, onPipelin
                   <div style={{ flex: 1, minWidth: 0 }}>
                     <div style={{ fontSize: '13px', fontWeight: 500, color: 'var(--text-primary)', whiteSpace: 'nowrap', overflow: 'hidden', textOverflow: 'ellipsis' }}>{src.name}</div>
                     <div style={{ fontSize: '11px', color: 'var(--text-muted)' }}>{src.format} · {src.spec} · {src.size_mb}MB</div>
+                    <div style={{ fontSize: '9px', color: 'var(--text-muted)', fontStyle: 'italic' }}>Production: {src.id === 'drone' ? 'Live orthomosaic' : src.id === 'lidar' ? 'Live point cloud' : src.id === 'dem' ? 'Bhuvan DEM' : src.id === 'floorplan' ? 'Municipal plans' : src.id === 'gnss' ? 'GNSS/CORS data' : 'Municipal GIS layer'}</div>
                   </div>
-                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-                    <div style={{ fontSize: '14px' }}>✅</div>
-                    <div style={{ fontSize: '10px', color: 'var(--success)' }}>Ingested</div>
+                  <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '2px' }}>
+                    <div style={{ fontSize: '10px', background: 'rgba(245,158,11,0.15)', color: 'var(--warning)', padding: '1px 6px', borderRadius: '4px', fontWeight: 500 }}>Demo</div>
+                    <div style={{ fontSize: '8px', color: 'var(--text-muted)', fontStyle: 'italic' }}>Synthetic</div>
                   </div>
                 </div>
               ))
             )}
             <div style={{ fontSize: '11px', fontStyle: 'italic', color: 'var(--text-muted)', textAlign: 'center', marginTop: '4px' }}>
-              🔒 Sample datasets — production ingests live drone/LiDAR feeds
+              🔒 Controlled Demo Data — Production ingests live drone/LiDAR feeds
             </div>
           </div>
         )}
@@ -198,30 +338,113 @@ export default function LeftSidebar({ pipelineState, setPipelineState, onPipelin
 
         {pipelineState === 'complete' && pipelineData && (
           <div style={{ background: 'rgba(34,197,94,0.08)', border: '1px solid var(--success)', borderRadius: '8px', padding: '12px', marginTop: '8px', flexShrink: 0 }}>
-            <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--success)', marginBottom: '4px' }}>✅ Pipeline Complete</div>
-            <div style={{ fontSize: '11px', color: 'var(--text-secondary)' }}>{pipelineData.units?.length || 20} 3D units generated · Topology VALID · 1.2s</div>
+            <div style={{ fontSize: '13px', fontWeight: 600, color: 'var(--success)', marginBottom: '8px' }}>✅ Pipeline Complete</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px' }}>
+                <span style={{ color: 'var(--success)' }}>✓</span>
+                <span style={{ color: 'var(--text-secondary)' }}>{pipelineData.units?.length || 20} 3D units generated</span>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px' }}>
+                <span style={{ color: 'var(--success)' }}>✓</span>
+                <span style={{ color: 'var(--text-secondary)' }}>Topology validation passed</span>
+              </div>
+              {pipelineData.validation && (
+                <>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px' }}>
+                    <span style={{ color: 'var(--success)' }}>✓</span>
+                    <span style={{ color: 'var(--text-secondary)' }}>Watertight geometry — no gaps</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px' }}>
+                    <span style={{ color: 'var(--success)' }}>✓</span>
+                    <span style={{ color: 'var(--text-secondary)' }}>No unit overlaps detected</span>
+                  </div>
+                  <div style={{ display: 'flex', alignItems: 'center', gap: '6px', fontSize: '11px' }}>
+                    <span style={{ color: 'var(--accent-primary)' }}>ℹ</span>
+                    <span style={{ color: 'var(--text-muted)' }}>Public easement exceptions applied (metro, utility)</span>
+                  </div>
+                </>
+              )}
+            </div>
+            <div style={{ fontSize: '9px', color: 'var(--text-muted)', marginTop: '8px', fontStyle: 'italic' }}>⚠️ Prototype validation — human/surveyor verification required</div>
+          </div>
+        )}
+
+        {pipelineState === 'complete' && (
+          <div style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-default)', borderRadius: '8px', padding: '12px', marginTop: '4px', flexShrink: 0 }}>
+            <div style={{ fontSize: '12px', fontWeight: 600, color: 'var(--text-primary)', marginBottom: '8px' }}>🔍 Verification Workflow</div>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(34,197,94,0.06)', borderRadius: '6px', padding: '8px 10px' }}>
+                <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'rgba(34,197,94,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', flexShrink: 0 }}>📋</div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: '11px', fontWeight: 500, color: 'var(--text-primary)' }}>Surveyor Review</div>
+                  <div style={{ fontSize: '9px', color: 'var(--text-muted)' }}>Geometry verified against field survey</div>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '2px' }}>
+                  <span style={{ fontSize: '10px', color: 'var(--success)', fontWeight: 500 }}>✓ Approved</span>
+                  <span style={{ fontSize: '8px', color: 'var(--text-muted)' }}>(Demo Simulated)</span>
+                </div>
+              </div>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', background: 'rgba(34,197,94,0.06)', borderRadius: '6px', padding: '8px 10px' }}>
+                <div style={{ width: '28px', height: '28px', borderRadius: '50%', background: 'rgba(34,197,94,0.15)', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '14px', flexShrink: 0 }}>🏛</div>
+                <div style={{ flex: 1 }}>
+                  <div style={{ fontSize: '11px', fontWeight: 500, color: 'var(--text-primary)' }}>Authority Approval</div>
+                  <div style={{ fontSize: '9px', color: 'var(--text-muted)' }}>Municipal/Revenue authority sign-off</div>
+                </div>
+                <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'flex-end', gap: '2px' }}>
+                  <span style={{ fontSize: '10px', color: 'var(--success)', fontWeight: 500 }}>✓ Approved</span>
+                  <span style={{ fontSize: '8px', color: 'var(--text-muted)' }}>(Demo Simulated)</span>
+                </div>
+              </div>
+            </div>
+            <div style={{ fontSize: '9px', color: 'var(--text-muted)', marginTop: '8px', fontStyle: 'italic' }}>⚠️ Simulated for prototype demonstration — not real approval</div>
           </div>
         )}
       </div>
 
-      {/* Section C: Session Info */}
+      {/* Section C: Session Info (from /api/parcel) */}
       <div style={{ background: 'var(--bg-elevated)', border: '1px solid var(--border-default)', borderRadius: '8px', padding: '12px', display: 'flex', flexDirection: 'column', gap: '6px', flexShrink: 0 }}>
         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px' }}>
           <span style={{ color: 'var(--text-muted)' }}>Parcel:</span>
-          <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>P001</span>
+          <span style={{ color: 'var(--text-primary)', fontWeight: 500 }}>{parcelInfo?.parcelId || '—'}</span>
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px', alignItems: 'center' }}>
           <span style={{ color: 'var(--text-muted)' }}>Parent ULPIN:</span>
-          <span onClick={handleCopyUlpin} style={{ color: 'var(--accent-primary)', fontFamily: 'monospace', cursor: 'pointer' }} title="Click to copy">23140701001001 📋</span>
+          {parcelInfo ? (
+            <span onClick={handleCopyUlpin} style={{ color: 'var(--accent-primary)', fontFamily: 'monospace', cursor: 'pointer' }} title="Click to copy">{parcelInfo.parentUlpin} 📋</span>
+          ) : (
+            <span style={{ color: 'var(--text-muted)' }}>—</span>
+          )}
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px' }}>
           <span style={{ color: 'var(--text-muted)' }}>Location:</span>
-          <span style={{ color: 'var(--text-primary)' }}>Pune, Maharashtra</span>
+          <span style={{ color: 'var(--text-primary)' }}>{parcelInfo?.location || '—'}</span>
         </div>
         <div style={{ display: 'flex', justifyContent: 'space-between', fontSize: '11px' }}>
           <span style={{ color: 'var(--text-muted)' }}>Land Use:</span>
-          <span style={{ color: 'var(--text-primary)' }}>Residential</span>
+          <span style={{ color: 'var(--text-primary)' }}>{parcelInfo?.landUse || '—'}</span>
         </div>
+      </div>
+
+      {/* Section D: Why 3D? */}
+      <div style={{ background: 'rgba(56,189,248,0.06)', border: '1px solid rgba(56,189,248,0.2)', borderRadius: '8px', padding: '12px', flexShrink: 0 }}>
+        <div style={{ fontSize: '12px', fontWeight: 600, color: 'var(--accent-primary)', marginBottom: '8px' }}>📐 Why 3D ULPIN?</div>
+        <div style={{ fontSize: '11px', color: 'var(--text-secondary)', lineHeight: 1.5, marginBottom: '8px' }}>
+          Traditional 2D cadastral maps cannot represent:
+        </div>
+        <div style={{ display: 'flex', flexDirection: 'column', gap: '6px' }}>
+          {[
+            { icon: '🚇', text: 'Underground metro tunnels crossing parcels' },
+            { icon: '🏢', text: 'Vertical property layers (apartments, basements)' },
+            { icon: '💧', text: 'Utility easements at different depths' },
+            { icon: '📊', text: 'Height/depth/Z coordinates per unit' }
+          ].map((item, i) => (
+            <div key={i} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px' }}>
+              <span>{item.icon}</span>
+              <span style={{ color: 'var(--text-secondary)' }}>{item.text}</span>
+            </div>
+          ))}
+        </div>
+        <div style={{ fontSize: '9px', color: 'var(--text-muted)', marginTop: '8px', fontStyle: 'italic' }}>This is why 3D volumetric ULPINs are needed</div>
       </div>
     </div>
   );

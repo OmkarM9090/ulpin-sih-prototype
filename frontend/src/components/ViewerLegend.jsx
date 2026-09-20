@@ -1,15 +1,13 @@
 import React, { useState } from 'react';
 
 const ITEMS = [
-  { label: 'Basement Parking', color: '#f59e0b' },
-  { label: 'Ground Shop', color: '#eab308' },
-  { label: 'Apartments F1', color: '#38bdf8' },
-  { label: 'Apartments F2', color: '#818cf8' },
-  { label: 'Apartments F3', color: '#c084fc' },
-  { label: 'Common Terrace', color: '#a855f7' },
-  { label: 'Common Garden', color: '#16a34a' },
-  { label: 'Metro Right of Way', color: '#dc2626' },
-  { label: 'Municipal Utility', color: '#3b82f6' },
+  { label: 'Basement Parking', color: '#f59e0b', desc: 'Underground parking levels' },
+  { label: 'Ground Shop', color: '#eab308', desc: 'Ground floor commercial' },
+  { label: 'Apartments F1-F3', color: '#38bdf8', desc: 'Residential floors' },
+  { label: 'Common Terrace', color: '#a855f7', desc: 'Shared rooftop area' },
+  { label: 'Common Garden', color: '#16a34a', desc: 'Ground-level open space' },
+  { label: 'Metro Right of Way', color: '#dc2626', desc: 'Public infrastructure — needs 3D awareness', underground: true },
+  { label: 'Municipal Utility', color: '#3b82f6', desc: 'Underground services — needs vertical mapping', underground: true },
 ];
 
 export default function ViewerLegend() {
@@ -38,13 +36,17 @@ export default function ViewerLegend() {
       </div>
       
       {open && (
-        <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '8px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: '1fr', gap: '6px' }}>
           {ITEMS.map(item => (
-            <div key={item.label} style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px', color: 'var(--text-primary)' }}>
-              <div style={{ width: '12px', height: '12px', backgroundColor: item.color, borderRadius: '4px', flexShrink: 0 }} />
-              {item.label}
+            <div key={item.label} style={{ display: 'flex', flexDirection: 'column', gap: '1px', padding: item.underground ? '4px 6px' : '0', background: item.underground ? 'rgba(220,38,38,0.08)' : 'transparent', borderRadius: item.underground ? '4px' : '0' }}>
+              <div style={{ display: 'flex', alignItems: 'center', gap: '8px', fontSize: '11px', color: 'var(--text-primary)' }}>
+                <div style={{ width: '12px', height: '12px', backgroundColor: item.color, borderRadius: '4px', flexShrink: 0 }} />
+                {item.label}
+              </div>
+              <div style={{ fontSize: '9px', color: 'var(--text-muted)', paddingLeft: '20px', fontStyle: 'italic' }}>{item.desc}</div>
             </div>
           ))}
+          <div style={{ fontSize: '9px', color: 'var(--text-muted)', marginTop: '4px', borderTop: '1px solid var(--border-subtle)', paddingTop: '6px', fontStyle: 'italic' }}>Underground layers: Why 3D ULPIN matters</div>
         </div>
       )}
     </div>

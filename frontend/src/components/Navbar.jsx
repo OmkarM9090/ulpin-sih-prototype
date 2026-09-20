@@ -2,7 +2,7 @@ import React from 'react';
 import '../styles.css';
 import { Building2, Bell, HelpCircle } from 'lucide-react';
 
-export default function Navbar({ onShowInfo }) {
+export default function Navbar({ onShowInfo, onShowDemo }) {
   return (
     <nav style={{
       height: '60px',
@@ -53,6 +53,27 @@ export default function Navbar({ onShowInfo }) {
       </div>
 
       <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
+        {onShowDemo && (
+          <button
+            onClick={onShowDemo}
+            style={{
+              height: '32px', padding: '0 14px', borderRadius: '8px',
+              background: 'var(--gradient-brand)', color: '#fff', border: 'none',
+              fontSize: '12px', fontWeight: 600, cursor: 'pointer',
+              display: 'flex', alignItems: 'center', gap: '6px'
+            }}
+            title="Guided walkthrough of the working demo flow"
+          >
+            🎬 Judge Demo
+          </button>
+        )}
+        <div style={{
+          background: 'rgba(245,158,11,0.1)', border: '1px solid var(--warning)', color: 'var(--warning)',
+          fontSize: '11px', borderRadius: '999px', padding: '4px 10px', display: 'flex', alignItems: 'center', gap: '6px'
+        }}>
+          <div style={{ width: '6px', height: '6px', borderRadius: '50%', background: 'var(--warning)' }}></div>
+          Demo Mode
+        </div>
         <div style={{
           background: 'rgba(34,197,94,0.1)', border: '1px solid var(--success)', color: 'var(--success)',
           fontSize: '11px', borderRadius: '999px', padding: '4px 10px', display: 'flex', alignItems: 'center', gap: '6px'

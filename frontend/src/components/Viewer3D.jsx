@@ -122,12 +122,13 @@ const UnitMesh = ({ unit, explodeValue, showLabels, isSelected, onSelect }) => {
             borderRadius: '4px',
             fontSize: '11px',
             whiteSpace: 'nowrap',
-            border: '1px solid #38bdf8',
+            border: `1px solid ${unit.layer === 'U' ? '#f59e0b' : '#38bdf8'}`,
             boxShadow: '0 4px 6px rgba(0,0,0,0.3)',
             fontWeight: '600'
           }}>
             {emoji && `${emoji} `}
             {(showLabels) ? unit.unit_id : ''}
+            {unit.layer === 'U' && <span style={{ fontSize: '9px', marginLeft: '4px', opacity: 0.7 }}>Z:{unit.z_min}\u2192{unit.z_max}</span>}
           </div>
         </Html>
       )}
@@ -337,8 +338,22 @@ export default function Viewer3D({
         <Compass />
       </Canvas>
       <div style={{ position: 'absolute', bottom: '16px', right: '16px', opacity: 0.35, fontSize: '11px', color: 'var(--text-muted)', pointerEvents: 'none' }}>
-        GeoCadastre 3D · SIH 2026
+        GeoCadastre 3D Prototype · SIH 2026
       </div>
+      {cameraPreset === 'underground' && (
+        <div style={{ position: 'absolute', top: '16px', right: '16px', background: 'rgba(56,189,248,0.1)', border: '1px solid rgba(56,189,248,0.3)', borderRadius: '8px', padding: '8px 12px', display: 'flex', alignItems: 'center', gap: '6px', zIndex: 10 }}>
+          <span style={{ color: 'var(--accent-primary)', fontSize: '12px' }}>\ud83d\udcd0</span>
+          <span style={{ color: 'var(--accent-primary)', fontSize: '11px', fontWeight: 500 }}>Underground View</span>
+          <span style={{ color: 'var(--text-muted)', fontSize: '9px' }}>\u2014 Z: -12m to 0m</span>
+        </div>
+      )}
+      {selectedUlpin && (
+        <div style={{ position: 'absolute', top: cameraPreset === 'underground' ? '60px' : '16px', right: '16px', background: 'rgba(34,197,94,0.1)', border: '1px solid rgba(34,197,94,0.3)', borderRadius: '8px', padding: '8px 12px', display: 'flex', alignItems: 'center', gap: '6px', zIndex: 10 }}>
+          <span style={{ color: '#22c55e', fontSize: '12px' }}>✓</span>
+          <span style={{ color: '#22c55e', fontSize: '11px', fontWeight: 500 }}>Validated</span>
+          <span style={{ color: 'var(--text-muted)', fontSize: '9px' }}>— Prototype check</span>
+        </div>
+      )}
     </div>
   );
 }

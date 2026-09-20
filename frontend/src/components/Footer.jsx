@@ -31,7 +31,7 @@ export default function Footer() {
         {status ? (
           <>
             <span style={{ color: 'var(--success)' }}>●</span>
-            Backend {status.backend === 'online' ? 'Online' : 'Offline'} · {status.units_registered} Units Registered · Topology {status.topology_status} · Last Sync 09:42 IST
+            Backend {status.backend === 'online' ? 'Online' : 'Offline'} · {status.units_registered} Units Registered · Topology {status.topology_status} · Data: Controlled Demo Dataset
           </>
         ) : (
           <span>● Connecting to Backend...</span>
