@@ -28,43 +28,272 @@ const ParcelBoundary = () => {
   );
 };
 
-const Floor = ({ level, yPos, color, isSelected, onClick }) => {
+const RoomLayout = ({ isVisible }) => {
+  if (!isVisible) return null;
+  return (
+    <group>
+      {/* Central Corridor */}
+      <mesh position={[0, 0, 0]} castShadow receiveShadow>
+        <boxGeometry args={[17.6, 2.6, 0.2]} />
+        <meshStandardMaterial color="#334155" transparent opacity={0.8} />
+      </mesh>
+      {/* Dividing walls */}
+      <mesh position={[-4, 0, -3.4]} castShadow receiveShadow>
+        <boxGeometry args={[0.2, 2.6, 6.8]} />
+        <meshStandardMaterial color="#334155" transparent opacity={0.8} />
+      </mesh>
+      <mesh position={[4, 0, -3.4]} castShadow receiveShadow>
+        <boxGeometry args={[0.2, 2.6, 6.8]} />
+        <meshStandardMaterial color="#334155" transparent opacity={0.8} />
+      </mesh>
+      <mesh position={[-4, 0, 3.4]} castShadow receiveShadow>
+        <boxGeometry args={[0.2, 2.6, 6.8]} />
+        <meshStandardMaterial color="#334155" transparent opacity={0.8} />
+      </mesh>
+      <mesh position={[4, 0, 3.4]} castShadow receiveShadow>
+        <boxGeometry args={[0.2, 2.6, 6.8]} />
+        <meshStandardMaterial color="#334155" transparent opacity={0.8} />
+      </mesh>
+
+      <Html position={[0, 2.2, 0]} center style={{ pointerEvents: 'none' }} zIndexRange={[100, 0]}>
+        <div style={{
+          background: 'rgba(5, 8, 15, 0.85)', color: 'var(--text-3)', border: '1px dashed var(--text-4)',
+          padding: '4px 8px', borderRadius: '4px', fontSize: '9px', fontWeight: 600, whiteSpace: 'nowrap',
+          letterSpacing: '0.02em'
+        }}>
+          Illustrative Room Layout · Controlled Demo Data
+        </div>
+      </Html>
+    </group>
+  );
+};
+
+const Floor = ({ level, yPos, isSelected, selectedLevel, onClick }) => {
   const [hovered, setHovered] = useState(false);
   const meshRef = useRef();
 
   useFrame(() => {
     if (meshRef.current) {
       const targetScale = (isSelected || hovered) ? 1.02 : 1.0;
-      meshRef.current.scale.lerp(new THREE.Vector3(targetScale, 1, targetScale), 0.1);
+      meshRef.current.scale.lerp(new THREE.Vector3(targetScale, 1, targetScale), 0.15);
+
+      const targetY = (selectedLevel !== null && level > selectedLevel) ? yPos + 12 : yPos;
+      meshRef.current.position.y += (targetY - meshRef.current.position.y) * 0.1;
     }
   });
 
+  const baseColor = "#1e293b"; 
+  const slabColor = "#0f172a";
+  const glow = isSelected ? "#22d3ee" : (hovered ? "#14b8a6" : "#000000");
+  const displayLabel = level === 0 ? "Ground Floor" : `Floor ${level}`;
+
   return (
-    <group position={[0, yPos, 0]}>
+    <group position={[0, yPos, 0]} ref={meshRef}>
+      {/* Floor Slab separator */}
+      <mesh position={[0, -1.4, 0]} castShadow receiveShadow>
+        <boxGeometry args={[18.4, 0.2, 14.4]} />
+        <meshStandardMaterial color={slabColor} roughness={0.9} />
+      </mesh>
+      
+      {/* Main Core */}
       <mesh
-        ref={meshRef}
         onClick={(e) => { e.stopPropagation(); onClick(`UNIT-L${level}`); }}
         onPointerOver={(e) => { e.stopPropagation(); setHovered(true); document.body.style.cursor = 'pointer'; }}
         onPointerOut={(e) => { e.stopPropagation(); setHovered(false); document.body.style.cursor = 'auto'; }}
         castShadow receiveShadow
       >
-        <boxGeometry args={[18, 3, 14]} />
+        <boxGeometry args={[17.8, 2.6, 13.8]} />
         <meshStandardMaterial 
-          color={color}
-          emissive={isSelected ? "#22d3ee" : (hovered ? "#14b8a6" : "#000000")}
-          emissiveIntensity={isSelected ? 0.4 : (hovered ? 0.2 : 0)}
-          roughness={0.8}
+          color={baseColor}
+          emissive={glow}
+          emissiveIntensity={isSelected ? 0.3 : (hovered ? 0.15 : 0)}
+          roughness={0.7}
+          transparent={isSelected}
+          opacity={isSelected ? 0.15 : 1}
+          depthWrite={!isSelected}
         />
         {(isSelected || hovered) && <Edges color="#22d3ee" scale={1.01} />}
       </mesh>
-      
+
+      {/* Room Layout revealed when floor is selected */}
+      <RoomLayout isVisible={isSelected} />
+
+      {/* Front Balcony */}
+      <mesh position={[0, -0.6, 7.1]} castShadow>
+        <boxGeometry args={[6, 0.1, 1]} />
+        <meshStandardMaterial color={slabColor} />
+      </mesh>
+      {/* Balcony Glass/Railing */}
+      <mesh position={[0, 0, 7.55]} castShadow>
+        <boxGeometry args={[6, 1.2, 0.05]} />
+        <meshStandardMaterial color="#38bdf8" transparent opacity={0.3} roughness={0.1} metalness={0.8} />
+      </mesh>
+
       {(isSelected || hovered) && (
         <Html position={[0, 1.5, 0]} center style={{ pointerEvents: 'none' }}>
           <div style={{
             background: 'var(--bg-1)', color: 'var(--accent)', border: '1px solid var(--accent)',
             padding: '4px 8px', borderRadius: '4px', fontSize: '10px', fontWeight: 700
           }}>
-            UNIT-L{level}
+            {displayLabel}
+          </div>
+        </Html>
+      )}
+      {/* Ground Floor Lobby */}
+      {level === 0 && (
+        <group position={[0, 0, 0]}>
+          <mesh position={[0, -0.1, 7.02]} castShadow receiveShadow>
+            <boxGeometry args={[4, 2.8, 0.2]} />
+            <meshStandardMaterial color="#0f172a" roughness={0.8} />
+          </mesh>
+          <mesh position={[0, -0.3, 7.13]} castShadow>
+            <boxGeometry args={[2, 2.2, 0.05]} />
+            <meshStandardMaterial color="#38bdf8" transparent opacity={0.3} roughness={0.1} metalness={0.9} />
+          </mesh>
+        </group>
+      )}
+
+      {/* Floor Windows */}
+      <Instances limit={24} castShadow>
+        <boxGeometry args={[1.2, 1.8, 0.05]} />
+        <meshStandardMaterial color="#020617" roughness={0.1} metalness={0.9} emissive="#0ea5e9" emissiveIntensity={0.1} />
+        {[-7, -4.5, 4.5, 7].map((x, j) => (
+          <React.Fragment key={`fb-${j}`}>
+            <Instance position={[x, 0, 6.91]} />
+            <Instance position={[x, 0, -6.91]} />
+          </React.Fragment>
+        ))}
+        {[-4, -1.5, 1.5, 4].map((z, j) => (
+          <React.Fragment key={`side-${j}`}>
+            <Instance position={[8.91, 0, z]} rotation={[0, Math.PI / 2, 0]} />
+            <Instance position={[-8.91, 0, z]} rotation={[0, Math.PI / 2, 0]} />
+          </React.Fragment>
+        ))}
+      </Instances>
+
+    </group>
+  );
+};
+
+const Roof = ({ selectedLevel }) => {
+  const meshRef = useRef();
+
+  useFrame(() => {
+    if (meshRef.current) {
+      const targetY = (selectedLevel !== null) ? 18 + 12 : 18;
+      meshRef.current.position.y += (targetY - meshRef.current.position.y) * 0.1;
+    }
+  });
+
+  return (
+  <group position={[0, 18, 0]} ref={meshRef}>
+    {/* Roof Slab */}
+    <mesh position={[0, -0.4, 0]} castShadow receiveShadow>
+       <boxGeometry args={[18.4, 0.2, 14.4]} />
+       <meshStandardMaterial color="#0f172a" />
+    </mesh>
+    {/* Parapet Walls */}
+    <mesh position={[0, 0.2, 7.1]} castShadow>
+       <boxGeometry args={[18.4, 1.0, 0.2]} />
+       <meshStandardMaterial color="#1e293b" />
+    </mesh>
+    <mesh position={[0, 0.2, -7.1]} castShadow>
+       <boxGeometry args={[18.4, 1.0, 0.2]} />
+       <meshStandardMaterial color="#1e293b" />
+    </mesh>
+    <mesh position={[9.1, 0.2, 0]} castShadow>
+       <boxGeometry args={[0.2, 1.0, 14.4]} />
+       <meshStandardMaterial color="#1e293b" />
+    </mesh>
+    <mesh position={[-9.1, 0.2, 0]} castShadow>
+       <boxGeometry args={[0.2, 1.0, 14.4]} />
+       <meshStandardMaterial color="#1e293b" />
+    </mesh>
+
+    {/* Elevator / Service Core */}
+    <mesh position={[0, 1.0, 0]} castShadow>
+      <boxGeometry args={[4, 2.5, 4]} />
+      <meshStandardMaterial color="#1e293b" />
+    </mesh>
+
+    {/* Water Tanks */}
+    <mesh position={[6, 1.0, -4]} castShadow>
+      <cylinderGeometry args={[0.8, 0.8, 2.5, 16]} />
+      <meshStandardMaterial color="#0284c7" roughness={0.6} metalness={0.2} />
+    </mesh>
+    <mesh position={[4, 1.0, -4]} castShadow>
+      <cylinderGeometry args={[0.8, 0.8, 2.5, 16]} />
+      <meshStandardMaterial color="#0284c7" roughness={0.6} metalness={0.2} />
+    </mesh>
+  </group>
+  );
+};
+
+const RealisticBuilding = ({ selectedUnit, onSelect }) => {
+  let selectedLevel = null;
+  if (selectedUnit && selectedUnit.startsWith('UNIT-L')) {
+    selectedLevel = parseInt(selectedUnit.replace('UNIT-L', ''), 10);
+  }
+
+  return (
+    <group>
+      {/* Floors */}
+      {[0, 1, 2, 3, 4, 5].map((i) => (
+        <Floor 
+          key={i} 
+          level={i} 
+          yPos={1.5 + i * 3} 
+          isSelected={selectedUnit === `UNIT-L${i}`} 
+          selectedLevel={selectedLevel}
+          onClick={onSelect}
+        />
+      ))}
+      
+      <Roof selectedLevel={selectedLevel} />
+    </group>
+  );
+};
+
+const BasementFloor = ({ level, yPos, isSelected, onClick }) => {
+  const [hovered, setHovered] = useState(false);
+  const meshRef = useRef();
+
+  useFrame(() => {
+    if (meshRef.current) {
+      const targetScale = (isSelected || hovered) ? 1.02 : 1.0;
+      meshRef.current.scale.lerp(new THREE.Vector3(targetScale, 1, targetScale), 0.15);
+    }
+  });
+
+  const baseColor = "#334155"; 
+  const glow = isSelected ? "#f59e0b" : (hovered ? "#fbbf24" : "#000000");
+  const displayLabel = `Basement ${Math.abs(level)}`;
+
+  return (
+    <group position={[0, yPos, 0]} ref={meshRef}>
+      <mesh
+        onClick={(e) => { e.stopPropagation(); onClick(`UNIT-L${level}`); }}
+        onPointerOver={(e) => { e.stopPropagation(); setHovered(true); document.body.style.cursor = 'pointer'; }}
+        onPointerOut={(e) => { e.stopPropagation(); setHovered(false); document.body.style.cursor = 'auto'; }}
+      >
+        <boxGeometry args={[18, 2.6, 14]} />
+        <meshStandardMaterial 
+          color={baseColor}
+          emissive={glow}
+          emissiveIntensity={isSelected ? 0.4 : (hovered ? 0.2 : 0)}
+          roughness={0.9}
+          transparent opacity={0.6}
+        />
+        {(isSelected || hovered) && <Edges color="#f59e0b" scale={1.01} />}
+      </mesh>
+      
+      {(isSelected || hovered) && (
+        <Html position={[0, 1.5, 0]} center style={{ pointerEvents: 'none' }}>
+          <div style={{
+            background: 'rgba(245, 158, 11, 0.1)', color: 'var(--warning)', border: '1px solid var(--warning)',
+            padding: '4px 8px', borderRadius: '4px', fontSize: '10px', fontWeight: 700, whiteSpace: 'nowrap'
+          }}>
+            {displayLabel}
           </div>
         </Html>
       )}
@@ -72,97 +301,12 @@ const Floor = ({ level, yPos, color, isSelected, onClick }) => {
   );
 };
 
-const Windows = () => {
-  return (
-    <Instances limit={100} castShadow>
-      <boxGeometry args={[0.8, 1.2, 0.1]} />
-      <meshStandardMaterial color="#05080f" roughness={0.1} metalness={0.8} />
-      {/* Generate windows along the Z-faces (front and back) */}
-      {[1.5, 4.5, 7.5, 10.5, 13.5, 16.5].map((y, i) => (
-        <React.Fragment key={i}>
-          {[-7, -3, 3, 7].map((x, j) => (
-            <React.Fragment key={`${i}-${j}`}>
-              <Instance position={[x, y, 7.05]} />
-              <Instance position={[x, y, -7.05]} />
-            </React.Fragment>
-          ))}
-        </React.Fragment>
-      ))}
-      {/* Generate windows along the X-faces (left and right) */}
-      {[1.5, 4.5, 7.5, 10.5, 13.5, 16.5].map((y, i) => (
-        <React.Fragment key={`side-${i}`}>
-          {[-4, 0, 4].map((z, j) => (
-            <React.Fragment key={`side-${i}-${j}`}>
-              <Instance position={[9.05, y, z]} rotation={[0, Math.PI / 2, 0]} />
-              <Instance position={[-9.05, y, z]} rotation={[0, Math.PI / 2, 0]} />
-            </React.Fragment>
-          ))}
-        </React.Fragment>
-      ))}
-    </Instances>
-  );
-};
-
-const Roof = () => (
-  <group position={[0, 18, 0]}>
-    {/* Railing */}
-    <mesh position={[0, 0.4, 0]} castShadow>
-      <boxGeometry args={[18, 0.8, 14]} />
-      <meshStandardMaterial color="#52525b" transparent opacity={0.6} />
-    </mesh>
-    {/* Water Tanks */}
-    <mesh position={[6, 1, -4]} castShadow>
-      <cylinderGeometry args={[0.8, 0.8, 2, 16]} />
-      <meshStandardMaterial color="#0284c7" />
-    </mesh>
-    <mesh position={[4, 1, -4]} castShadow>
-      <cylinderGeometry args={[0.8, 0.8, 2, 16]} />
-      <meshStandardMaterial color="#0284c7" />
-    </mesh>
-  </group>
-);
-
-const RealisticBuilding = ({ selectedUnit, onSelect }) => {
-  const colors = ['#d4d4d8', '#a1a1aa', '#d4d4d8', '#a1a1aa', '#d4d4d8', '#a1a1aa'];
-  
+const UndergroundLayer = ({ selectedUnit, onSelect }) => {
   return (
     <group>
-      {/* Ground Floor Entrance */}
-      <mesh position={[0, 1.2, 7.02]}>
-        <boxGeometry args={[3, 2.4, 0.1]} />
-        <meshStandardMaterial color="#18181b" />
-      </mesh>
-
-      {/* Floors */}
-      {colors.map((color, i) => (
-        <Floor 
-          key={i} 
-          level={i} 
-          yPos={1.5 + i * 3} 
-          color={color} 
-          isSelected={selectedUnit === `UNIT-L${i}`} 
-          onClick={onSelect}
-        />
-      ))}
-      
-      <Windows />
-      <Roof />
-    </group>
-  );
-};
-
-const UndergroundLayer = () => {
-  return (
-    <group>
-      {/* Basement 1 & 2 */}
-      <mesh position={[0, -2, 0]}>
-        <boxGeometry args={[20, 3, 16]} />
-        <meshStandardMaterial color="#f59e0b" transparent opacity={0.4} />
-      </mesh>
-      <mesh position={[0, -5, 0]}>
-        <boxGeometry args={[20, 3, 16]} />
-        <meshStandardMaterial color="#f59e0b" transparent opacity={0.4} />
-      </mesh>
+      {/* Basements */}
+      <BasementFloor level={-1} yPos={-1.5} isSelected={selectedUnit === 'UNIT-L-1'} onClick={onSelect} />
+      <BasementFloor level={-2} yPos={-4.5} isSelected={selectedUnit === 'UNIT-L-2'} onClick={onSelect} />
 
       {/* Metro Tunnel */}
       <mesh position={[0, -10, 0]} rotation={[0, Math.PI / 4, 0]}>
@@ -259,23 +403,28 @@ export default function Viewer3D({ visibleLayers, cameraPreset, resetTrigger, se
         <CameraController preset={cameraPreset} viewMode={viewMode} key={resetTrigger} />
         
         <OrbitControls 
-          dampingFactor={0.08} 
+          dampingFactor={0.05} 
           enablePan={true} 
           minDistance={15} 
           maxDistance={150}
-          maxPolarAngle={is2D ? 0 : Math.PI / 2}
+          maxPolarAngle={is2D ? 0 : (showUnderground ? Math.PI * 0.7 : Math.PI / 2 - 0.05)}
           minPolarAngle={is2D ? 0 : 0}
         />
 
         <Plane args={[300, 300]} rotation={[-Math.PI / 2, 0, 0]} position={[0, -0.01, 0]} receiveShadow>
-          <meshStandardMaterial color="#05080f" />
+          <meshStandardMaterial 
+            color="#05080f" 
+            transparent={showUnderground} 
+            opacity={showUnderground ? 0.3 : 1}
+            depthWrite={!showUnderground}
+          />
         </Plane>
 
         <Grid cellColor="#14213d" sectionColor="#22d3ee" fadeDistance={120} infiniteGrid={true} position={[0, 0, 0]} />
 
         {visibleLayers?.parcels && <ParcelBoundary />}
         {visibleLayers?.buildings && <RealisticBuilding selectedUnit={selectedUlpin} onSelect={onSelect} />}
-        {showUnderground && <UndergroundLayer />}
+        {showUnderground && <UndergroundLayer selectedUnit={selectedUlpin} onSelect={onSelect} />}
         
       </Canvas>
     </div>
