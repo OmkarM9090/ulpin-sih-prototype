@@ -70,6 +70,15 @@ export default function AppShell() {
   const navigate = useNavigate();
   const searchControlRef = useRef(null);
 
+  // Global Esc Listener for Demo Mode
+  useEffect(() => {
+    const handleGlobalEsc = (e) => {
+      if (e.key === 'Escape') setDemoActive(false);
+    };
+    window.addEventListener('keydown', handleGlobalEsc);
+    return () => window.removeEventListener('keydown', handleGlobalEsc);
+  }, []);
+
   // Auto-play demo script
   useEffect(() => {
     if (!demoActive) {

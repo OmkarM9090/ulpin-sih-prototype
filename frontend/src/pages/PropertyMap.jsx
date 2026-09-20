@@ -23,6 +23,21 @@ export default function PropertyMap() {
     if (demoAction === 'SHOW_CARD') setShowPropertyCard(true);
   }, [demoAction]);
 
+  useEffect(() => {
+    const handleKeyDown = (e) => {
+      // Prevent spacebar from scrolling if we are not typing in an input
+      if (e.key === ' ' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+        e.preventDefault();
+        setShowAIModal(true);
+      }
+      if (e.key === 'r' || e.key === 'R') {
+        handleResetCamera();
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
+
   const compassRef = useRef(null);
 
   const [layers, setLayers] = useState({
@@ -194,6 +209,7 @@ export default function PropertyMap() {
                   key={i}
                   onClick={btn.action}
                   title={btn.title}
+                  aria-label={`View camera: ${btn.title}`}
                   style={{
                     width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center',
                     color: 'var(--text-2)', borderRadius: '6px',
