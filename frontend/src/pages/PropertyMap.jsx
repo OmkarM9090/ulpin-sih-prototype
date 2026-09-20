@@ -1,126 +1,263 @@
 import React, { useState, useEffect } from 'react';
 import { useOutletContext } from 'react-router-dom';
+import { RotateCcw, Square, MoveHorizontal, Box, Layers, MousePointerClick } from 'lucide-react';
 import Viewer3D from '../components/Viewer3D';
-import ViewerToolbar from '../components/ViewerToolbar';
-import ViewerLegend from '../components/ViewerLegend';
-import UnitDetails from '../components/UnitDetails';
 import ErrorBoundary from '../components/ErrorBoundary';
-import { useToast } from '../components/Toast';
 
 export default function PropertyMap() {
   const { systemData, pipelineState, setPipelineState } = useOutletContext();
-  const addToast = useToast();
-
-  const [explodeValue, setExplodeValue] = useState(0);
-  const [showLabels, setShowLabels] = useState(true);
-  const [showGrid, setShowGrid] = useState(true);
+  
+  const [viewMode, setViewMode] = useState('3D'); // '2D' or '3D'
+  const [showUnderground, setShowUnderground] = useState(false);
   const [cameraPreset, setCameraPreset] = useState('isometric');
   const [resetTrigger, setResetTrigger] = useState(0);
   const [selectedUnit, setSelectedUnit] = useState(null);
-  
-  const [visibleLayers, setVisibleLayers] = useState({
-    apartments: true,
-    basements: true,
-    terrace: true,
-    metro: true,
-    utility: true,
-    common: true,
-    boundary: true
+
+  const [layers, setLayers] = useState({
+    parcels: true,
+    buildings: true,
+    floors: true,
+    units: true,
+    roads: true,
+    utilities: true,
+    tunnels: true,
+    labels: true,
+    dem: false
   });
 
-  const toggleLayer = (layerId) => {
-    setVisibleLayers(prev => ({ ...prev, [layerId]: !prev[layerId] }));
+  const toggleLayer = (key) => setLayers(prev => ({ ...prev, [key]: !prev[key] }));
+
+  // Handlers for later integration
+  const handleRunAI = () => {
+    // Will be wired in Change 12
   };
 
   const handleResetCamera = () => {
     setCameraPreset('isometric');
     setResetTrigger(prev => prev + 1);
-    addToast('View reset to Isometric', 'info');
   };
 
-  useEffect(() => {
-    const handleKeyDown = (e) => {
-      if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
-      switch(e.key.toLowerCase()) {
-        case ' ':
-          e.preventDefault();
-          if (pipelineState !== 'running' && pipelineState !== 'complete') setPipelineState('running');
-          break;
-        case 'escape':
-          setSelectedUnit(null);
-          break;
-        case 'r':
-          handleResetCamera();
-          break;
-        case '1':
-          setCameraPreset('isometric');
-          break;
-        case '2':
-          setCameraPreset('top');
-          break;
-        case '3':
-          setCameraPreset('front');
-          break;
-        case '4':
-          setCameraPreset('underground');
-          break;
-        case 'l':
-          setShowLabels(prev => !prev);
-          break;
-        case 'g':
-          setShowGrid(prev => !prev);
-          break;
-        default:
-          break;
-      }
-    };
-    window.addEventListener('keydown', handleKeyDown);
-    return () => window.removeEventListener('keydown', handleKeyDown);
-  }, [pipelineState]);
-
   return (
-    <>
-      <ViewerToolbar 
-        explodeValue={explodeValue} setExplodeValue={setExplodeValue}
-        showLabels={showLabels} setShowLabels={setShowLabels}
-        showGrid={showGrid} setShowGrid={setShowGrid}
-        cameraPreset={cameraPreset} setCameraPreset={setCameraPreset}
-        onResetCamera={handleResetCamera}
-        visibleLayers={visibleLayers} toggleLayer={toggleLayer}
-      />
-      <div className="canvas-container" style={{ position: 'relative', flex: 1 }}>
-        {(!systemData || pipelineState !== 'complete') && (
-          <div style={{
-            position: 'absolute', top: '50%', left: '50%', transform: 'translate(-50%, -50%)',
-            background: 'rgba(15,23,42,0.85)', backdropFilter: 'blur(8px)',
-            border: '1px solid var(--border-subtle)', borderRadius: '12px',
-            padding: '16px 24px', color: 'var(--text-primary)', fontSize: '14px', fontWeight: 500,
-            pointerEvents: 'none', zIndex: 10, display: 'flex', alignItems: 'center', gap: '12px',
-            boxShadow: 'var(--shadow-lg)'
-          }}>
-            <div style={{ width: '8px', height: '8px', borderRadius: '50%', background: 'var(--accent-primary)', animation: 'pulse 1.5s infinite' }}></div>
-            Awaiting Data Ingestion / Run Pipeline to start
-          </div>
-        )}
-        <ErrorBoundary>
-          <Viewer3D 
-            systemData={systemData} 
-            explodeValue={explodeValue} 
-            showLabels={showLabels} 
-            showGrid={showGrid}
-            visibleLayers={visibleLayers}
-            cameraPreset={cameraPreset}
-            resetTrigger={resetTrigger}
-            selectedUlpin={selectedUnit}
-            onSelect={setSelectedUnit} 
-          />
-        </ErrorBoundary>
+    <div style={{ display: 'flex', flexDirection: 'column', width: '100%', height: '100%', position: 'relative' }}>
+      
+      {/* Top Toolbar */}
+      <div style={{
+        height: '56px', background: 'var(--bg-2)', borderBottom: '1px solid var(--border-1)',
+        display: 'flex', alignItems: 'center', justifyContent: 'space-between', padding: '0 16px', zIndex: 10
+      }}>
+        {/* Left: 2D/3D Toggle */}
+        <div style={{ display: 'flex', background: 'var(--bg-1)', borderRadius: '6px', padding: '2px', border: '1px solid var(--border-2)' }}>
+          <button
+            onClick={() => setViewMode('2D')}
+            style={{
+              padding: '6px 16px', borderRadius: '4px', fontSize: '12px', fontWeight: 600,
+              background: viewMode === '2D' ? 'rgba(34, 211, 238, 0.1)' : 'transparent',
+              color: viewMode === '2D' ? 'var(--accent)' : 'var(--text-3)'
+            }}
+          >
+            2D VIEW
+          </button>
+          <button
+            onClick={() => setViewMode('3D')}
+            style={{
+              padding: '6px 16px', borderRadius: '4px', fontSize: '12px', fontWeight: 600,
+              background: viewMode === '3D' ? 'rgba(34, 211, 238, 0.1)' : 'transparent',
+              color: viewMode === '3D' ? 'var(--accent)' : 'var(--text-3)'
+            }}
+          >
+            3D VIEW
+          </button>
+        </div>
+
+        {/* Middle: Action Buttons */}
+        <div style={{ display: 'flex', gap: '12px' }}>
+          <button
+            onClick={handleRunAI}
+            style={{
+              background: 'var(--bg-1)', border: '1px solid var(--border-2)', color: 'var(--text-1)',
+              padding: '6px 16px', borderRadius: '6px', fontSize: '12px', fontWeight: 600,
+              display: 'flex', alignItems: 'center', gap: '6px'
+            }}
+          >
+            🖥 Run AI Extraction
+          </button>
+          <button
+            onClick={() => setShowUnderground(!showUnderground)}
+            style={{
+              background: showUnderground ? 'rgba(34, 211, 238, 0.1)' : 'var(--bg-1)',
+              border: showUnderground ? '1px solid var(--accent)' : '1px solid var(--border-2)',
+              color: showUnderground ? 'var(--accent)' : 'var(--text-1)',
+              padding: '6px 16px', borderRadius: '6px', fontSize: '12px', fontWeight: 600,
+              display: 'flex', alignItems: 'center', gap: '6px'
+            }}
+          >
+            👁 Show Underground
+          </button>
+        </div>
+
+        {/* Right spacing */}
+        <div style={{ width: '150px' }}></div>
       </div>
-      <ViewerLegend />
-      {/* Move UnitDetails here as a floating panel or keep it right aligned */}
-      <aside className="panel-right" style={{ position: 'absolute', right: 0, top: 0, height: '100%', borderLeft: '1px solid var(--border-subtle)', background: 'var(--bg-panel)', width: '380px' }}>
-        <UnitDetails selectedUnit={selectedUnit} />
-      </aside>
-    </>
+
+      <div style={{ display: 'flex', flex: 1, position: 'relative', overflow: 'hidden' }}>
+        
+        {/* 3D Canvas Area */}
+        <div style={{ flex: 1, position: 'relative', background: 'var(--bg-0)' }}>
+          
+          <ErrorBoundary>
+            {/* Viewer3D integration - currently reusing old props, will be updated in Change 9 */}
+            <Viewer3D 
+              systemData={systemData} 
+              explodeValue={0} 
+              showLabels={layers.labels} 
+              showGrid={true}
+              visibleLayers={layers}
+              cameraPreset={cameraPreset}
+              resetTrigger={resetTrigger}
+              selectedUlpin={selectedUnit}
+              onSelect={setSelectedUnit} 
+            />
+          </ErrorBoundary>
+
+          {/* Overlay: Bottom-Left Card */}
+          <div style={{
+            position: 'absolute', bottom: '24px', left: '24px',
+            background: 'var(--bg-2)', border: '1px solid var(--border-1)',
+            borderRadius: '8px', padding: '12px 16px', pointerEvents: 'none'
+          }}>
+            <div style={{ fontSize: '10px', fontWeight: 600, color: 'var(--text-3)', letterSpacing: '0.05em', marginBottom: '4px' }}>
+              3D PROPERTY MODEL
+            </div>
+            <div style={{ fontSize: '12px', color: 'var(--text-1)', fontFamily: 'var(--mono)', marginBottom: '2px' }}>
+              UP-LKO-P123456 · B-239
+            </div>
+            <div style={{ fontSize: '11px', color: 'var(--text-4)' }}>
+              26.8467° N, 80.9462° E · EPSG:32644 · DEM OFF
+            </div>
+          </div>
+
+          {/* Overlay: Bottom-Right Hint */}
+          <div style={{
+            position: 'absolute', bottom: '24px', right: '24px',
+            fontSize: '11px', color: 'var(--text-3)', pointerEvents: 'none'
+          }}>
+            Drag orbit · Scroll zoom · Right-drag pan
+          </div>
+
+          {/* Overlay: Right-Middle View Controls & Compass */}
+          <div style={{
+            position: 'absolute', right: '24px', top: '50%', transform: 'translateY(-50%)',
+            display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '16px'
+          }}>
+            {/* View Controls */}
+            <div style={{
+              background: 'var(--bg-2)', border: '1px solid var(--border-1)',
+              borderRadius: '8px', display: 'flex', flexDirection: 'column', padding: '4px'
+            }}>
+              {[
+                { icon: RotateCcw, action: handleResetCamera, title: 'Reset' },
+                { icon: Square, action: () => setCameraPreset('top'), title: 'Top' },
+                { icon: MoveHorizontal, action: () => setCameraPreset('side'), title: 'Side' },
+                { icon: Box, action: () => setCameraPreset('isometric'), title: 'Isometric' },
+              ].map((btn, i) => (
+                <button
+                  key={i}
+                  onClick={btn.action}
+                  title={btn.title}
+                  style={{
+                    width: '32px', height: '32px', display: 'flex', alignItems: 'center', justifyContent: 'center',
+                    color: 'var(--text-2)', borderRadius: '6px',
+                    background: 'transparent',
+                  }}
+                  onMouseOver={(e) => { e.currentTarget.style.background = 'var(--bg-3)'; e.currentTarget.style.color = 'var(--text-1)'; }}
+                  onMouseOut={(e) => { e.currentTarget.style.background = 'transparent'; e.currentTarget.style.color = 'var(--text-2)'; }}
+                >
+                  <btn.icon size={16} />
+                </button>
+              ))}
+            </div>
+            
+            {/* Compass (Placeholder for now) */}
+            <div style={{
+              width: '60px', height: '60px', borderRadius: '50%',
+              background: 'var(--bg-3)', border: '1px solid var(--accent)',
+              display: 'flex', alignItems: 'center', justifyContent: 'center',
+              position: 'relative'
+            }}>
+              <span style={{ position: 'absolute', top: '4px', fontSize: '10px', color: 'var(--text-2)' }}>N</span>
+              <span style={{ position: 'absolute', bottom: '4px', fontSize: '10px', color: 'var(--text-2)' }}>S</span>
+              <span style={{ position: 'absolute', right: '4px', fontSize: '10px', color: 'var(--text-2)' }}>E</span>
+              <span style={{ position: 'absolute', left: '4px', fontSize: '10px', color: 'var(--text-2)' }}>W</span>
+              {/* Central needle */}
+              <div style={{ width: '2px', height: '30px', background: 'var(--danger)', borderRadius: '2px' }}></div>
+            </div>
+          </div>
+
+          {/* Overlay: Top-Right LAYERS Panel */}
+          <div style={{
+            position: 'absolute', top: '24px', right: '24px', width: '220px',
+            background: 'var(--bg-2)', border: '1px solid var(--border-1)',
+            borderRadius: '8px', display: 'flex', flexDirection: 'column', overflow: 'hidden',
+            boxShadow: '0 8px 24px rgba(0,0,0,0.4)'
+          }}>
+            <div style={{
+              padding: '12px 16px', borderBottom: '1px solid var(--border-1)',
+              display: 'flex', alignItems: 'center', gap: '8px', color: 'var(--text-1)'
+            }}>
+              <Layers size={16} />
+              <span style={{ fontSize: '12px', fontWeight: 600, letterSpacing: '0.05em' }}>LAYERS</span>
+            </div>
+            <div style={{ padding: '12px', display: 'flex', flexDirection: 'column', gap: '8px' }}>
+              {[
+                { key: 'parcels', label: 'Parcels' },
+                { key: 'buildings', label: 'Buildings' },
+                { key: 'floors', label: 'Floors' },
+                { key: 'units', label: 'Property Units' },
+                { key: 'roads', label: 'Roads' },
+                { key: 'utilities', label: 'Underground Utilities' },
+                { key: 'tunnels', label: 'Tunnels' },
+                { key: 'labels', label: 'Labels' },
+                { key: 'dem', label: 'DEM / Terrain' },
+              ].map(layer => (
+                <label key={layer.key} style={{ display: 'flex', alignItems: 'center', gap: '8px', cursor: 'pointer' }}>
+                  <div style={{
+                    width: '14px', height: '14px', borderRadius: '3px',
+                    border: layers[layer.key] ? '1px solid var(--accent)' : '1px solid var(--border-2)',
+                    background: layers[layer.key] ? 'var(--accent)' : 'transparent',
+                    display: 'flex', alignItems: 'center', justifyContent: 'center'
+                  }}>
+                    {layers[layer.key] && <svg width="10" height="10" viewBox="0 0 24 24" fill="none" stroke="var(--bg-0)" strokeWidth="3" strokeLinecap="round" strokeLinejoin="round"><polyline points="20 6 9 17 4 12"></polyline></svg>}
+                  </div>
+                  <span style={{ fontSize: '12px', color: 'var(--text-2)' }}>{layer.label}</span>
+                </label>
+              ))}
+            </div>
+          </div>
+        </div>
+
+        {/* Right Sidebar: Property Information */}
+        <aside style={{
+          width: '380px', background: 'var(--bg-2)', borderLeft: '1px solid var(--border-1)',
+          display: 'flex', flexDirection: 'column'
+        }}>
+          {selectedUnit ? (
+            <div style={{ padding: '24px' }}>
+              <div style={{ color: 'var(--text-1)' }}>Property details will appear here.</div>
+            </div>
+          ) : (
+            <div style={{
+              flex: 1, display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center',
+              padding: '32px', textAlign: 'center', color: 'var(--text-3)'
+            }}>
+              <MousePointerClick size={48} strokeWidth={1} style={{ marginBottom: '16px', opacity: 0.5 }} />
+              <div style={{ fontSize: '16px', color: 'var(--text-1)', marginBottom: '8px' }}>Select a property volume</div>
+              <div style={{ fontSize: '12px', lineHeight: 1.5 }}>
+                Click any floor, apartment or underground asset to inspect its 3D identity.
+              </div>
+            </div>
+          )}
+        </aside>
+      </div>
+    </div>
   );
 }
