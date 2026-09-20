@@ -3,6 +3,7 @@ import { useOutletContext } from 'react-router-dom';
 import { RotateCcw, Square, MoveHorizontal, Box, Layers, MousePointerClick } from 'lucide-react';
 import Viewer3D from '../components/Viewer3D';
 import ErrorBoundary from '../components/ErrorBoundary';
+import AIModal from '../components/AIModal';
 
 export default function PropertyMap() {
   const { systemData, pipelineState, setPipelineState } = useOutletContext();
@@ -12,6 +13,7 @@ export default function PropertyMap() {
   const [cameraPreset, setCameraPreset] = useState('isometric');
   const [resetTrigger, setResetTrigger] = useState(0);
   const [selectedUnit, setSelectedUnit] = useState(null);
+  const [showAIModal, setShowAIModal] = useState(false);
 
   const compassRef = useRef(null);
 
@@ -31,7 +33,12 @@ export default function PropertyMap() {
 
   // Handlers for later integration
   const handleRunAI = () => {
-    // Will be wired in Change 12
+    setShowAIModal(true);
+  };
+
+  const handleAIComplete = () => {
+    // Usually we would trigger a refresh of data or highlight new units here.
+    console.log("AI Extraction Complete");
   };
 
   const handleResetCamera = () => {
@@ -367,6 +374,8 @@ export default function PropertyMap() {
           )}
         </aside>
       </div>
+
+      {showAIModal && <AIModal onClose={() => setShowAIModal(false)} onComplete={handleAIComplete} />}
     </div>
   );
 }
