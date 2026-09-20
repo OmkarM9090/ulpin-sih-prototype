@@ -1,25 +1,23 @@
 import React, { useRef, useState } from 'react';
 import { Canvas, useFrame, useThree } from '@react-three/fiber';
-import { OrbitControls, Grid, Html, Plane, Edges, Instance, Instances } from '@react-three/drei';
+import { OrbitControls, Grid, Html, Plane, Edges, Instance, Instances, Line } from '@react-three/drei';
 import * as THREE from 'three';
 
 const ParcelBoundary = ({ is2D, selectedUnit, onSelect }) => {
-  // Synthetic Cadastral Fabric centered around active parcel
-  // Active parcel matches backend/data/parcel.geojson dimensions (30x40)
   const parcels = [
-    { id: 'P001', isMain: true, pos: [0, 0, 0], size: [30, 40], label: 'MH-PUN-P123456', area: '1,200 m²' },
-    { id: 'P002', isMain: false, pos: [-30, 0, 0], size: [30, 40], label: 'Demo Plot A', area: '1,200 m²' },
-    { id: 'P003', isMain: false, pos: [30, 0, 0], size: [30, 40], label: 'Demo Plot B', area: '1,200 m²' },
-    { id: 'P004', isMain: false, pos: [0, 0, -40], size: [30, 40], label: 'Demo Plot C', area: '1,200 m²' },
-    { id: 'P005', isMain: false, pos: [-30, 0, -40], size: [30, 40], label: 'Demo Plot D', area: '1,200 m²' },
-    { id: 'P006', isMain: false, pos: [30, 0, -40], size: [30, 40], label: 'Demo Plot E', area: '1,200 m²' },
+    { id: 'P001', isMain: true, pos: [0, 0, 0], size: [29, 39], label: 'MH-PUN-P123456', area: '1,200 m²' },
+    { id: 'P002', isMain: false, pos: [-30, 0, 0], size: [29, 39] },
+    { id: 'P003', isMain: false, pos: [30, 0, 0], size: [29, 39] },
+    { id: 'P004', isMain: false, pos: [0, 0, -40], size: [29, 39] },
+    { id: 'P005', isMain: false, pos: [-30, 0, -40], size: [29, 39] },
+    { id: 'P006', isMain: false, pos: [30, 0, -40], size: [29, 39] },
   ];
 
   const [hoveredId, setHoveredId] = useState(null);
 
   return (
     <group>
-      {parcels.map((parcel, idx) => {
+      {parcels.map((parcel) => {
         const isSelected = selectedUnit === parcel.id || (parcel.isMain && !selectedUnit?.startsWith('ROAD'));
         const isHovered = hoveredId === parcel.id;
         return (
@@ -34,36 +32,35 @@ const ParcelBoundary = ({ is2D, selectedUnit, onSelect }) => {
           >
             <planeGeometry args={parcel.size} />
             <meshBasicMaterial 
-              color={isSelected ? "#06b6d4" : (isHovered ? "#38bdf8" : (parcel.isMain ? "#06b6d4" : "#475569"))} 
+              color={parcel.isMain ? "#22d3ee" : "#2a3a5c"} 
               transparent 
-              opacity={isSelected ? 0.15 : (isHovered ? 0.1 : (parcel.isMain ? 0.1 : 0.05))} 
+              opacity={parcel.isMain ? 0.08 : 0.02} 
               side={THREE.DoubleSide} 
             />
-            <Edges scale={1} color={isSelected ? "#22d3ee" : (isHovered ? "#38bdf8" : (parcel.isMain ? "#22d3ee" : "#64748b"))} />
+            <Edges scale={1} color={parcel.isMain ? "#22d3ee" : "#2a3a5c"} />
           </mesh>
           
-          {/* Parcel Label (Only show main label in 3D, show all in 2D) */}
-          {(is2D || parcel.isMain) && (
+          {/* Parcel Label (Only show main label) */}
+          {parcel.isMain && (
             <Html 
-              position={[0, parcel.isMain ? 19 : 0.2, 0]} 
+              position={[0, 0.2, 19]} 
               center 
               zIndexRange={[100, 0]} 
               style={{ pointerEvents: 'none', transition: 'all 0.3s' }}
             >
               <div style={{
-                background: isSelected ? 'rgba(5, 8, 15, 0.85)' : 'rgba(5, 8, 15, 0.5)',
-                color: isSelected ? 'var(--accent)' : 'var(--text-3)', 
-                padding: isSelected ? '4px 10px' : '2px 6px',
+                background: '#0a1220',
+                color: '#22d3ee', 
+                padding: '4px 8px',
                 borderRadius: '4px', 
-                fontSize: isSelected ? '11px' : '9px', 
+                fontSize: '11px', 
                 whiteSpace: 'nowrap',
-                border: isSelected ? '1px solid var(--accent)' : '1px solid var(--border-2)', 
-                boxShadow: isSelected ? '0 4px 6px rgba(0,0,0,0.3)' : 'none',
+                border: '1px solid #1e2a44', 
+                boxShadow: '0 4px 6px rgba(0,0,0,0.3)',
                 fontFamily: 'var(--mono)', 
-                fontWeight: isSelected ? 700 : 500,
-                opacity: is2D ? 1 : (parcel.isMain ? 1 : 0)
+                fontWeight: 600,
               }}>
-                {parcel.label} {is2D && isSelected && `· ${parcel.area}`}
+                {parcel.label} • {parcel.area}
               </div>
             </Html>
           )}
@@ -75,64 +72,46 @@ const ParcelBoundary = ({ is2D, selectedUnit, onSelect }) => {
 };
 
 const RoadNetwork = ({ is2D, selectedUnit, onSelect }) => {
-  const [hoveredRoad, setHoveredRoad] = useState(null);
-
-  const isMainSelected = selectedUnit === 'ROAD-MAIN';
-  const isSecSelected = selectedUnit === 'ROAD-SEC';
-
   return (
     <group>
-      {/* Main East-West Road (Front of Parcels) */}
-      <mesh 
-        rotation={[-Math.PI / 2, 0, 0]} 
-        position={[0, 0.005, 26]}
-        onClick={(e) => { e.stopPropagation(); if (is2D) onSelect('ROAD-MAIN'); }}
-        onPointerOver={(e) => { e.stopPropagation(); if (is2D) { setHoveredRoad('MAIN'); document.body.style.cursor = 'pointer'; } }}
-        onPointerOut={(e) => { e.stopPropagation(); if (is2D) { setHoveredRoad(null); document.body.style.cursor = 'auto'; } }}
-      >
+      {/* Main East-West Road */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.005, 26]}>
         <planeGeometry args={[120, 12]} />
-        <meshBasicMaterial 
-          color={isMainSelected ? "#0ea5e9" : (hoveredRoad === 'MAIN' ? "#38bdf8" : "#1e293b")} 
-          transparent opacity={isMainSelected ? 0.3 : 1}
-          side={THREE.DoubleSide} 
-        />
+        <meshBasicMaterial color="#0a1220" transparent opacity={0.8} side={THREE.DoubleSide} />
       </mesh>
-      {/* Main Road Centerline */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[0, 0.006, 26]} style={{ pointerEvents: 'none' }}>
-        <planeGeometry args={[120, 0.4]} />
-        <meshBasicMaterial color="#cbd5e1" transparent opacity={0.6} side={THREE.DoubleSide} />
-      </mesh>
-      <Html position={[-35, 0.2, 26]} center zIndexRange={[100, 0]} style={{ pointerEvents: 'none' }}>
-        <div style={{ color: isMainSelected ? 'var(--accent)' : 'var(--text-3)', fontSize: '10px', letterSpacing: '0.1em', fontWeight: 600, textTransform: 'uppercase' }}>Main Access Road</div>
-      </Html>
+      
+      {/* Main Road Centerline (Dashed) */}
+      <Line
+        points={[[-60, 0.01, 26], [60, 0.01, 26]]}
+        color="#cbd5e1"
+        lineWidth={2}
+        dashed={true}
+        dashSize={2}
+        gapSize={2}
+        opacity={0.6}
+        transparent
+      />
 
-      {/* Secondary North-South Road (Right of Parcels) */}
-      <mesh 
-        rotation={[-Math.PI / 2, 0, 0]} 
-        position={[51, 0.005, -10]}
-        onClick={(e) => { e.stopPropagation(); if (is2D) onSelect('ROAD-SEC'); }}
-        onPointerOver={(e) => { e.stopPropagation(); if (is2D) { setHoveredRoad('SEC'); document.body.style.cursor = 'pointer'; } }}
-        onPointerOut={(e) => { e.stopPropagation(); if (is2D) { setHoveredRoad(null); document.body.style.cursor = 'auto'; } }}
-      >
+      {/* Secondary North-South Road */}
+      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[51, 0.005, -10]}>
         <planeGeometry args={[8, 84]} />
-        <meshBasicMaterial 
-          color={isSecSelected ? "#0ea5e9" : (hoveredRoad === 'SEC' ? "#38bdf8" : "#1e293b")} 
-          transparent opacity={isSecSelected ? 0.3 : 1}
-          side={THREE.DoubleSide} 
-        />
+        <meshBasicMaterial color="#0a1220" transparent opacity={0.8} side={THREE.DoubleSide} />
       </mesh>
-      {/* Secondary Road Centerline */}
-      <mesh rotation={[-Math.PI / 2, 0, 0]} position={[51, 0.006, -10]} style={{ pointerEvents: 'none' }}>
-        <planeGeometry args={[0.2, 84]} />
-        <meshBasicMaterial color="#cbd5e1" transparent opacity={0.3} side={THREE.DoubleSide} />
-      </mesh>
-      <Html position={[51, 0.2, -10]} center zIndexRange={[100, 0]} style={{ pointerEvents: 'none', transform: 'rotate(-90deg)' }}>
-        <div style={{ color: isSecSelected ? 'var(--accent)' : 'var(--text-4)', fontSize: '9px', letterSpacing: '0.1em', fontWeight: 500, textTransform: 'uppercase', whiteSpace: 'nowrap' }}>Secondary Road</div>
-      </Html>
+      
+      {/* Secondary Road Centerline (Dashed) */}
+      <Line
+        points={[[51, 0.01, -52], [51, 0.01, 32]]}
+        color="#cbd5e1"
+        lineWidth={2}
+        dashed={true}
+        dashSize={2}
+        gapSize={2}
+        opacity={0.6}
+        transparent
+      />
     </group>
   );
 };
-
 
 const Room = ({ unitId, roomId, label, args, position, selectedId, onClick }) => {
   const [hovered, setHovered] = useState(false);
@@ -168,10 +147,11 @@ const Room = ({ unitId, roomId, label, args, position, selectedId, onClick }) =>
       {(isSelected || hovered) && (
         <Html position={[0, args[1]/2 + 0.2, 0]} center style={{ pointerEvents: 'none' }} zIndexRange={[100, 0]}>
           <div style={{
-            background: 'rgba(15,23,42,0.9)', color: 'var(--text-1)', border: '1px solid var(--accent)',
-            padding: '4px 8px', borderRadius: '4px', fontSize: '10px', fontWeight: 600, whiteSpace: 'nowrap'
+            background: '#0a1220', color: '#22d3ee', border: '1px solid #1e2a44',
+            padding: '4px 8px', borderRadius: '4px', fontSize: '10px', fontWeight: 600, whiteSpace: 'nowrap',
+            fontFamily: 'var(--mono)'
           }}>
-            {label}<br/><span style={{ fontSize: '8px', color: 'var(--text-3)' }}>Illustrative Layout</span>
+            {label}<br/><span style={{ fontSize: '8px', color: '#94a3b8' }}>Illustrative Layout</span>
           </div>
         </Html>
       )}
@@ -191,13 +171,14 @@ const UnitBlock = ({ unitId, level, xOffset, args, selectedId, onClick }) => {
   useFrame(() => {
     if (meshRef.current) {
       const dir = xOffset < 0 ? -1 : 1;
-      const targetX = (isSelected || isRoomSelected) ? xOffset + dir * 1.5 : xOffset;
+      // SLIDE OUT BY 8 METERS HORIZONTALLY
+      const targetX = (isSelected || isRoomSelected) ? xOffset + dir * 8 : xOffset;
       meshRef.current.position.x += (targetX - meshRef.current.position.x) * 0.15;
     }
   });
 
-  const baseColor = "#cbd5e1"; 
-  const glow = isActive ? "#06b6d4" : (hovered ? "#38bdf8" : "#000000");
+  const baseColor = "#e5e5e5"; // Realistic beige wall color
+  const glow = isActive ? "#22d3ee" : (hovered ? "#06b6d4" : "#000000");
 
   return (
     <group position={[xOffset, 0, 0]} ref={meshRef}>
@@ -211,13 +192,13 @@ const UnitBlock = ({ unitId, level, xOffset, args, selectedId, onClick }) => {
         <meshStandardMaterial 
           color={baseColor}
           emissive={glow}
-          emissiveIntensity={isSelected ? 0.3 : (hovered ? 0.1 : 0)}
+          emissiveIntensity={isActive ? 0.5 : (hovered ? 0.2 : 0)}
           roughness={0.8}
-          transparent={isActive}
-          opacity={isActive ? 0.15 : 1}
-          depthWrite={!isActive}
+          transparent={false}
+          opacity={1}
+          depthWrite={true}
         />
-        {(isSelected || hovered) && <Edges color="#0ea5e9" scale={1.005} />}
+        {isActive && <Edges color="#22d3ee" scale={1.01} />}
       </mesh>
 
       {isActive && (
@@ -228,13 +209,14 @@ const UnitBlock = ({ unitId, level, xOffset, args, selectedId, onClick }) => {
         </group>
       )}
 
-      {(isSelected || hovered) && !isRoomSelected && (
-        <Html position={[0, 1.5, 0]} center style={{ pointerEvents: 'none' }}>
+      {(isActive || hovered) && !isRoomSelected && (
+        <Html position={[0, args[1]/2 + 0.5, 0]} center style={{ pointerEvents: 'none' }}>
           <div style={{
-            background: 'var(--bg-1)', color: 'var(--accent)', border: '1px solid var(--accent)',
-            padding: '4px 8px', borderRadius: '4px', fontSize: '10px', fontWeight: 700
+            background: '#0a1220', color: '#22d3ee', border: '1px solid #1e2a44',
+            padding: '4px 8px', borderRadius: '4px', fontSize: '11px', fontWeight: 600,
+            fontFamily: 'var(--mono)'
           }}>
-            Unit {unitId}
+            F0{level}-{unitId}
           </div>
         </Html>
       )}
@@ -247,7 +229,6 @@ const Floor = ({ level, yPos, selectedUnit, selectedLevel, onClick }) => {
   const meshRef = useRef();
 
   const isFloorSelected = selectedUnit === `UNIT-L${level}`;
-  // If ANY unit or room in this floor is selected, we consider the floor active for explosion.
   const isFloorActive = selectedLevel === level; 
 
   useFrame(() => {
@@ -260,10 +241,9 @@ const Floor = ({ level, yPos, selectedUnit, selectedLevel, onClick }) => {
     }
   });
 
-  const baseColor = "#e2e8f0"; // Light neutral
-  const slabColor = "#94a3b8";
+  const baseColor = "#e5e5e5"; // Light beige realistic walls
+  const slabColor = "#52525b"; // Dark grey floor separators
   const glow = isFloorSelected ? "#22d3ee" : (hovered ? "#0ea5e9" : "#000000");
-  const displayLabel = level === 0 ? "Ground Floor" : `Floor ${level}`;
 
   return (
     <group position={[0, yPos, 0]} ref={meshRef}>
@@ -287,9 +267,6 @@ const Floor = ({ level, yPos, selectedUnit, selectedLevel, onClick }) => {
             emissive={glow}
             emissiveIntensity={isFloorSelected ? 0.3 : (hovered ? 0.15 : 0)}
             roughness={0.7}
-            transparent={isFloorSelected}
-            opacity={isFloorSelected ? 0.15 : 1}
-            depthWrite={!isFloorSelected}
           />
           {(isFloorSelected || hovered) && <Edges color="#22d3ee" scale={1.01} />}
         </mesh>
@@ -316,16 +293,6 @@ const Floor = ({ level, yPos, selectedUnit, selectedLevel, onClick }) => {
         <meshStandardMaterial color="#38bdf8" transparent opacity={0.3} roughness={0.1} metalness={0.8} />
       </mesh>
 
-      {(isFloorSelected || hovered) && (
-        <Html position={[0, 1.5, 0]} center style={{ pointerEvents: 'none' }}>
-          <div style={{
-            background: 'var(--bg-1)', color: 'var(--accent)', border: '1px solid var(--accent)',
-            padding: '4px 8px', borderRadius: '4px', fontSize: '10px', fontWeight: 700
-          }}>
-            {displayLabel}
-          </div>
-        </Html>
-      )}
       {/* Ground Floor Lobby */}
       {level === 0 && (
         <group position={[0, 0, 0]}>
@@ -342,18 +309,18 @@ const Floor = ({ level, yPos, selectedUnit, selectedLevel, onClick }) => {
 
       {/* Floor Windows */}
       <Instances limit={24} castShadow>
-        <boxGeometry args={[1.2, 1.8, 0.05]} />
-        <meshStandardMaterial color="#020617" roughness={0.1} metalness={0.9} emissive="#0ea5e9" emissiveIntensity={0.1} />
+        <boxGeometry args={[1.2, 1.2, 0.05]} />
+        <meshStandardMaterial color="#020617" roughness={0.1} metalness={0.9} emissive="#0ea5e9" emissiveIntensity={0.05} />
         {[-7, -4.5, 4.5, 7].map((x, j) => (
           <React.Fragment key={`fb-${j}`}>
-            <Instance position={[x, 0, 6.91]} />
-            <Instance position={[x, 0, -6.91]} />
+            <Instance position={[x, 0.2, 6.91]} />
+            <Instance position={[x, 0.2, -6.91]} />
           </React.Fragment>
         ))}
         {[-4, -1.5, 1.5, 4].map((z, j) => (
           <React.Fragment key={`side-${j}`}>
-            <Instance position={[8.91, 0, z]} rotation={[0, Math.PI / 2, 0]} />
-            <Instance position={[-8.91, 0, z]} rotation={[0, Math.PI / 2, 0]} />
+            <Instance position={[8.91, 0.2, z]} rotation={[0, Math.PI / 2, 0]} />
+            <Instance position={[-8.91, 0.2, z]} rotation={[0, Math.PI / 2, 0]} />
           </React.Fragment>
         ))}
       </Instances>
@@ -377,91 +344,54 @@ const Roof = ({ selectedLevel }) => {
     {/* Roof Slab */}
     <mesh position={[0, -0.4, 0]} castShadow receiveShadow>
        <boxGeometry args={[18.4, 0.2, 14.4]} />
-       <meshStandardMaterial color="#0f172a" />
+       <meshStandardMaterial color="#a1a1aa" />
     </mesh>
     {/* Parapet Walls */}
     <mesh position={[0, 0.2, 7.1]} castShadow>
        <boxGeometry args={[18.4, 1.0, 0.2]} />
-       <meshStandardMaterial color="#1e293b" />
+       <meshStandardMaterial color="#e5e5e5" />
     </mesh>
     <mesh position={[0, 0.2, -7.1]} castShadow>
        <boxGeometry args={[18.4, 1.0, 0.2]} />
-       <meshStandardMaterial color="#1e293b" />
+       <meshStandardMaterial color="#e5e5e5" />
     </mesh>
     <mesh position={[9.1, 0.2, 0]} castShadow>
        <boxGeometry args={[0.2, 1.0, 14.4]} />
-       <meshStandardMaterial color="#1e293b" />
+       <meshStandardMaterial color="#e5e5e5" />
     </mesh>
     <mesh position={[-9.1, 0.2, 0]} castShadow>
        <boxGeometry args={[0.2, 1.0, 14.4]} />
-       <meshStandardMaterial color="#1e293b" />
+       <meshStandardMaterial color="#e5e5e5" />
     </mesh>
 
     {/* Elevator / Service Core */}
     <mesh position={[0, 1.0, 0]} castShadow>
       <boxGeometry args={[4, 2.5, 4]} />
-      <meshStandardMaterial color="#1e293b" />
+      <meshStandardMaterial color="#e5e5e5" />
     </mesh>
 
     {/* Water Tanks */}
     <mesh position={[6, 1.0, -4]} castShadow>
       <cylinderGeometry args={[0.8, 0.8, 2.5, 16]} />
-      <meshStandardMaterial color="#0284c7" roughness={0.6} metalness={0.2} />
+      <meshStandardMaterial color="#2563eb" roughness={0.4} metalness={0.1} />
     </mesh>
     <mesh position={[4, 1.0, -4]} castShadow>
       <cylinderGeometry args={[0.8, 0.8, 2.5, 16]} />
-      <meshStandardMaterial color="#0284c7" roughness={0.6} metalness={0.2} />
+      <meshStandardMaterial color="#2563eb" roughness={0.4} metalness={0.1} />
     </mesh>
   </group>
   );
 };
 
-const RealisticBuilding = ({ selectedUnit, onSelect, is2D }) => {
+const RealisticBuilding = ({ selectedUnit, onSelect }) => {
   let selectedLevel = null;
   if (selectedUnit) {
     if (selectedUnit.startsWith('UNIT-L')) {
       selectedLevel = parseInt(selectedUnit.replace('UNIT-L', ''), 10);
     } else if (selectedUnit.startsWith('U0')) {
-      // U03-01 -> Level 3
       const match = selectedUnit.match(/U0(\d+)/);
       if (match) selectedLevel = parseInt(match[1], 10);
     }
-  }
-
-  const [hovered, setHovered] = useState(false);
-  
-  if (is2D) {
-    const isSelected = selectedUnit === 'BUILDING-B239' || (selectedUnit && (selectedUnit.startsWith('U0') || selectedUnit.startsWith('UNIT-L')));
-    return (
-      <group>
-        {/* Building Footprint */}
-        <mesh 
-          rotation={[-Math.PI / 2, 0, 0]} 
-          position={[0, 0.02, 0]}
-          onClick={(e) => { e.stopPropagation(); onSelect('BUILDING-B239'); }}
-          onPointerOver={(e) => { e.stopPropagation(); setHovered(true); document.body.style.cursor = 'pointer'; }}
-          onPointerOut={(e) => { e.stopPropagation(); setHovered(false); document.body.style.cursor = 'auto'; }}
-        >
-          <planeGeometry args={[18.4, 14.4]} />
-          <meshBasicMaterial 
-            color={isSelected ? "#06b6d4" : (hovered ? "#cbd5e1" : "#475569")} 
-            transparent opacity={isSelected ? 0.3 : 0.6} side={THREE.DoubleSide} 
-          />
-          <Edges scale={1} color={isSelected ? "#22d3ee" : "#cbd5e1"} />
-        </mesh>
-        <Html position={[0, 0.3, 0]} center zIndexRange={[100, 0]} style={{ pointerEvents: 'none' }}>
-          <div style={{
-            color: isSelected ? 'var(--accent)' : 'var(--text-1)', 
-            background: isSelected ? 'rgba(5, 8, 15, 0.85)' : 'rgba(0,0,0,0.5)', 
-            padding: '2px 6px',
-            borderRadius: '4px', fontSize: '10px', fontWeight: 600, letterSpacing: '0.05em',
-            border: isSelected ? '1px solid var(--accent)' : 'none',
-          }}>
-            BUILDING B-239
-          </div>
-        </Html>
-      </group>
-    );
   }
 
   return (
@@ -477,7 +407,6 @@ const RealisticBuilding = ({ selectedUnit, onSelect, is2D }) => {
           onClick={onSelect}
         />
       ))}
-      
       <Roof selectedLevel={selectedLevel} />
     </group>
   );
@@ -539,22 +468,33 @@ const UndergroundLayer = ({ selectedUnit, onSelect }) => {
 
       {/* Metro Tunnel */}
       <mesh position={[0, -10, 0]} rotation={[0, Math.PI / 4, 0]}>
-        <boxGeometry args={[6, 6, 60]} />
-        <meshStandardMaterial color="#dc2626" transparent opacity={0.6} />
-        <Html position={[0, 3, 0]} center style={{ pointerEvents: 'none' }}>
-          <div style={{ color: '#dc2626', fontSize: '10px', background: 'rgba(0,0,0,0.5)', padding: '2px 4px', borderRadius: '4px', whiteSpace: 'nowrap' }}>
-            UM-00451 · Metro Tunnel
+        <boxGeometry args={[10, 8, 80]} />
+        <meshStandardMaterial color="#22d3ee" transparent opacity={0.3} />
+        <Html position={[0, 4, 0]} center style={{ pointerEvents: 'none' }}>
+          <div style={{ color: '#22d3ee', fontSize: '11px', background: '#0a1220', border: '1px solid #1e2a44', padding: '4px 8px', borderRadius: '4px', whiteSpace: 'nowrap' }}>
+            UM-00451 · Metro Corridor
           </div>
         </Html>
       </mesh>
 
-      {/* Utility Line */}
-      <mesh position={[-11, -3, 0]}>
-        <boxGeometry args={[1, 1, 20]} />
-        <meshStandardMaterial color="#3b82f6" transparent opacity={0.8} />
-        <Html position={[0, 1, 0]} center style={{ pointerEvents: 'none' }}>
-          <div style={{ color: '#38bdf8', fontSize: '10px', background: 'rgba(0,0,0,0.5)', padding: '2px 4px', borderRadius: '4px', whiteSpace: 'nowrap' }}>
-            UW-00733 · HT Power
+      {/* Water Main Utility Line */}
+      <mesh position={[-8, -3, 0]}>
+        <boxGeometry args={[2, 2, 80]} />
+        <meshStandardMaterial color="#3b82f6" transparent opacity={0.6} />
+        <Html position={[0, 1.5, 0]} center style={{ pointerEvents: 'none' }}>
+          <div style={{ color: '#3b82f6', fontSize: '11px', background: '#0a1220', border: '1px solid #1e2a44', padding: '4px 8px', borderRadius: '4px', whiteSpace: 'nowrap' }}>
+            UW-00451 · Water Main
+          </div>
+        </Html>
+      </mesh>
+
+      {/* HT Power Duct */}
+      <mesh position={[12, -2, 0]}>
+        <boxGeometry args={[1.5, 1.5, 80]} />
+        <meshStandardMaterial color="#f59e0b" transparent opacity={0.6} />
+        <Html position={[0, 1.5, 0]} center style={{ pointerEvents: 'none' }}>
+          <div style={{ color: '#f59e0b', fontSize: '11px', background: '#0a1220', border: '1px solid #1e2a44', padding: '4px 8px', borderRadius: '4px', whiteSpace: 'nowrap' }}>
+            UE-00892 · HT Power Duct
           </div>
         </Html>
       </mesh>
@@ -569,7 +509,6 @@ const CompassObserver = ({ onCameraRotate }) => {
   useFrame(() => {
     if (onCameraRotate) {
       const angle = Math.atan2(camera.position.x, camera.position.z);
-      // Small optimization: only callback if angle changes by > 0.01 rad
       if (lastAngle.current === null || Math.abs(lastAngle.current - angle) > 0.01) {
         lastAngle.current = angle;
         onCameraRotate(angle);
@@ -636,21 +575,32 @@ const CameraController = ({ preset, viewMode }) => {
 };
 
 export default function Viewer3D({ visibleLayers, cameraPreset, resetTrigger, selectedUlpin, onSelect, viewMode, onCameraRotate }) {
-  // Use selectedUlpin to control highlighting, but for this realistic scene we map it to our units.
-  // We check visibleLayers from PropertyMap (e.g. utilities, tunnels, units, buildings, parcels).
-  
   const showUnderground = visibleLayers?.utilities || visibleLayers?.tunnels;
   const is2D = viewMode === '2D';
 
   return (
-    <div style={{ width: '100%', height: '100%', background: '#05080f' }}>
+    <div style={{ width: '100%', height: '100%', background: '#05080f', position: 'relative' }}>
+      
+      {/* North Compass Overlay */}
+      <div style={{
+        position: 'absolute', top: '24px', right: '24px', zIndex: 10,
+        background: 'rgba(10, 18, 32, 0.7)', border: '1px solid #1e2a44',
+        color: '#22d3ee', padding: '8px 12px', borderRadius: '8px',
+        fontFamily: 'var(--mono)', fontSize: '12px', fontWeight: 700,
+        boxShadow: '0 4px 12px rgba(0,0,0,0.5)', pointerEvents: 'none',
+        display: 'flex', alignItems: 'center', gap: '4px', backdropFilter: 'blur(4px)'
+      }}>
+        <span style={{ fontSize: '14px' }}>N</span> ↑
+      </div>
+
       <Canvas shadows camera={{ position: [45, 30, 45], fov: 45, near: 0.1, far: 500 }}>
+        <color attach="background" args={['#05080f']} />
         <fog attach="fog" args={['#05080f', 60, 200]} />
         
         <CompassObserver onCameraRotate={onCameraRotate} />
 
-        <ambientLight intensity={0.4} />
-        <hemisphereLight args={['#22d3ee', '#0a1220', 0.3]} />
+        <ambientLight intensity={0.5} />
+        <hemisphereLight args={['#22d3ee', '#0a1220', 0.4]} />
         <directionalLight position={[30, 40, 20]} intensity={1.2} castShadow shadow-mapSize={[2048, 2048]} />
 
         <CameraController preset={cameraPreset} viewMode={viewMode} key={resetTrigger} />
@@ -675,11 +625,7 @@ export default function Viewer3D({ visibleLayers, cameraPreset, resetTrigger, se
           />
         </Plane>
 
-        {!is2D ? (
-          <Grid cellColor="#14213d" sectionColor="#22d3ee" fadeDistance={120} infiniteGrid={true} position={[0, 0, 0]} />
-        ) : (
-          <Grid cellColor="#0a1220" sectionColor="#14213d" fadeDistance={120} infiniteGrid={true} position={[0, 0, 0]} />
-        )}
+        <Grid cellColor="#1e2a44" sectionColor="#2a3a5c" fadeDistance={200} infiniteGrid={true} position={[0, 0, 0]} />
 
         {visibleLayers?.parcels && <ParcelBoundary is2D={is2D} selectedUnit={selectedUlpin} onSelect={onSelect} />}
         {visibleLayers?.roads && <RoadNetwork is2D={is2D} selectedUnit={selectedUlpin} onSelect={onSelect} />}

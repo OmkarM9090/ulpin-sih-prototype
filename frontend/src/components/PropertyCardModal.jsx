@@ -110,7 +110,7 @@ export default function PropertyCardModal({ unitId, onClose }) {
                       <CheckCircle2 size={12} /> VERIFIED
                     </span>
                   </div>
-                  <div style={{ fontSize: '13px', color: 'var(--text-3)', fontFamily: 'var(--mono)', letterSpacing: '0.02em' }}>3D ULPIN: {propertyData.unit.ulpin}</div>
+                  <div style={{ fontSize: '13px', color: 'var(--text-3)', fontFamily: 'var(--mono)', letterSpacing: '0.02em' }}>3D ULPIN: {propertyData.generated_3d_ulpin}</div>
                 </div>
               </div>
               <button 
@@ -136,12 +136,12 @@ export default function PropertyCardModal({ unitId, onClose }) {
                   </div>
                   <div style={{ background: 'var(--bg-2)', padding: '20px', borderRadius: '12px', border: '1px solid var(--border-1)' }}>
                     <div style={{ fontSize: '12px', color: 'var(--text-3)', fontWeight: 500, marginBottom: '6px' }}>Primary Owner</div>
-                    <div style={{ fontSize: '16px', color: 'var(--text-1)', fontWeight: 600, marginBottom: '4px' }}>{propertyData.owner.name}</div>
-                    <div style={{ fontSize: '13px', color: 'var(--text-2)', marginBottom: '16px' }}>{propertyData.owner.ownership_type} (Share: {propertyData.owner.share}%)</div>
+                    <div style={{ fontSize: '16px', color: 'var(--text-1)', fontWeight: 600, marginBottom: '4px' }}>{propertyData.ownership.owner_name}</div>
+                    <div style={{ fontSize: '13px', color: 'var(--text-2)', marginBottom: '16px' }}>{propertyData.ownership.ownership_type}</div>
                     
                     <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', background: 'rgba(255,255,255,0.03)', padding: '10px 12px', borderRadius: '6px' }}>
                       <span style={{ fontSize: '12px', color: 'var(--text-3)', fontWeight: 500 }}>Aadhaar Hash</span>
-                      <span style={{ fontSize: '13px', color: 'var(--text-1)', fontFamily: 'var(--mono)' }}>{propertyData.owner.aadhaar_hash.slice(0, 8)}...</span>
+                      <span style={{ fontSize: '13px', color: 'var(--text-1)', fontFamily: 'var(--mono)' }}>{propertyData.ownership.aadhaar_hash.slice(0, 8)}...</span>
                     </div>
                   </div>
                 </section>
@@ -153,20 +153,16 @@ export default function PropertyCardModal({ unitId, onClose }) {
                   </div>
                   <div style={{ background: 'var(--bg-2)', padding: '20px', borderRadius: '12px', border: '1px solid var(--border-1)', display: 'flex', flexDirection: 'column', gap: '12px' }}>
                     <div>
-                      <div style={{ fontSize: '12px', color: 'var(--text-3)', fontWeight: 500, marginBottom: '4px' }}>Transaction ID</div>
-                      <div style={{ fontSize: '14px', color: 'var(--text-1)', fontFamily: 'var(--mono)' }}>{propertyData.provenance.transaction_id}</div>
-                    </div>
-                    <div>
                       <div style={{ fontSize: '12px', color: 'var(--text-3)', fontWeight: 500, marginBottom: '4px' }}>Registration Date</div>
-                      <div style={{ fontSize: '14px', color: 'var(--text-1)' }}>{new Date(propertyData.provenance.timestamp).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</div>
+                      <div style={{ fontSize: '14px', color: 'var(--text-1)' }}>{new Date(propertyData.ownership.registered_on).toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' })}</div>
                     </div>
                     <div>
                       <div style={{ fontSize: '12px', color: 'var(--text-3)', fontWeight: 500, marginBottom: '4px' }}>Derivation</div>
-                      <div style={{ fontSize: '14px', color: 'var(--text-2)' }}>{propertyData.provenance.derivation}</div>
+                      <div style={{ fontSize: '14px', color: 'var(--text-2)' }}>{propertyData.validation.derivation}</div>
                     </div>
                     <div>
-                      <div style={{ fontSize: '12px', color: 'var(--text-3)', fontWeight: 500, marginBottom: '4px' }}>Checksum</div>
-                      <div style={{ fontSize: '12px', color: 'var(--text-3)', fontFamily: 'var(--mono)', background: 'rgba(0,0,0,0.2)', padding: '6px', borderRadius: '4px', wordBreak: 'break-all' }}>{propertyData.provenance.checksum}</div>
+                      <div style={{ fontSize: '12px', color: 'var(--text-3)', fontWeight: 500, marginBottom: '4px' }}>Data Source</div>
+                      <div style={{ fontSize: '12px', color: 'var(--text-3)' }}>{propertyData.validation.data_source}</div>
                     </div>
                   </div>
                 </section>
@@ -202,19 +198,19 @@ export default function PropertyCardModal({ unitId, onClose }) {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <span style={{ fontSize: '12px', color: 'var(--text-3)' }}>Parent 2D ULPIN</span>
-                        <span style={{ fontSize: '13px', color: 'var(--text-1)', fontFamily: 'var(--mono)' }}>{propertyData.provenance.ulpin_components.parent_ulpin}</span>
+                        <span style={{ fontSize: '13px', color: 'var(--text-1)', fontFamily: 'var(--mono)' }}>{propertyData.parent_ulpin}</span>
                       </div>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <span style={{ fontSize: '12px', color: 'var(--text-3)' }}>Cadastral Layer</span>
-                        <span style={{ fontSize: '13px', color: 'var(--text-1)', fontWeight: 600 }}>{propertyData.unit.layer === 'S' ? 'Surface (S)' : propertyData.unit.layer === 'U' ? 'Underground (U)' : 'Airspace (A)'}</span>
+                        <span style={{ fontSize: '13px', color: 'var(--text-1)', fontWeight: 600 }}>{propertyData.vertical_layer_label} ({propertyData.vertical_layer})</span>
                       </div>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <span style={{ fontSize: '12px', color: 'var(--text-3)' }}>Level / Floor</span>
-                        <span style={{ fontSize: '13px', color: 'var(--text-1)', fontWeight: 600 }}>{propertyData.unit.level_label || propertyData.unit.level}</span>
+                        <span style={{ fontSize: '13px', color: 'var(--text-1)', fontWeight: 600 }}>{propertyData.floor_label}</span>
                       </div>
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <span style={{ fontSize: '12px', color: 'var(--text-3)' }}>Unit Index</span>
-                        <span style={{ fontSize: '13px', color: 'var(--text-1)', fontFamily: 'var(--mono)' }}>{propertyData.unit.unit_id}</span>
+                        <span style={{ fontSize: '13px', color: 'var(--text-1)', fontFamily: 'var(--mono)' }}>{propertyData.unit_id}</span>
                       </div>
                     </div>
                   </div>
@@ -229,19 +225,19 @@ export default function PropertyCardModal({ unitId, onClose }) {
                     <div style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '20px' }}>
                       <div>
                         <div style={{ fontSize: '12px', color: 'var(--text-3)', fontWeight: 500, marginBottom: '6px' }}>Volume</div>
-                        <div style={{ fontSize: '16px', color: 'var(--text-1)', fontWeight: 600 }}>{propertyData.unit.volume_cbm} <span style={{fontSize:'13px', color: 'var(--text-3)'}}>m³</span></div>
+                        <div style={{ fontSize: '16px', color: 'var(--text-1)', fontWeight: 600 }}>{propertyData.dimensions.volume_m3} <span style={{fontSize:'13px', color: 'var(--text-3)'}}>m³</span></div>
                       </div>
                       <div>
                         <div style={{ fontSize: '12px', color: 'var(--text-3)', fontWeight: 500, marginBottom: '6px' }}>Floor Area</div>
-                        <div style={{ fontSize: '16px', color: 'var(--text-1)', fontWeight: 600 }}>{propertyData.unit.area_sqm} <span style={{fontSize:'13px', color: 'var(--text-3)'}}>m²</span></div>
+                        <div style={{ fontSize: '16px', color: 'var(--text-1)', fontWeight: 600 }}>{propertyData.dimensions.area_sqm} <span style={{fontSize:'13px', color: 'var(--text-3)'}}>m²</span></div>
                       </div>
                       <div>
                         <div style={{ fontSize: '12px', color: 'var(--text-3)', fontWeight: 500, marginBottom: '6px' }}>Z-Min</div>
-                        <div style={{ fontSize: '14px', color: 'var(--text-2)', fontWeight: 500, fontFamily: 'var(--mono)' }}>+{propertyData.unit.z_min.toFixed(1)} m</div>
+                        <div style={{ fontSize: '14px', color: 'var(--text-2)', fontWeight: 500, fontFamily: 'var(--mono)' }}>+{propertyData.dimensions.z_min.toFixed(1)} m</div>
                       </div>
                       <div>
                         <div style={{ fontSize: '12px', color: 'var(--text-3)', fontWeight: 500, marginBottom: '6px' }}>Z-Max</div>
-                        <div style={{ fontSize: '14px', color: 'var(--text-2)', fontWeight: 500, fontFamily: 'var(--mono)' }}>+{propertyData.unit.z_max.toFixed(1)} m</div>
+                        <div style={{ fontSize: '14px', color: 'var(--text-2)', fontWeight: 500, fontFamily: 'var(--mono)' }}>+{propertyData.dimensions.z_max.toFixed(1)} m</div>
                       </div>
                     </div>
                   </div>
@@ -268,7 +264,7 @@ export default function PropertyCardModal({ unitId, onClose }) {
                 <section style={{ display: 'flex', justifyContent: 'center', marginTop: 'auto' }}>
                   <div style={{ background: '#fff', padding: '16px', borderRadius: '12px', display: 'flex', flexDirection: 'column', alignItems: 'center', gap: '12px', boxShadow: '0 8px 24px rgba(0,0,0,0.3)' }}>
                     <QRCodeCanvas 
-                      value={`https://geocadastre.gov.in/verify/${propertyData.unit.ulpin}`}
+                      value={`https://geocadastre.gov.in/verify/${propertyData.generated_3d_ulpin}`}
                       size={120}
                       level={"Q"}
                       includeMargin={false}

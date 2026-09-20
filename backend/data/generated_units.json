@@ -1,722 +1,652 @@
 [
   {
-    "unit_id": "U001",
-    "ulpin": "23140701001001-U-L-02-U001-3",
-    "layer": "U",
-    "level": "L-02",
+    "unit_id": "B2-01",
+    "unit_index": 1,
+    "ulpin": "3D-MH-PUN-P123456-U-L02-U01-7",
+    "generated_3d_ulpin": "3D-MH-PUN-P123456-U-L02-U01-7",
+    "ulpin_status": "generated",
+    "parent_ulpin": "23140701001001",
+    "vertical_layer": "U",
+    "vertical_layer_label": "Underground",
+    "floor_code": "L02",
+    "floor_label": "Basement 2",
+    "property_type": "Commercial Parking",
+    "dimensions": {
+      "area_sqft": 5000,
+      "area_sqm": 464.5,
+      "volume_m3": 1393.5,
+      "height_m": 3.0,
+      "length_m": 24.1,
+      "width_m": 19.3,
+      "z_min": -6.0,
+      "z_max": -3.0
+    },
+    "coordinates": {
+      "crs": "EPSG:32644",
+      "x": 542103.99,
+      "y": 2971832.17
+    },
+    "ownership": {
+      "owner_name": "Imran Sheikh",
+      "ownership_type": "Leasehold (Society)",
+      "registered_on": "2026-01-24",
+      "encumbrances": "Bank Mortgage",
+      "aadhaar_hash": "29236156cfb4"
+    },
+    "validation": {
+      "geometry_valid": true,
+      "topology_valid": true,
+      "confidence_score": 92.9,
+      "data_source": "Controlled Demo Dataset",
+      "derivation": "Derived Geometry",
+      "verification_status": "Prototype \u2014 Awaiting Surveyor Review"
+    },
     "level_label": "Basement 2",
-    "unit_label": "Basement 2 - Parking Level 2",
-    "footprint": [
-      [
-        5.0,
-        7.5
-      ],
-      [
-        25.0,
-        7.5
-      ],
-      [
-        25.0,
-        32.5
-      ],
-      [
-        5.0,
-        32.5
-      ],
-      [
-        5.0,
-        7.5
-      ]
-    ],
+    "usage": "Residential",
+    "layer": "U",
+    "area_sqm": 464.5,
+    "volume_cbm": 1393.5,
     "z_min": -6.0,
-    "z_max": -3.0,
-    "usage": "Parking Level 2",
-    "area_sqm": 500.0,
-    "volume_cbm": 1500.0,
-    "type": "building"
+    "z_max": -3.0
   },
   {
-    "unit_id": "U002",
-    "ulpin": "23140701001001-U-L-01-U001-2",
-    "layer": "U",
-    "level": "L-01",
+    "unit_id": "B1-01",
+    "unit_index": 2,
+    "ulpin": "3D-MH-PUN-P123456-U-L01-U02-7",
+    "generated_3d_ulpin": "3D-MH-PUN-P123456-U-L01-U02-7",
+    "ulpin_status": "generated",
+    "parent_ulpin": "23140701001001",
+    "vertical_layer": "U",
+    "vertical_layer_label": "Underground",
+    "floor_code": "L01",
+    "floor_label": "Basement 1",
+    "property_type": "Commercial Parking",
+    "dimensions": {
+      "area_sqft": 5000,
+      "area_sqm": 464.5,
+      "volume_m3": 1393.5,
+      "height_m": 3.0,
+      "length_m": 24.1,
+      "width_m": 19.3,
+      "z_min": -3.0,
+      "z_max": 0.0
+    },
+    "coordinates": {
+      "crs": "EPSG:32644",
+      "x": 542104.22,
+      "y": 2971834.53
+    },
+    "ownership": {
+      "owner_name": "T. Balasubramanian",
+      "ownership_type": "Leasehold (Society)",
+      "registered_on": "2026-01-04",
+      "encumbrances": "None",
+      "aadhaar_hash": "cae69004aa4a"
+    },
+    "validation": {
+      "geometry_valid": true,
+      "topology_valid": true,
+      "confidence_score": 92.6,
+      "data_source": "Controlled Demo Dataset",
+      "derivation": "Derived Geometry",
+      "verification_status": "Prototype \u2014 Awaiting Surveyor Review"
+    },
     "level_label": "Basement 1",
-    "unit_label": "Basement 1 - Parking",
-    "footprint": [
-      [
-        5.0,
-        7.5
-      ],
-      [
-        25.0,
-        7.5
-      ],
-      [
-        25.0,
-        32.5
-      ],
-      [
-        5.0,
-        32.5
-      ],
-      [
-        5.0,
-        7.5
-      ]
-    ],
+    "usage": "Residential",
+    "layer": "U",
+    "area_sqm": 464.5,
+    "volume_cbm": 1393.5,
     "z_min": -3.0,
-    "z_max": 0.0,
-    "usage": "Parking",
-    "area_sqm": 500.0,
-    "volume_cbm": 1500.0,
-    "type": "building"
+    "z_max": 0.0
   },
   {
-    "unit_id": "U003",
-    "ulpin": "23140701001001-S-L00-U001-1",
-    "layer": "S",
-    "level": "L00",
+    "unit_id": "U00-01",
+    "unit_index": 3,
+    "ulpin": "3D-MH-PUN-P123456-S-L00-U03-7",
+    "generated_3d_ulpin": "3D-MH-PUN-P123456-S-L00-U03-7",
+    "ulpin_status": "generated",
+    "parent_ulpin": "23140701001001",
+    "vertical_layer": "S",
+    "vertical_layer_label": "Surface",
+    "floor_code": "L00",
+    "floor_label": "Ground Floor",
+    "property_type": "Retail / Lobby",
+    "dimensions": {
+      "area_sqft": 5000,
+      "area_sqm": 464.5,
+      "volume_m3": 1625.8,
+      "height_m": 3.5,
+      "length_m": 24.1,
+      "width_m": 19.3,
+      "z_min": 0.0,
+      "z_max": 3.5
+    },
+    "coordinates": {
+      "crs": "EPSG:32644",
+      "x": 542100.69,
+      "y": 2971832.76
+    },
+    "ownership": {
+      "owner_name": "Sunita Yadav",
+      "ownership_type": "Freehold",
+      "registered_on": "2026-01-12",
+      "encumbrances": "Bank Mortgage",
+      "aadhaar_hash": "230e5a02d3a4"
+    },
+    "validation": {
+      "geometry_valid": true,
+      "topology_valid": true,
+      "confidence_score": 99.5,
+      "data_source": "Controlled Demo Dataset",
+      "derivation": "Derived Geometry",
+      "verification_status": "Prototype \u2014 Awaiting Surveyor Review"
+    },
     "level_label": "Ground Floor",
-    "unit_label": "Ground Floor - Shop",
-    "footprint": [
-      [
-        5.0,
-        7.5
-      ],
-      [
-        25.0,
-        7.5
-      ],
-      [
-        25.0,
-        32.5
-      ],
-      [
-        5.0,
-        32.5
-      ],
-      [
-        5.0,
-        7.5
-      ]
-    ],
+    "usage": "Residential",
+    "layer": "S",
+    "area_sqm": 464.5,
+    "volume_cbm": 1625.8,
     "z_min": 0.0,
-    "z_max": 3.5,
-    "usage": "Shop",
-    "area_sqm": 500.0,
-    "volume_cbm": 1750.0,
-    "type": "building"
+    "z_max": 3.5
   },
   {
-    "unit_id": "U004",
-    "ulpin": "23140701001001-S-L01-U001-2",
+    "unit_id": "U01-01",
+    "unit_index": 4,
+    "ulpin": "3D-MH-PUN-P123456-S-L01-U04-7",
+    "generated_3d_ulpin": "3D-MH-PUN-P123456-S-L01-U04-7",
+    "ulpin_status": "generated",
+    "parent_ulpin": "23140701001001",
+    "vertical_layer": "S",
+    "vertical_layer_label": "Surface",
+    "floor_code": "L01",
+    "floor_label": "Floor 1",
+    "property_type": "Residential Apartment",
+    "dimensions": {
+      "area_sqft": 1420,
+      "area_sqm": 131.9,
+      "volume_m3": 461.7,
+      "height_m": 3.5,
+      "length_m": 12.8,
+      "width_m": 10.3,
+      "z_min": 3.5,
+      "z_max": 7.0
+    },
+    "coordinates": {
+      "crs": "EPSG:32644",
+      "x": 542101.44,
+      "y": 2971834.8
+    },
+    "ownership": {
+      "owner_name": "Meera Nair",
+      "ownership_type": "Freehold",
+      "registered_on": "2026-01-17",
+      "encumbrances": "None",
+      "aadhaar_hash": "2f099f05ae91"
+    },
+    "validation": {
+      "geometry_valid": true,
+      "topology_valid": true,
+      "confidence_score": 96.5,
+      "data_source": "Controlled Demo Dataset",
+      "derivation": "Derived Geometry",
+      "verification_status": "Prototype \u2014 Awaiting Surveyor Review"
+    },
+    "level_label": "Floor 1",
+    "usage": "Residential",
     "layer": "S",
-    "level": "L01",
-    "level_label": "First Floor",
-    "unit_label": "First Floor - Unit 1",
-    "footprint": [
-      [
-        5.0,
-        7.5
-      ],
-      [
-        15.0,
-        7.5
-      ],
-      [
-        15.0,
-        20.0
-      ],
-      [
-        5.0,
-        20.0
-      ],
-      [
-        5.0,
-        7.5
-      ]
-    ],
+    "area_sqm": 131.9,
+    "volume_cbm": 461.7,
     "z_min": 3.5,
-    "z_max": 7.0,
-    "usage": "Apartments",
-    "area_sqm": 125.0,
-    "volume_cbm": 437.5,
-    "type": "building"
+    "z_max": 7.0
   },
   {
-    "unit_id": "U005",
-    "ulpin": "23140701001001-S-L01-U002-3",
+    "unit_id": "U01-02",
+    "unit_index": 5,
+    "ulpin": "3D-MH-PUN-P123456-S-L01-U05-7",
+    "generated_3d_ulpin": "3D-MH-PUN-P123456-S-L01-U05-7",
+    "ulpin_status": "generated",
+    "parent_ulpin": "23140701001001",
+    "vertical_layer": "S",
+    "vertical_layer_label": "Surface",
+    "floor_code": "L01",
+    "floor_label": "Floor 1",
+    "property_type": "Residential Apartment",
+    "dimensions": {
+      "area_sqft": 1180,
+      "area_sqm": 109.6,
+      "volume_m3": 383.6,
+      "height_m": 3.5,
+      "length_m": 11.7,
+      "width_m": 9.4,
+      "z_min": 3.5,
+      "z_max": 7.0
+    },
+    "coordinates": {
+      "crs": "EPSG:32644",
+      "x": 542103.43,
+      "y": 2971834.94
+    },
+    "ownership": {
+      "owner_name": "Kiran Desai",
+      "ownership_type": "Freehold",
+      "registered_on": "2026-01-10",
+      "encumbrances": "None",
+      "aadhaar_hash": "a505faa89bed"
+    },
+    "validation": {
+      "geometry_valid": true,
+      "topology_valid": true,
+      "confidence_score": 99.1,
+      "data_source": "Controlled Demo Dataset",
+      "derivation": "Derived Geometry",
+      "verification_status": "Prototype \u2014 Awaiting Surveyor Review"
+    },
+    "level_label": "Floor 1",
+    "usage": "Residential",
     "layer": "S",
-    "level": "L01",
-    "level_label": "First Floor",
-    "unit_label": "First Floor - Unit 2",
-    "footprint": [
-      [
-        15.0,
-        7.5
-      ],
-      [
-        25.0,
-        7.5
-      ],
-      [
-        25.0,
-        20.0
-      ],
-      [
-        15.0,
-        20.0
-      ],
-      [
-        15.0,
-        7.5
-      ]
-    ],
+    "area_sqm": 109.6,
+    "volume_cbm": 383.6,
     "z_min": 3.5,
-    "z_max": 7.0,
-    "usage": "Apartments",
-    "area_sqm": 125.0,
-    "volume_cbm": 437.5,
-    "type": "building"
+    "z_max": 7.0
   },
   {
-    "unit_id": "U006",
-    "ulpin": "23140701001001-S-L01-U003-4",
+    "unit_id": "U02-01",
+    "unit_index": 6,
+    "ulpin": "3D-MH-PUN-P123456-S-L02-U06-7",
+    "generated_3d_ulpin": "3D-MH-PUN-P123456-S-L02-U06-7",
+    "ulpin_status": "generated",
+    "parent_ulpin": "23140701001001",
+    "vertical_layer": "S",
+    "vertical_layer_label": "Surface",
+    "floor_code": "L02",
+    "floor_label": "Floor 2",
+    "property_type": "Residential Apartment",
+    "dimensions": {
+      "area_sqft": 1240,
+      "area_sqm": 115.2,
+      "volume_m3": 403.2,
+      "height_m": 3.5,
+      "length_m": 12.0,
+      "width_m": 9.6,
+      "z_min": 7.0,
+      "z_max": 10.5
+    },
+    "coordinates": {
+      "crs": "EPSG:32644",
+      "x": 542101.32,
+      "y": 2971834.52
+    },
+    "ownership": {
+      "owner_name": "Imran Sheikh",
+      "ownership_type": "Freehold",
+      "registered_on": "2026-01-17",
+      "encumbrances": "None",
+      "aadhaar_hash": "a892fc0e4875"
+    },
+    "validation": {
+      "geometry_valid": true,
+      "topology_valid": true,
+      "confidence_score": 92.4,
+      "data_source": "Controlled Demo Dataset",
+      "derivation": "Derived Geometry",
+      "verification_status": "Prototype \u2014 Awaiting Surveyor Review"
+    },
+    "level_label": "Floor 2",
+    "usage": "Residential",
     "layer": "S",
-    "level": "L01",
-    "level_label": "First Floor",
-    "unit_label": "First Floor - Unit 3",
-    "footprint": [
-      [
-        5.0,
-        20.0
-      ],
-      [
-        15.0,
-        20.0
-      ],
-      [
-        15.0,
-        32.5
-      ],
-      [
-        5.0,
-        32.5
-      ],
-      [
-        5.0,
-        20.0
-      ]
-    ],
-    "z_min": 3.5,
-    "z_max": 7.0,
-    "usage": "Apartments",
-    "area_sqm": 125.0,
-    "volume_cbm": 437.5,
-    "type": "building"
-  },
-  {
-    "unit_id": "U007",
-    "ulpin": "23140701001001-S-L01-U004-5",
-    "layer": "S",
-    "level": "L01",
-    "level_label": "First Floor",
-    "unit_label": "First Floor - Unit 4",
-    "footprint": [
-      [
-        15.0,
-        20.0
-      ],
-      [
-        25.0,
-        20.0
-      ],
-      [
-        25.0,
-        32.5
-      ],
-      [
-        15.0,
-        32.5
-      ],
-      [
-        15.0,
-        20.0
-      ]
-    ],
-    "z_min": 3.5,
-    "z_max": 7.0,
-    "usage": "Apartments",
-    "area_sqm": 125.0,
-    "volume_cbm": 437.5,
-    "type": "building"
-  },
-  {
-    "unit_id": "U008",
-    "ulpin": "23140701001001-S-L02-U001-3",
-    "layer": "S",
-    "level": "L02",
-    "level_label": "Second Floor",
-    "unit_label": "Second Floor - Unit 1",
-    "footprint": [
-      [
-        5.0,
-        7.5
-      ],
-      [
-        15.0,
-        7.5
-      ],
-      [
-        15.0,
-        20.0
-      ],
-      [
-        5.0,
-        20.0
-      ],
-      [
-        5.0,
-        7.5
-      ]
-    ],
+    "area_sqm": 115.2,
+    "volume_cbm": 403.2,
     "z_min": 7.0,
-    "z_max": 10.5,
-    "usage": "Apartments",
-    "area_sqm": 125.0,
-    "volume_cbm": 437.5,
-    "type": "building"
+    "z_max": 10.5
   },
   {
-    "unit_id": "U009",
-    "ulpin": "23140701001001-S-L02-U002-4",
+    "unit_id": "U02-02",
+    "unit_index": 7,
+    "ulpin": "3D-MH-PUN-P123456-S-L02-U07-7",
+    "generated_3d_ulpin": "3D-MH-PUN-P123456-S-L02-U07-7",
+    "ulpin_status": "generated",
+    "parent_ulpin": "23140701001001",
+    "vertical_layer": "S",
+    "vertical_layer_label": "Surface",
+    "floor_code": "L02",
+    "floor_label": "Floor 2",
+    "property_type": "Residential Apartment",
+    "dimensions": {
+      "area_sqft": 1310,
+      "area_sqm": 121.7,
+      "volume_m3": 425.9,
+      "height_m": 3.5,
+      "length_m": 12.3,
+      "width_m": 9.9,
+      "z_min": 7.0,
+      "z_max": 10.5
+    },
+    "coordinates": {
+      "crs": "EPSG:32644",
+      "x": 542101.14,
+      "y": 2971831.48
+    },
+    "ownership": {
+      "owner_name": "Priya Menon",
+      "ownership_type": "Freehold",
+      "registered_on": "2026-01-06",
+      "encumbrances": "Bank Mortgage",
+      "aadhaar_hash": "40b700895d46"
+    },
+    "validation": {
+      "geometry_valid": true,
+      "topology_valid": true,
+      "confidence_score": 94.9,
+      "data_source": "Controlled Demo Dataset",
+      "derivation": "Derived Geometry",
+      "verification_status": "Prototype \u2014 Awaiting Surveyor Review"
+    },
+    "level_label": "Floor 2",
+    "usage": "Residential",
     "layer": "S",
-    "level": "L02",
-    "level_label": "Second Floor",
-    "unit_label": "Second Floor - Unit 2",
-    "footprint": [
-      [
-        15.0,
-        7.5
-      ],
-      [
-        25.0,
-        7.5
-      ],
-      [
-        25.0,
-        20.0
-      ],
-      [
-        15.0,
-        20.0
-      ],
-      [
-        15.0,
-        7.5
-      ]
-    ],
+    "area_sqm": 121.7,
+    "volume_cbm": 425.9,
     "z_min": 7.0,
-    "z_max": 10.5,
-    "usage": "Apartments",
-    "area_sqm": 125.0,
-    "volume_cbm": 437.5,
-    "type": "building"
+    "z_max": 10.5
   },
   {
-    "unit_id": "U010",
-    "ulpin": "23140701001001-S-L02-U003-5",
+    "unit_id": "U03-01",
+    "unit_index": 8,
+    "ulpin": "3D-MH-PUN-P123456-S-L03-U08-7",
+    "generated_3d_ulpin": "3D-MH-PUN-P123456-S-L03-U08-7",
+    "ulpin_status": "generated",
+    "parent_ulpin": "23140701001001",
+    "vertical_layer": "S",
+    "vertical_layer_label": "Surface",
+    "floor_code": "L03",
+    "floor_label": "Floor 3",
+    "property_type": "Residential Apartment",
+    "dimensions": {
+      "area_sqft": 1310,
+      "area_sqm": 121.7,
+      "volume_m3": 425.9,
+      "height_m": 3.5,
+      "length_m": 12.3,
+      "width_m": 9.9,
+      "z_min": 10.5,
+      "z_max": 14.0
+    },
+    "coordinates": {
+      "crs": "EPSG:32644",
+      "x": 542104.81,
+      "y": 2971834.29
+    },
+    "ownership": {
+      "owner_name": "Ravi Patel",
+      "ownership_type": "Freehold",
+      "registered_on": "2026-01-23",
+      "encumbrances": "None",
+      "aadhaar_hash": "6cdade8e5fc7"
+    },
+    "validation": {
+      "geometry_valid": true,
+      "topology_valid": true,
+      "confidence_score": 98.5,
+      "data_source": "Controlled Demo Dataset",
+      "derivation": "Derived Geometry",
+      "verification_status": "Prototype \u2014 Awaiting Surveyor Review"
+    },
+    "level_label": "Floor 3",
+    "usage": "Residential",
     "layer": "S",
-    "level": "L02",
-    "level_label": "Second Floor",
-    "unit_label": "Second Floor - Unit 3",
-    "footprint": [
-      [
-        5.0,
-        20.0
-      ],
-      [
-        15.0,
-        20.0
-      ],
-      [
-        15.0,
-        32.5
-      ],
-      [
-        5.0,
-        32.5
-      ],
-      [
-        5.0,
-        20.0
-      ]
-    ],
-    "z_min": 7.0,
-    "z_max": 10.5,
-    "usage": "Apartments",
-    "area_sqm": 125.0,
-    "volume_cbm": 437.5,
-    "type": "building"
-  },
-  {
-    "unit_id": "U011",
-    "ulpin": "23140701001001-S-L02-U004-6",
-    "layer": "S",
-    "level": "L02",
-    "level_label": "Second Floor",
-    "unit_label": "Second Floor - Unit 4",
-    "footprint": [
-      [
-        15.0,
-        20.0
-      ],
-      [
-        25.0,
-        20.0
-      ],
-      [
-        25.0,
-        32.5
-      ],
-      [
-        15.0,
-        32.5
-      ],
-      [
-        15.0,
-        20.0
-      ]
-    ],
-    "z_min": 7.0,
-    "z_max": 10.5,
-    "usage": "Apartments",
-    "area_sqm": 125.0,
-    "volume_cbm": 437.5,
-    "type": "building"
-  },
-  {
-    "unit_id": "U012",
-    "ulpin": "23140701001001-S-L03-U001-4",
-    "layer": "S",
-    "level": "L03",
-    "level_label": "Third Floor",
-    "unit_label": "Third Floor - Unit 1",
-    "footprint": [
-      [
-        5.0,
-        7.5
-      ],
-      [
-        15.0,
-        7.5
-      ],
-      [
-        15.0,
-        20.0
-      ],
-      [
-        5.0,
-        20.0
-      ],
-      [
-        5.0,
-        7.5
-      ]
-    ],
+    "area_sqm": 121.7,
+    "volume_cbm": 425.9,
     "z_min": 10.5,
-    "z_max": 14.0,
-    "usage": "Apartments",
-    "area_sqm": 125.0,
-    "volume_cbm": 437.5,
-    "type": "building"
+    "z_max": 14.0
   },
   {
-    "unit_id": "U013",
-    "ulpin": "23140701001001-S-L03-U002-5",
+    "unit_id": "U03-02",
+    "unit_index": 9,
+    "ulpin": "3D-MH-PUN-P123456-S-L03-U09-7",
+    "generated_3d_ulpin": "3D-MH-PUN-P123456-S-L03-U09-7",
+    "ulpin_status": "generated",
+    "parent_ulpin": "23140701001001",
+    "vertical_layer": "S",
+    "vertical_layer_label": "Surface",
+    "floor_code": "L03",
+    "floor_label": "Floor 3",
+    "property_type": "Residential Apartment",
+    "dimensions": {
+      "area_sqft": 1420,
+      "area_sqm": 131.9,
+      "volume_m3": 461.7,
+      "height_m": 3.5,
+      "length_m": 12.8,
+      "width_m": 10.3,
+      "z_min": 10.5,
+      "z_max": 14.0
+    },
+    "coordinates": {
+      "crs": "EPSG:32644",
+      "x": 542101.39,
+      "y": 2971830.77
+    },
+    "ownership": {
+      "owner_name": "Sunita Yadav",
+      "ownership_type": "Freehold",
+      "registered_on": "2026-01-05",
+      "encumbrances": "None",
+      "aadhaar_hash": "f258e697517f"
+    },
+    "validation": {
+      "geometry_valid": true,
+      "topology_valid": true,
+      "confidence_score": 93.9,
+      "data_source": "Controlled Demo Dataset",
+      "derivation": "Derived Geometry",
+      "verification_status": "Prototype \u2014 Awaiting Surveyor Review"
+    },
+    "level_label": "Floor 3",
+    "usage": "Residential",
     "layer": "S",
-    "level": "L03",
-    "level_label": "Third Floor",
-    "unit_label": "Third Floor - Unit 2",
-    "footprint": [
-      [
-        15.0,
-        7.5
-      ],
-      [
-        25.0,
-        7.5
-      ],
-      [
-        25.0,
-        20.0
-      ],
-      [
-        15.0,
-        20.0
-      ],
-      [
-        15.0,
-        7.5
-      ]
-    ],
+    "area_sqm": 131.9,
+    "volume_cbm": 461.7,
     "z_min": 10.5,
-    "z_max": 14.0,
-    "usage": "Apartments",
-    "area_sqm": 125.0,
-    "volume_cbm": 437.5,
-    "type": "building"
+    "z_max": 14.0
   },
   {
-    "unit_id": "U014",
-    "ulpin": "23140701001001-S-L03-U003-6",
+    "unit_id": "U04-01",
+    "unit_index": 10,
+    "ulpin": "3D-MH-PUN-P123456-S-L04-U10-7",
+    "generated_3d_ulpin": "3D-MH-PUN-P123456-S-L04-U10-7",
+    "ulpin_status": "generated",
+    "parent_ulpin": "23140701001001",
+    "vertical_layer": "S",
+    "vertical_layer_label": "Surface",
+    "floor_code": "L04",
+    "floor_label": "Floor 4",
+    "property_type": "Residential Apartment",
+    "dimensions": {
+      "area_sqft": 1180,
+      "area_sqm": 109.6,
+      "volume_m3": 383.6,
+      "height_m": 3.5,
+      "length_m": 11.7,
+      "width_m": 9.4,
+      "z_min": 14.0,
+      "z_max": 17.5
+    },
+    "coordinates": {
+      "crs": "EPSG:32644",
+      "x": 542102.66,
+      "y": 2971832.57
+    },
+    "ownership": {
+      "owner_name": "Ramesh Kumar Sharma",
+      "ownership_type": "Freehold",
+      "registered_on": "2026-01-11",
+      "encumbrances": "None",
+      "aadhaar_hash": "a7a2e550c4a3"
+    },
+    "validation": {
+      "geometry_valid": true,
+      "topology_valid": true,
+      "confidence_score": 95.1,
+      "data_source": "Controlled Demo Dataset",
+      "derivation": "Derived Geometry",
+      "verification_status": "Prototype \u2014 Awaiting Surveyor Review"
+    },
+    "level_label": "Floor 4",
+    "usage": "Residential",
     "layer": "S",
-    "level": "L03",
-    "level_label": "Third Floor",
-    "unit_label": "Third Floor - Unit 3",
-    "footprint": [
-      [
-        5.0,
-        20.0
-      ],
-      [
-        15.0,
-        20.0
-      ],
-      [
-        15.0,
-        32.5
-      ],
-      [
-        5.0,
-        32.5
-      ],
-      [
-        5.0,
-        20.0
-      ]
-    ],
-    "z_min": 10.5,
-    "z_max": 14.0,
-    "usage": "Apartments",
-    "area_sqm": 125.0,
-    "volume_cbm": 437.5,
-    "type": "building"
-  },
-  {
-    "unit_id": "U015",
-    "ulpin": "23140701001001-S-L03-U004-7",
-    "layer": "S",
-    "level": "L03",
-    "level_label": "Third Floor",
-    "unit_label": "Third Floor - Unit 4",
-    "footprint": [
-      [
-        15.0,
-        20.0
-      ],
-      [
-        25.0,
-        20.0
-      ],
-      [
-        25.0,
-        32.5
-      ],
-      [
-        15.0,
-        32.5
-      ],
-      [
-        15.0,
-        20.0
-      ]
-    ],
-    "z_min": 10.5,
-    "z_max": 14.0,
-    "usage": "Apartments",
-    "area_sqm": 125.0,
-    "volume_cbm": 437.5,
-    "type": "building"
-  },
-  {
-    "unit_id": "U016",
-    "ulpin": "23140701001001-S-LC01-U001-2",
-    "layer": "S",
-    "level": "LC01",
-    "level_label": "Common Terrace",
-    "unit_label": "Common Terrace - Common Terrace",
-    "footprint": [
-      [
-        5.0,
-        7.5
-      ],
-      [
-        25.0,
-        7.5
-      ],
-      [
-        25.0,
-        32.5
-      ],
-      [
-        5.0,
-        32.5
-      ],
-      [
-        5.0,
-        7.5
-      ]
-    ],
+    "area_sqm": 109.6,
+    "volume_cbm": 383.6,
     "z_min": 14.0,
-    "z_max": 15.5,
-    "usage": "Common Terrace",
-    "area_sqm": 500.0,
-    "volume_cbm": 750.0,
-    "type": "building"
+    "z_max": 17.5
   },
   {
-    "unit_id": "U017",
-    "ulpin": "23140701001001-S-LC03-U001-4",
+    "unit_id": "U04-02",
+    "unit_index": 11,
+    "ulpin": "3D-MH-PUN-P123456-S-L04-U11-7",
+    "generated_3d_ulpin": "3D-MH-PUN-P123456-S-L04-U11-7",
+    "ulpin_status": "generated",
+    "parent_ulpin": "23140701001001",
+    "vertical_layer": "S",
+    "vertical_layer_label": "Surface",
+    "floor_code": "L04",
+    "floor_label": "Floor 4",
+    "property_type": "Residential Apartment",
+    "dimensions": {
+      "area_sqft": 1420,
+      "area_sqm": 131.9,
+      "volume_m3": 461.7,
+      "height_m": 3.5,
+      "length_m": 12.8,
+      "width_m": 10.3,
+      "z_min": 14.0,
+      "z_max": 17.5
+    },
+    "coordinates": {
+      "crs": "EPSG:32644",
+      "x": 542102.51,
+      "y": 2971831.48
+    },
+    "ownership": {
+      "owner_name": "Vikram Singh",
+      "ownership_type": "Freehold",
+      "registered_on": "2026-01-06",
+      "encumbrances": "None",
+      "aadhaar_hash": "f9abfd891011"
+    },
+    "validation": {
+      "geometry_valid": true,
+      "topology_valid": true,
+      "confidence_score": 93.5,
+      "data_source": "Controlled Demo Dataset",
+      "derivation": "Derived Geometry",
+      "verification_status": "Prototype \u2014 Awaiting Surveyor Review"
+    },
+    "level_label": "Floor 4",
+    "usage": "Residential",
     "layer": "S",
-    "level": "LC03",
-    "level_label": "Water Tank",
-    "unit_label": "Water Tank",
-    "footprint": [
-      [
-        13.5,
-        18.5
-      ],
-      [
-        16.5,
-        18.5
-      ],
-      [
-        16.5,
-        21.5
-      ],
-      [
-        13.5,
-        21.5
-      ],
-      [
-        13.5,
-        18.5
-      ]
-    ],
-    "z_min": 15.5,
-    "z_max": 17.0,
-    "usage": "Common Utility",
-    "area_sqm": 9.0,
-    "volume_cbm": 13.5,
-    "type": "water_tank"
+    "area_sqm": 131.9,
+    "volume_cbm": 461.7,
+    "z_min": 14.0,
+    "z_max": 17.5
   },
   {
-    "unit_id": "U018",
-    "ulpin": "23140701001001-S-LC02-U001-3",
+    "unit_id": "U05-01",
+    "unit_index": 12,
+    "ulpin": "3D-MH-PUN-P123456-S-L05-U12-7",
+    "generated_3d_ulpin": "3D-MH-PUN-P123456-S-L05-U12-7",
+    "ulpin_status": "generated",
+    "parent_ulpin": "23140701001001",
+    "vertical_layer": "S",
+    "vertical_layer_label": "Surface",
+    "floor_code": "L05",
+    "floor_label": "Floor 5",
+    "property_type": "Residential Apartment",
+    "dimensions": {
+      "area_sqft": 1310,
+      "area_sqm": 121.7,
+      "volume_m3": 425.9,
+      "height_m": 3.5,
+      "length_m": 12.3,
+      "width_m": 9.9,
+      "z_min": 17.5,
+      "z_max": 21.0
+    },
+    "coordinates": {
+      "crs": "EPSG:32644",
+      "x": 542104.99,
+      "y": 2971833.18
+    },
+    "ownership": {
+      "owner_name": "Ajay Kulkarni",
+      "ownership_type": "Freehold",
+      "registered_on": "2026-01-29",
+      "encumbrances": "Bank Mortgage",
+      "aadhaar_hash": "dffe60c70e6c"
+    },
+    "validation": {
+      "geometry_valid": true,
+      "topology_valid": true,
+      "confidence_score": 93.6,
+      "data_source": "Controlled Demo Dataset",
+      "derivation": "Derived Geometry",
+      "verification_status": "Prototype \u2014 Awaiting Surveyor Review"
+    },
+    "level_label": "Floor 5",
+    "usage": "Residential",
     "layer": "S",
-    "level": "LC02",
-    "level_label": "Garden",
-    "unit_label": "Garden",
-    "footprint": [
-      [
-        22,
-        32
-      ],
-      [
-        30,
-        32
-      ],
-      [
-        30,
-        40
-      ],
-      [
-        22,
-        40
-      ],
-      [
-        22,
-        32
-      ]
-    ],
-    "z_min": 0.0,
-    "z_max": 0.3,
-    "usage": "Common Garden",
-    "area_sqm": 64.0,
-    "volume_cbm": 19.2,
-    "type": "garden"
+    "area_sqm": 121.7,
+    "volume_cbm": 425.9,
+    "z_min": 17.5,
+    "z_max": 21.0
   },
   {
-    "unit_id": "U019",
-    "ulpin": "23140701001001-U-LM01-U001-2",
-    "layer": "U",
-    "level": "LM01",
-    "level_label": "Metro Tunnel",
-    "unit_label": "Metro Tunnel",
-    "footprint": [
-      [
-        27.401923788646684,
-        -7.48076211353316
-      ],
-      [
-        32.598076211353316,
-        -4.48076211353316
-      ],
-      [
-        2.598076211353318,
-        47.48076211353316
-      ],
-      [
-        -2.598076211353316,
-        44.48076211353316
-      ],
-      [
-        27.401923788646684,
-        -7.48076211353316
-      ]
-    ],
-    "z_min": -12.0,
-    "z_max": -8.0,
-    "usage": "Public Infrastructure - Metro Right of Way",
-    "area_sqm": 360.0,
-    "volume_cbm": 1440.0,
-    "type": "metro"
-  },
-  {
-    "unit_id": "U020",
-    "ulpin": "23140701001001-U-LU01-U001-2",
-    "layer": "U",
-    "level": "LU01",
-    "level_label": "Utility Line",
-    "unit_label": "Utility Line",
-    "footprint": [
-      [
-        1,
-        0
-      ],
-      [
-        2,
-        0
-      ],
-      [
-        2,
-        40
-      ],
-      [
-        1,
-        40
-      ],
-      [
-        1,
-        0
-      ]
-    ],
-    "z_min": -2.0,
-    "z_max": -1.5,
-    "usage": "Municipal Utility Easement",
-    "area_sqm": 40.0,
-    "volume_cbm": 20.0,
-    "type": "utility"
+    "unit_id": "U05-02",
+    "unit_index": 13,
+    "ulpin": "3D-MH-PUN-P123456-S-L05-U13-7",
+    "generated_3d_ulpin": "3D-MH-PUN-P123456-S-L05-U13-7",
+    "ulpin_status": "generated",
+    "parent_ulpin": "23140701001001",
+    "vertical_layer": "S",
+    "vertical_layer_label": "Surface",
+    "floor_code": "L05",
+    "floor_label": "Floor 5",
+    "property_type": "Residential Apartment",
+    "dimensions": {
+      "area_sqft": 1240,
+      "area_sqm": 115.2,
+      "volume_m3": 403.2,
+      "height_m": 3.5,
+      "length_m": 12.0,
+      "width_m": 9.6,
+      "z_min": 17.5,
+      "z_max": 21.0
+    },
+    "coordinates": {
+      "crs": "EPSG:32644",
+      "x": 542103.14,
+      "y": 2971833.38
+    },
+    "ownership": {
+      "owner_name": "Farhan Qureshi",
+      "ownership_type": "Freehold",
+      "registered_on": "2026-01-22",
+      "encumbrances": "None",
+      "aadhaar_hash": "2b0ea6786f95"
+    },
+    "validation": {
+      "geometry_valid": true,
+      "topology_valid": true,
+      "confidence_score": 94.0,
+      "data_source": "Controlled Demo Dataset",
+      "derivation": "Derived Geometry",
+      "verification_status": "Prototype \u2014 Awaiting Surveyor Review"
+    },
+    "level_label": "Floor 5",
+    "usage": "Residential",
+    "layer": "S",
+    "area_sqm": 115.2,
+    "volume_cbm": 403.2,
+    "z_min": 17.5,
+    "z_max": 21.0
   }
 ]
